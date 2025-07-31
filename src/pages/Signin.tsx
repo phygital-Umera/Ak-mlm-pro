@@ -121,7 +121,7 @@ const SignIn: React.FC = () => {
             type="submit"
             className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
           >
-            {isPending ? <SyncLoader className="bg-primary" /> : 'Sign In'}
+            {isPending ? 'Loading...' : 'Sign In'}
           </button>
         </div>
         {/* 

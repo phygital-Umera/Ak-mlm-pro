@@ -13,7 +13,6 @@ import NewMembers from '@/components/Charts/NewMembers';
 import TeamPerformance from '@/components/Charts/TeamPerformance';
 import ChartOne from '@/components/Charts/ChartOne';
 import Loader from '@/components/common/Loader';
-import {useGetCustomerById} from '@/lib/react-query/Customer/home';
 import {useAuthContext} from '@/context/AuthContext';
 
 interface StatCardProps {
@@ -52,42 +51,42 @@ const Home: React.FC = () => {
         },
         {
           title: 'Total Revenue',
-          amount: `₹${data.totalRevenue.toLocaleString()}`,
+          amount: `₹${data.totalRevenue}`,
           icon: <FaDollarSign className="text-2xl text-purple-500" />,
           trend: 'up',
           trendValue: '24%',
         },
         {
           title: 'Joining Revenue',
-          amount: `₹${data.joiningRevenue.toLocaleString()}`,
+          amount: `₹${data.joiningRevenue}`,
           icon: <IoWalletSharp className="text-2xl text-yellow-500" />,
           trend: 'up',
           trendValue: '18%',
         },
         {
           title: 'Direct Income',
-          amount: `₹${data.directIncome.toLocaleString()}`,
+          amount: `₹${data.directIncome}`,
           icon: <FaChartLine className="text-2xl text-teal-500" />,
           trend: 'up',
           trendValue: '15%',
         },
         {
           title: 'Pair Commission',
-          amount: `₹${data.pairCommission.toLocaleString()}`,
+          amount: `₹${data.pairCommission}`,
           icon: <FaDollarSign className="text-2xl text-pink-500" />,
           trend: 'up',
           trendValue: '10%',
         },
         {
           title: 'ROI Revenue',
-          amount: `₹${data.roiRevenue.toLocaleString()}`,
+          amount: `₹${data.roiRevenue}`,
           icon: <FaChartLine className="text-2xl text-indigo-500" />,
           trend: 'up',
           trendValue: '5%',
         },
         {
           title: 'Purchase Balance',
-          amount: `₹${data.purchaseBalance.toLocaleString()}`,
+          amount: `₹${data.purchaseBalance}`,
           icon: <IoWalletSharp className="text-2xl text-amber-500" />,
           trend: 'up',
           trendValue: '20%',

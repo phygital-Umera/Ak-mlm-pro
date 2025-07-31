@@ -1,6 +1,5 @@
 import Logo from '../../../public/logo.png';
 import React, {useState} from 'react';
-import {BiLogoPlayStore} from 'react-icons/bi';
 import {GiHamburgerMenu} from 'react-icons/gi';
 import {RxCross2} from 'react-icons/rx';
 import {Link} from 'react-scroll';

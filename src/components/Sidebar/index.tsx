@@ -283,14 +283,14 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
           to="/"
           className="bg-gray-300 hover:bg-gray-400 flex h-16 w-auto items-center justify-start space-x-4 rounded-full px-4 py-2 transition-all"
         >
-          <div className="flex h-20 w-40 items-center justify-center overflow-hidden rounded-full">
+          {/* <div className="flex h-20 w-40 items-center justify-center overflow-hidden rounded-full">
             <img
               src={Logo}
               alt="Logo"
               className="h-full w-full object-contain"
             />
-          </div>
-          {/* <h1 className="text-lg font-semibold text-gray">Sigma</h1> */}
+          </div> */}
+          <h1 className="text-2xl font-semibold text-gray">AK MLM</h1>
         </Link>
 
         <button
