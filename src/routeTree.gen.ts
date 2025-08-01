@@ -34,7 +34,9 @@ import {Route as AuthSignupImport} from './routes/_auth/signup';
 import {Route as AuthSigninImport} from './routes/_auth/signin';
 import {Route as AppNavbarroutesLoginImport} from './routes/_app/navbarroutes/login';
 import {Route as AppNavbarroutesBusinessdocImport} from './routes/_app/navbarroutes/businessdoc';
+import {Route as AppCustomerHistorypayoutImport} from './routes/_app/customer/historypayout';
 import {Route as AppCustomerDashboardImport} from './routes/_app/customer/dashboard';
+import {Route as RegistrationRegisterNameCrnnoImport} from './routes/_registration/register.$name.$crnno';
 import {Route as AppCustomerWalletWallethistoryImport} from './routes/_app/customer/_wallet/wallethistory';
 import {Route as AppCustomerWalletWalletcImport} from './routes/_app/customer/_wallet/walletc';
 import {Route as AppCustomerRepurchaseProductRepurchaseproductImport} from './routes/_app/customer/_repurchaseProduct/repurchaseproduct';
@@ -43,6 +45,7 @@ import {Route as AppCustomerRegisterCustomersidesharelinkImport} from './routes/
 import {Route as AppCustomerRegisterCustomerregistercImport} from './routes/_app/customer/_register/customerregisterc';
 import {Route as AppCustomerHomeHomeImport} from './routes/_app/customer/_home/home';
 import {Route as AppCustomerHelpingdataHelpingImport} from './routes/_app/customer/_helpingdata/helping';
+import {Route as AppCustomerEpinProductepinImport} from './routes/_app/customer/_epin/productepin';
 import {Route as AppCustomerEpinEpincImport} from './routes/_app/customer/_epin/epinc';
 import {Route as AppCustomerCustomerprofileCustomerprofilecImport} from './routes/_app/customer/_customerprofile/customerprofilec';
 import {Route as AppCustomerCustomerlistCustomerlistImport} from './routes/_app/customer/_customerlist/customerlist';
@@ -85,7 +88,6 @@ import {Route as AppAdminUpdatefeaturesGoldrewardGoldImport} from './routes/_app
 import {Route as AppAdminUpdatefeaturesAwardrewardAwardrewardImport} from './routes/_app/admin/_updatefeatures/_awardreward/awardreward';
 import {Route as AppAdminPowerlegPowerlegIdImport} from './routes/_app/admin/_powerleg/powerleg.$id';
 import {Route as AppAdminEditUpdateCustomerIdImport} from './routes/_app/admin/_edit/UpdateCustomer.$id';
-import {Route as RegistrationRegisterNameCrnnoSponsoridSideImport} from './routes/_registration/register.$name.$crnno.$sponsorid.$side';
 
 // Create Virtual Routes
 
@@ -242,11 +244,24 @@ const AppNavbarroutesBusinessdocRoute = AppNavbarroutesBusinessdocImport.update(
   } as any,
 );
 
+const AppCustomerHistorypayoutRoute = AppCustomerHistorypayoutImport.update({
+  id: '/customer/historypayout',
+  path: '/customer/historypayout',
+  getParentRoute: () => AppRoute,
+} as any);
+
 const AppCustomerDashboardRoute = AppCustomerDashboardImport.update({
   id: '/customer/dashboard',
   path: '/customer/dashboard',
   getParentRoute: () => AppRoute,
 } as any);
+
+const RegistrationRegisterNameCrnnoRoute =
+  RegistrationRegisterNameCrnnoImport.update({
+    id: '/_registration/register/$name/$crnno',
+    path: '/register/$name/$crnno',
+    getParentRoute: () => rootRoute,
+  } as any);
 
 const AppCustomerWalletWallethistoryRoute =
   AppCustomerWalletWallethistoryImport.update({
@@ -300,6 +315,14 @@ const AppCustomerHelpingdataHelpingRoute =
     path: '/customer/helping',
     getParentRoute: () => AppRoute,
   } as any);
+
+const AppCustomerEpinProductepinRoute = AppCustomerEpinProductepinImport.update(
+  {
+    id: '/customer/_epin/productepin',
+    path: '/customer/productepin',
+    getParentRoute: () => AppRoute,
+  } as any,
+);
 
 const AppCustomerEpinEpincRoute = AppCustomerEpinEpincImport.update({
   id: '/customer/_epin/epinc',
@@ -587,13 +610,6 @@ const AppAdminEditUpdateCustomerIdRoute =
     getParentRoute: () => AppRoute,
   } as any);
 
-const RegistrationRegisterNameCrnnoSponsoridSideRoute =
-  RegistrationRegisterNameCrnnoSponsoridSideImport.update({
-    id: '/_registration/register/$name/$crnno/$sponsorid/$side',
-    path: '/register/$name/$crnno/$sponsorid/$side',
-    getParentRoute: () => rootRoute,
-  } as any);
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -757,6 +773,13 @@ declare module '@tanstack/react-router' {
       path: '/customer/dashboard';
       fullPath: '/customer/dashboard';
       preLoaderRoute: typeof AppCustomerDashboardImport;
+      parentRoute: typeof AppImport;
+    };
+    '/_app/customer/historypayout': {
+      id: '/_app/customer/historypayout';
+      path: '/customer/historypayout';
+      fullPath: '/customer/historypayout';
+      preLoaderRoute: typeof AppCustomerHistorypayoutImport;
       parentRoute: typeof AppImport;
     };
     '/_app/navbarroutes/businessdoc': {
@@ -1025,6 +1048,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCustomerEpinEpincImport;
       parentRoute: typeof AppImport;
     };
+    '/_app/customer/_epin/productepin': {
+      id: '/_app/customer/_epin/productepin';
+      path: '/customer/productepin';
+      fullPath: '/customer/productepin';
+      preLoaderRoute: typeof AppCustomerEpinProductepinImport;
+      parentRoute: typeof AppImport;
+    };
     '/_app/customer/_helpingdata/helping': {
       id: '/_app/customer/_helpingdata/helping';
       path: '/customer/helping';
@@ -1081,6 +1111,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppCustomerWalletWallethistoryImport;
       parentRoute: typeof AppImport;
     };
+    '/_registration/register/$name/$crnno': {
+      id: '/_registration/register/$name/$crnno';
+      path: '/register/$name/$crnno';
+      fullPath: '/register/$name/$crnno';
+      preLoaderRoute: typeof RegistrationRegisterNameCrnnoImport;
+      parentRoute: typeof rootRoute;
+    };
     '/_app/admin/_edit/UpdateCustomer/$id': {
       id: '/_app/admin/_edit/UpdateCustomer/$id';
       path: '/admin/UpdateCustomer/$id';
@@ -1123,13 +1160,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminUpdatefeaturesRetirementfundRetirementImport;
       parentRoute: typeof AppImport;
     };
-    '/_registration/register/$name/$crnno/$sponsorid/$side': {
-      id: '/_registration/register/$name/$crnno/$sponsorid/$side';
-      path: '/register/$name/$crnno/$sponsorid/$side';
-      fullPath: '/register/$name/$crnno/$sponsorid/$side';
-      preLoaderRoute: typeof RegistrationRegisterNameCrnnoSponsoridSideImport;
-      parentRoute: typeof rootRoute;
-    };
   }
 }
 
@@ -1139,6 +1169,7 @@ interface AppRouteChildren {
   AppDashboardLazyRoute: typeof AppDashboardLazyRoute;
   AppIndexLazyRoute: typeof AppIndexLazyRoute;
   AppCustomerDashboardRoute: typeof AppCustomerDashboardRoute;
+  AppCustomerHistorypayoutRoute: typeof AppCustomerHistorypayoutRoute;
   AppNavbarroutesBusinessdocRoute: typeof AppNavbarroutesBusinessdocRoute;
   AppNavbarroutesLoginRoute: typeof AppNavbarroutesLoginRoute;
   AppAdminEditEmailEditemailRoute: typeof AppAdminEditEmailEditemailRoute;
@@ -1177,6 +1208,7 @@ interface AppRouteChildren {
   AppCustomerCustomerlistCustomerlistRoute: typeof AppCustomerCustomerlistCustomerlistRoute;
   AppCustomerCustomerprofileCustomerprofilecRoute: typeof AppCustomerCustomerprofileCustomerprofilecRoute;
   AppCustomerEpinEpincRoute: typeof AppCustomerEpinEpincRoute;
+  AppCustomerEpinProductepinRoute: typeof AppCustomerEpinProductepinRoute;
   AppCustomerHelpingdataHelpingRoute: typeof AppCustomerHelpingdataHelpingRoute;
   AppCustomerHomeHomeRoute: typeof AppCustomerHomeHomeRoute;
   AppCustomerRegisterCustomerregistercRoute: typeof AppCustomerRegisterCustomerregistercRoute;
@@ -1197,6 +1229,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDashboardLazyRoute: AppDashboardLazyRoute,
   AppIndexLazyRoute: AppIndexLazyRoute,
   AppCustomerDashboardRoute: AppCustomerDashboardRoute,
+  AppCustomerHistorypayoutRoute: AppCustomerHistorypayoutRoute,
   AppNavbarroutesBusinessdocRoute: AppNavbarroutesBusinessdocRoute,
   AppNavbarroutesLoginRoute: AppNavbarroutesLoginRoute,
   AppAdminEditEmailEditemailRoute: AppAdminEditEmailEditemailRoute,
@@ -1248,6 +1281,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppCustomerCustomerprofileCustomerprofilecRoute:
     AppCustomerCustomerprofileCustomerprofilecRoute,
   AppCustomerEpinEpincRoute: AppCustomerEpinEpincRoute,
+  AppCustomerEpinProductepinRoute: AppCustomerEpinProductepinRoute,
   AppCustomerHelpingdataHelpingRoute: AppCustomerHelpingdataHelpingRoute,
   AppCustomerHomeHomeRoute: AppCustomerHomeHomeRoute,
   AppCustomerRegisterCustomerregistercRoute:
@@ -1344,6 +1378,7 @@ export interface FileRoutesByFullPath {
   '/landing': typeof LandingLandingLazyRoute;
   '/': typeof AppIndexLazyRoute;
   '/customer/dashboard': typeof AppCustomerDashboardRoute;
+  '/customer/historypayout': typeof AppCustomerHistorypayoutRoute;
   '/navbarroutes/businessdoc': typeof AppNavbarroutesBusinessdocRoute;
   '/navbarroutes/login': typeof AppNavbarroutesLoginRoute;
   '/admin/editemail': typeof AppAdminEditEmailEditemailRoute;
@@ -1382,6 +1417,7 @@ export interface FileRoutesByFullPath {
   '/customer/customerlist': typeof AppCustomerCustomerlistCustomerlistRoute;
   '/customer/customerprofilec': typeof AppCustomerCustomerprofileCustomerprofilecRoute;
   '/customer/epinc': typeof AppCustomerEpinEpincRoute;
+  '/customer/productepin': typeof AppCustomerEpinProductepinRoute;
   '/customer/helping': typeof AppCustomerHelpingdataHelpingRoute;
   '/customer/home': typeof AppCustomerHomeHomeRoute;
   '/customer/customerregisterc': typeof AppCustomerRegisterCustomerregistercRoute;
@@ -1390,13 +1426,13 @@ export interface FileRoutesByFullPath {
   '/customer/repurchaseproduct': typeof AppCustomerRepurchaseProductRepurchaseproductRoute;
   '/customer/walletc': typeof AppCustomerWalletWalletcRoute;
   '/customer/wallethistory': typeof AppCustomerWalletWallethistoryRoute;
+  '/register/$name/$crnno': typeof RegistrationRegisterNameCrnnoRoute;
   '/admin/UpdateCustomer/$id': typeof AppAdminEditUpdateCustomerIdRoute;
   '/admin/powerleg/$id': typeof AppAdminPowerlegPowerlegIdRoute;
   '/admin/awardreward': typeof AppAdminUpdatefeaturesAwardrewardAwardrewardRoute;
   '/admin/gold': typeof AppAdminUpdatefeaturesGoldrewardGoldRoute;
   '/admin/leadership': typeof AppAdminUpdatefeaturesLeadershipfundLeadershipRoute;
   '/admin/retirement': typeof AppAdminUpdatefeaturesRetirementfundRetirementRoute;
-  '/register/$name/$crnno/$sponsorid/$side': typeof RegistrationRegisterNameCrnnoSponsoridSideRoute;
 }
 
 export interface FileRoutesByTo {
@@ -1421,6 +1457,7 @@ export interface FileRoutesByTo {
   '/landing': typeof LandingLandingLazyRoute;
   '/': typeof AppIndexLazyRoute;
   '/customer/dashboard': typeof AppCustomerDashboardRoute;
+  '/customer/historypayout': typeof AppCustomerHistorypayoutRoute;
   '/navbarroutes/businessdoc': typeof AppNavbarroutesBusinessdocRoute;
   '/navbarroutes/login': typeof AppNavbarroutesLoginRoute;
   '/admin/editemail': typeof AppAdminEditEmailEditemailRoute;
@@ -1459,6 +1496,7 @@ export interface FileRoutesByTo {
   '/customer/customerlist': typeof AppCustomerCustomerlistCustomerlistRoute;
   '/customer/customerprofilec': typeof AppCustomerCustomerprofileCustomerprofilecRoute;
   '/customer/epinc': typeof AppCustomerEpinEpincRoute;
+  '/customer/productepin': typeof AppCustomerEpinProductepinRoute;
   '/customer/helping': typeof AppCustomerHelpingdataHelpingRoute;
   '/customer/home': typeof AppCustomerHomeHomeRoute;
   '/customer/customerregisterc': typeof AppCustomerRegisterCustomerregistercRoute;
@@ -1467,13 +1505,13 @@ export interface FileRoutesByTo {
   '/customer/repurchaseproduct': typeof AppCustomerRepurchaseProductRepurchaseproductRoute;
   '/customer/walletc': typeof AppCustomerWalletWalletcRoute;
   '/customer/wallethistory': typeof AppCustomerWalletWallethistoryRoute;
+  '/register/$name/$crnno': typeof RegistrationRegisterNameCrnnoRoute;
   '/admin/UpdateCustomer/$id': typeof AppAdminEditUpdateCustomerIdRoute;
   '/admin/powerleg/$id': typeof AppAdminPowerlegPowerlegIdRoute;
   '/admin/awardreward': typeof AppAdminUpdatefeaturesAwardrewardAwardrewardRoute;
   '/admin/gold': typeof AppAdminUpdatefeaturesGoldrewardGoldRoute;
   '/admin/leadership': typeof AppAdminUpdatefeaturesLeadershipfundLeadershipRoute;
   '/admin/retirement': typeof AppAdminUpdatefeaturesRetirementfundRetirementRoute;
-  '/register/$name/$crnno/$sponsorid/$side': typeof RegistrationRegisterNameCrnnoSponsoridSideRoute;
 }
 
 export interface FileRoutesById {
@@ -1501,6 +1539,7 @@ export interface FileRoutesById {
   '/_landing/landing': typeof LandingLandingLazyRoute;
   '/_app/': typeof AppIndexLazyRoute;
   '/_app/customer/dashboard': typeof AppCustomerDashboardRoute;
+  '/_app/customer/historypayout': typeof AppCustomerHistorypayoutRoute;
   '/_app/navbarroutes/businessdoc': typeof AppNavbarroutesBusinessdocRoute;
   '/_app/navbarroutes/login': typeof AppNavbarroutesLoginRoute;
   '/_app/admin/_EditEmail/editemail': typeof AppAdminEditEmailEditemailRoute;
@@ -1539,6 +1578,7 @@ export interface FileRoutesById {
   '/_app/customer/_customerlist/customerlist': typeof AppCustomerCustomerlistCustomerlistRoute;
   '/_app/customer/_customerprofile/customerprofilec': typeof AppCustomerCustomerprofileCustomerprofilecRoute;
   '/_app/customer/_epin/epinc': typeof AppCustomerEpinEpincRoute;
+  '/_app/customer/_epin/productepin': typeof AppCustomerEpinProductepinRoute;
   '/_app/customer/_helpingdata/helping': typeof AppCustomerHelpingdataHelpingRoute;
   '/_app/customer/_home/home': typeof AppCustomerHomeHomeRoute;
   '/_app/customer/_register/customerregisterc': typeof AppCustomerRegisterCustomerregistercRoute;
@@ -1547,13 +1587,13 @@ export interface FileRoutesById {
   '/_app/customer/_repurchaseProduct/repurchaseproduct': typeof AppCustomerRepurchaseProductRepurchaseproductRoute;
   '/_app/customer/_wallet/walletc': typeof AppCustomerWalletWalletcRoute;
   '/_app/customer/_wallet/wallethistory': typeof AppCustomerWalletWallethistoryRoute;
+  '/_registration/register/$name/$crnno': typeof RegistrationRegisterNameCrnnoRoute;
   '/_app/admin/_edit/UpdateCustomer/$id': typeof AppAdminEditUpdateCustomerIdRoute;
   '/_app/admin/_powerleg/powerleg/$id': typeof AppAdminPowerlegPowerlegIdRoute;
   '/_app/admin/_updatefeatures/_awardreward/awardreward': typeof AppAdminUpdatefeaturesAwardrewardAwardrewardRoute;
   '/_app/admin/_updatefeatures/_goldreward/gold': typeof AppAdminUpdatefeaturesGoldrewardGoldRoute;
   '/_app/admin/_updatefeatures/_leadershipfund/leadership': typeof AppAdminUpdatefeaturesLeadershipfundLeadershipRoute;
   '/_app/admin/_updatefeatures/_retirementfund/retirement': typeof AppAdminUpdatefeaturesRetirementfundRetirementRoute;
-  '/_registration/register/$name/$crnno/$sponsorid/$side': typeof RegistrationRegisterNameCrnnoSponsoridSideRoute;
 }
 
 export interface FileRouteTypes {
@@ -1580,6 +1620,7 @@ export interface FileRouteTypes {
     | '/landing'
     | '/'
     | '/customer/dashboard'
+    | '/customer/historypayout'
     | '/navbarroutes/businessdoc'
     | '/navbarroutes/login'
     | '/admin/editemail'
@@ -1618,6 +1659,7 @@ export interface FileRouteTypes {
     | '/customer/customerlist'
     | '/customer/customerprofilec'
     | '/customer/epinc'
+    | '/customer/productepin'
     | '/customer/helping'
     | '/customer/home'
     | '/customer/customerregisterc'
@@ -1626,13 +1668,13 @@ export interface FileRouteTypes {
     | '/customer/repurchaseproduct'
     | '/customer/walletc'
     | '/customer/wallethistory'
+    | '/register/$name/$crnno'
     | '/admin/UpdateCustomer/$id'
     | '/admin/powerleg/$id'
     | '/admin/awardreward'
     | '/admin/gold'
     | '/admin/leadership'
-    | '/admin/retirement'
-    | '/register/$name/$crnno/$sponsorid/$side';
+    | '/admin/retirement';
   fileRoutesByTo: FileRoutesByTo;
   to:
     | ''
@@ -1656,6 +1698,7 @@ export interface FileRouteTypes {
     | '/landing'
     | '/'
     | '/customer/dashboard'
+    | '/customer/historypayout'
     | '/navbarroutes/businessdoc'
     | '/navbarroutes/login'
     | '/admin/editemail'
@@ -1694,6 +1737,7 @@ export interface FileRouteTypes {
     | '/customer/customerlist'
     | '/customer/customerprofilec'
     | '/customer/epinc'
+    | '/customer/productepin'
     | '/customer/helping'
     | '/customer/home'
     | '/customer/customerregisterc'
@@ -1702,13 +1746,13 @@ export interface FileRouteTypes {
     | '/customer/repurchaseproduct'
     | '/customer/walletc'
     | '/customer/wallethistory'
+    | '/register/$name/$crnno'
     | '/admin/UpdateCustomer/$id'
     | '/admin/powerleg/$id'
     | '/admin/awardreward'
     | '/admin/gold'
     | '/admin/leadership'
-    | '/admin/retirement'
-    | '/register/$name/$crnno/$sponsorid/$side';
+    | '/admin/retirement';
   id:
     | '__root__'
     | '/_app'
@@ -1734,6 +1778,7 @@ export interface FileRouteTypes {
     | '/_landing/landing'
     | '/_app/'
     | '/_app/customer/dashboard'
+    | '/_app/customer/historypayout'
     | '/_app/navbarroutes/businessdoc'
     | '/_app/navbarroutes/login'
     | '/_app/admin/_EditEmail/editemail'
@@ -1772,6 +1817,7 @@ export interface FileRouteTypes {
     | '/_app/customer/_customerlist/customerlist'
     | '/_app/customer/_customerprofile/customerprofilec'
     | '/_app/customer/_epin/epinc'
+    | '/_app/customer/_epin/productepin'
     | '/_app/customer/_helpingdata/helping'
     | '/_app/customer/_home/home'
     | '/_app/customer/_register/customerregisterc'
@@ -1780,13 +1826,13 @@ export interface FileRouteTypes {
     | '/_app/customer/_repurchaseProduct/repurchaseproduct'
     | '/_app/customer/_wallet/walletc'
     | '/_app/customer/_wallet/wallethistory'
+    | '/_registration/register/$name/$crnno'
     | '/_app/admin/_edit/UpdateCustomer/$id'
     | '/_app/admin/_powerleg/powerleg/$id'
     | '/_app/admin/_updatefeatures/_awardreward/awardreward'
     | '/_app/admin/_updatefeatures/_goldreward/gold'
     | '/_app/admin/_updatefeatures/_leadershipfund/leadership'
-    | '/_app/admin/_updatefeatures/_retirementfund/retirement'
-    | '/_registration/register/$name/$crnno/$sponsorid/$side';
+    | '/_app/admin/_updatefeatures/_retirementfund/retirement';
   fileRoutesById: FileRoutesById;
 }
 
@@ -1795,7 +1841,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren;
   LandingRoute: typeof LandingRouteWithChildren;
   RegistrationRegistrationRoute: typeof RegistrationRegistrationRoute;
-  RegistrationRegisterNameCrnnoSponsoridSideRoute: typeof RegistrationRegisterNameCrnnoSponsoridSideRoute;
+  RegistrationRegisterNameCrnnoRoute: typeof RegistrationRegisterNameCrnnoRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -1803,8 +1849,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   LandingRoute: LandingRouteWithChildren,
   RegistrationRegistrationRoute: RegistrationRegistrationRoute,
-  RegistrationRegisterNameCrnnoSponsoridSideRoute:
-    RegistrationRegisterNameCrnnoSponsoridSideRoute,
+  RegistrationRegisterNameCrnnoRoute: RegistrationRegisterNameCrnnoRoute,
 };
 
 export const routeTree = rootRoute
@@ -1823,7 +1868,7 @@ export const routeTree = rootRoute
         "/_auth",
         "/_landing",
         "/_registration/registration",
-        "/_registration/register/$name/$crnno/$sponsorid/$side"
+        "/_registration/register/$name/$crnno"
       ]
     },
     "/_app": {
@@ -1832,6 +1877,7 @@ export const routeTree = rootRoute
         "/_app/dashboard",
         "/_app/",
         "/_app/customer/dashboard",
+        "/_app/customer/historypayout",
         "/_app/navbarroutes/businessdoc",
         "/_app/navbarroutes/login",
         "/_app/admin/_EditEmail/editemail",
@@ -1870,6 +1916,7 @@ export const routeTree = rootRoute
         "/_app/customer/_customerlist/customerlist",
         "/_app/customer/_customerprofile/customerprofilec",
         "/_app/customer/_epin/epinc",
+        "/_app/customer/_epin/productepin",
         "/_app/customer/_helpingdata/helping",
         "/_app/customer/_home/home",
         "/_app/customer/_register/customerregisterc",
@@ -1989,6 +2036,10 @@ export const routeTree = rootRoute
     },
     "/_app/customer/dashboard": {
       "filePath": "_app/customer/dashboard.tsx",
+      "parent": "/_app"
+    },
+    "/_app/customer/historypayout": {
+      "filePath": "_app/customer/historypayout.tsx",
       "parent": "/_app"
     },
     "/_app/navbarroutes/businessdoc": {
@@ -2143,6 +2194,10 @@ export const routeTree = rootRoute
       "filePath": "_app/customer/_epin/epinc.tsx",
       "parent": "/_app"
     },
+    "/_app/customer/_epin/productepin": {
+      "filePath": "_app/customer/_epin/productepin.tsx",
+      "parent": "/_app"
+    },
     "/_app/customer/_helpingdata/helping": {
       "filePath": "_app/customer/_helpingdata/helping.ts",
       "parent": "/_app"
@@ -2175,6 +2230,9 @@ export const routeTree = rootRoute
       "filePath": "_app/customer/_wallet/wallethistory.tsx",
       "parent": "/_app"
     },
+    "/_registration/register/$name/$crnno": {
+      "filePath": "_registration/register.$name.$crnno.tsx"
+    },
     "/_app/admin/_edit/UpdateCustomer/$id": {
       "filePath": "_app/admin/_edit/UpdateCustomer.$id.tsx",
       "parent": "/_app"
@@ -2198,9 +2256,6 @@ export const routeTree = rootRoute
     "/_app/admin/_updatefeatures/_retirementfund/retirement": {
       "filePath": "_app/admin/_updatefeatures/_retirementfund/retirement.tsx",
       "parent": "/_app"
-    },
-    "/_registration/register/$name/$crnno/$sponsorid/$side": {
-      "filePath": "_registration/register.$name.$crnno.$sponsorid.$side.tsx"
     }
   }
 }

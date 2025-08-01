@@ -157,44 +157,55 @@ const CustomerDashboard: React.FC = () => {
         //   amount: `${dataa?.Todays_Pair_Count || 0}`,
         //   icon: <IoTodaySharp className="text-2xl" />,
         // },
+
+        // {
+        //   title: 'Total Income',
+        //   amount: `${dataa?.total_Income || 0}`,
+        //   icon: <IoTodaySharp className="text-2xl" />,
+        // },
         {
-          title: 'Total Income',
-          amount: `${dataa?.total_Income || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
-        },
-        {
-          title: 'Total Commission',
-          amount: `${dataa?.total_Commission || 0}`,
+          title: 'Commission Amount',
+          amount: `${dataa?.commitionamount || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
           title: 'Total Binary Commission',
-          amount: `${dataa?.binary_Commission || 0}`,
+          amount: `${dataa?.binary || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
-          title: 'Today Pair Commission',
-          amount: `${dataa?.today_Pair_Commission || 0}`,
+          title: 'Today Binary Commission',
+          amount: `${dataa?.todayBinary || 0}`,
+          icon: <IoTodaySharp className="text-2xl" />,
+        },
+        {
+          title: 'Total Pair Count',
+          amount: `${dataa?.pairCount || 0}`,
+          icon: <IoTodaySharp className="text-2xl" />,
+        },
+        {
+          title: 'Today Pair Count',
+          amount: `${dataa?.todaysPairCount || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
           title: 'Total Royalty Commission',
-          amount: `${dataa?.royalty_Commission || 0}`,
+          amount: `${dataa?.royelty || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
           title: 'Today Royalty Commission',
-          amount: `${dataa?.today_Royalty_Commission || 0}`,
+          amount: `${dataa?.todayRoyalty || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
           title: 'Total Repurchase Balance',
-          amount: `${dataa?.purchase_Balance || 0}`,
+          amount: `${dataa?.repurchase || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
           title: 'Today Repurchase Balance',
-          amount: `${dataa?.joining_Revenue || 0}`,
+          amount: `${dataa?.todayRepurchase || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
@@ -204,7 +215,7 @@ const CustomerDashboard: React.FC = () => {
         },
         {
           title: 'Today Repurchase Amount',
-          amount: `${dataa?.repurchase_Amount || 0}`,
+          amount: `${dataa?.todayRepurchase_Amount || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
       ]);
@@ -260,15 +271,15 @@ const CustomerDashboard: React.FC = () => {
     setShowExtraBoxes(!showExtraBoxes);
   };
 
-  useEffect(() => {
-    if (!isPopup) {
-      refetch();
-    }
-  }, [isPopup, refetch]);
+  // useEffect(() => {
+  //   if (!isPopup) {
+  //     refetch();
+  //   }
+  // }, [isPopup, refetch]);
 
-  if (isPending) {
-    return <Loader />;
-  }
+  // if (isPending) {
+  //   return <Loader />;
+  // }
 
   if (isError) {
     return (

@@ -207,6 +207,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             //   icon: <PiSquaresFourLight size={22} />,
             // },
             {
+              label: 'History Payout',
+              path: '/customer/historypayout',
+              icon: <PiSquaresFourLight size={22} />,
+            },
+            {
               label: 'E-Pin',
               path: '/customer/epinc',
               icon: <PiNavigationArrowFill size={22} />,

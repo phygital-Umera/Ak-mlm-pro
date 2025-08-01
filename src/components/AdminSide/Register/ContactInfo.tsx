@@ -33,7 +33,7 @@ export const ContactInfo: React.FC<SponserInfoProps> = ({onNext}) => {
 
   return (
     <FormProvider {...methods}>
-      <div className="from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex  items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="w-full max-w-2xl">
           {/* Header Section */}
           <div className="mb-8 text-center">
@@ -48,7 +48,7 @@ export const ContactInfo: React.FC<SponserInfoProps> = ({onNext}) => {
           {/* Form Card */}
           <form
             onSubmit={methods.handleSubmit(onSubmit)}
-            className="dark:bg-gray-800 border-gray-100 dark:border-gray-700 overflow-hidden rounded-xl border  shadow-xl"
+            className="dark:bg-gray-800 border-gray-100 dark:border-gray-700 overflow-hidden rounded-xl border shadow-xl"
           >
             <div className="space-y-6 p-6 sm:p-8">
               {/* Name Row */}
