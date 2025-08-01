@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import GenericDropdown from '@/components/Forms/DropDown/GenericDropDown';
 import GenericInputField from '@/components/Forms/Input/GenericInputField';
@@ -9,7 +9,6 @@ import {useForm, FormProvider} from 'react-hook-form';
 import {z} from 'zod';
 import {useAuthContext} from '@/context/AuthContext';
 import {useCheckEpin} from '@/lib/react-query/Admin/Epin/epin';
-import toast from 'react-hot-toast';
 
 type FormValues = z.infer<typeof sponserInfoSchema>;
 interface SponserInfoProps {
@@ -19,6 +18,10 @@ interface SponserInfoProps {
 export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
   const {user} = useAuthContext();
   const {setSponsorInfo} = useRegistration();
+  const [isEpinValid, setIsEpinValid] = useState<boolean | null>(null);
+  const [epinError, setEpinError] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [epinData, setEpinData] = useState<any>(null);
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(sponserInfoSchema),
@@ -29,43 +32,73 @@ export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
     },
   });
 
-  const {mutateAsync: checkEpin, isPending: isCheckingEpin} = useCheckEpin();
+  const epinValue = methods.watch('epin');
 
-  const onSubmit = async (formValues: FormValues) => {
-    const {epin} = formValues;
+  // Reset validation when epin changes
+  useEffect(() => {
+    if (epinValue) {
+      setIsEpinValid(null);
+      setEpinError(null);
+    }
+  }, [epinValue]);
 
+  const {
+    data: checkEpinData,
+    isPending: isCheckingEpin,
+    refetch,
+    error: epinCheckError,
+  } = useCheckEpin(epinValue || '');
+
+  const handleEpinCheck = async () => {
+    const epin = methods.getValues('epin');
     if (!epin) {
-      toast.error('Please enter E-Pin');
+      setEpinError('Please enter an E-Pin');
+      setIsEpinValid(false);
       return;
     }
 
     try {
-      const toastId = toast.loading('Verifying E-Pin...');
-      const epinData = await checkEpin(epin);
+      const {data} = await refetch();
 
-      if (!epinData) {
-        toast.dismiss(toastId);
-        toast.error('Invalid E-Pin or E-Pin already used');
-        return;
+      if (data) {
+        setIsEpinValid(true);
+        setEpinData(data);
+        setEpinError(null);
+      } else {
+        setIsEpinValid(false);
+        setEpinError('Invalid E-Pin or E-Pin already used');
       }
-
-      toast.dismiss(toastId);
-      toast.success('E-Pin verified');
-
-      setSponsorInfo({
-        sponsorId: formValues.sponsorId,
-        side: formValues.side,
-        epin: formValues.epin,
-        epinData: epinData,
-      });
-
-      onNext();
-    } catch (error: any) {
-      toast.dismiss();
-      toast.error(
-        error?.response?.data?.message || 'Failed to verify E-Pin',
-      );
+    } catch (error) {
+      setIsEpinValid(false);
+      setEpinError(error.response?.data?.message || 'Failed to verify E-Pin');
     }
+  };
+
+  const onSubmit = (formValues: FormValues) => {
+    if (!isEpinValid) {
+      setEpinError('Please verify the E-Pin first');
+      return;
+    }
+
+    if (!epinData) {
+      setEpinError('E-Pin data not available');
+      return;
+    }
+
+    setSponsorInfo({
+      sponsorId: formValues.sponsorId,
+      side: formValues.side,
+      epin: formValues.epin,
+      epinData: epinData,
+    });
+
+    console.log('Form submitted:', {
+      ...formValues,
+      // epinAmount: epinData.amount,
+      epinData: epinData,
+    });
+
+    onNext();
   };
 
   return (
@@ -98,17 +131,33 @@ export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
               label="E-Pin"
               placeholder="Enter E-Pin"
             />
+            {epinError && <p className="text-sm text-red-500">{epinError}</p>}
+            {isEpinValid && (
+              <div className="text-sm text-green-500">
+                <p>E-Pin is valid!</p>
+                {epinData?.amount && <p>E-Pin Amount: {epinData.amount}</p>}
+              </div>
+            )}
           </div>
         </div>
+
+        <GenericButton
+          type="button"
+          onClick={handleEpinCheck}
+          disabled={isCheckingEpin || !epinValue}
+          className="mt-2 bg-yellow-500 text-white hover:bg-yellow-600"
+        >
+          {isCheckingEpin ? 'Verifying...' : 'Verify E-Pin'}
+        </GenericButton>
 
         <div className="bg-gray-50 dark:bg-gray-700/30 border-gray-100 dark:border-gray-700 flex justify-end border-t px-6 py-4 sm:px-8">
           <GenericButton
             type="submit"
-            disabled={isCheckingEpin}
+            disabled={!isEpinValid || isCheckingEpin}
             className="relative overflow-hidden rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 font-medium text-white shadow-md transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <span className="flex items-center">
-              {isCheckingEpin ? 'Verifying...' : 'Continue'}
+              Continue
               <svg
                 className="ml-2 h-4 w-4"
                 fill="none"

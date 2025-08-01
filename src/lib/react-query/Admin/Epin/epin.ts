@@ -20,7 +20,6 @@ import {
 } from '@/types';
 import {useQueryClient, useMutation, useQuery} from '@tanstack/react-query';
 import {ADMIN_EPIN_QUERY_KEYS} from '../../QueryKeys';
-import toast from 'react-hot-toast';
 
 export const useCreateEPin = () => {
   const queryClient = useQueryClient();
@@ -61,10 +60,11 @@ export const useGetAdminPins = () => {
   });
 };
 
-export const useCheckEpin = () => {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: checkEpin,
+export const useCheckEpin = (id: string) => {
+  return useQuery({
+    queryKey: ['checkEpin'],
+    queryFn: () => checkEpin(id),
+    enabled: !!id,
   });
 };
 
