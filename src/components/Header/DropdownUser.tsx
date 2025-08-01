@@ -1,15 +1,15 @@
 import React, {useState} from 'react';
-import {Link} from '@tanstack/react-router';
+import {Link, useNavigate} from '@tanstack/react-router';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../assets/images/user/user.png';
 import {IoIosArrowDown} from 'react-icons/io';
 import {QUERY_KEYS} from '@/lib/react-query/QueryKeys';
 import {useAuthContext} from '@/context/AuthContext';
+import {FiEdit} from 'react-icons/fi';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const {user} = useAuthContext();
-
   const role = user?.role;
   const name = user?.fullname;
   const email = user?.email;
@@ -22,6 +22,8 @@ const DropdownUser = () => {
       window.location.reload();
     }
   };
+
+  const onEdit = () => {};
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -137,25 +139,35 @@ const DropdownUser = () => {
             </div>
           </div>
 
-          <button
-            onClick={handleSignOut}
-            className="hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3 px-6 py-3 text-sm font-medium text-red-600 duration-300 ease-in-out hover:text-red-700 lg:text-base"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="flex justify-between">
+            {' '}
+            <button
+              onClick={handleSignOut}
+              className="hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3 px-6 py-3 text-sm font-medium text-red-600 duration-300 ease-in-out hover:text-red-700 lg:text-base"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            Sign Out
-          </button>
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              Sign Out
+            </button>
+            <Link
+              to="/admin/updateprofile" // Replace with your actual route pattern
+              className="flex items-center gap-1 px-4 py-2 font-semibold text-blue-700 hover:text-blue-800"
+            >
+              <FiEdit size={18} />
+              Edit
+            </Link>
+          </div>
         </div>
       )}
       {/* Dropdown End */}

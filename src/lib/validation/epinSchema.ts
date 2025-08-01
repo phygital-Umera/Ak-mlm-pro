@@ -28,9 +28,12 @@ export const epinSchema = z.object({
       {message: 'Count must be at least 1 and greater than 0'},
     )
     .transform((val) => Number(val)),
-  price: z.string().refine((val) => {
-    const num = Number(val);
-    return !isNaN(num) && num > 0;
+  price: z
+    .string()
+    .refine(
+      (val) => {
+        const num = Number(val);
+        return !isNaN(num) && num > 0;
       },
       {message: 'Amount must be at least 1 and greater than 0'},
     )
