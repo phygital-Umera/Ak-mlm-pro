@@ -5,9 +5,6 @@ import {api, unAuthenticatedApi} from '@/utils/axios';
 export const registerCustomer = async (
   payload: CustomerRegistrationPayload,
 ) => {
-  console.log('====================================');
-  console.log('payloadddddd', payload);
-  console.log('====================================');
   const response = await api.post('/register', payload);
   return response.data;
 };

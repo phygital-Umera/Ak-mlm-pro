@@ -1,6 +1,5 @@
 import React from 'react';
 import {useAuthContext} from '@/context/AuthContext';
-import LandingPage from '@/pages/LandingPage';
 import {createLazyFileRoute, useNavigate} from '@tanstack/react-router';
 
 export const Route = createLazyFileRoute('/_app/')({
@@ -12,10 +11,6 @@ export const Route = createLazyFileRoute('/_app/')({
       navigate({to: '/dashboard'});
     }
 
-    return (
-      <>
-        <LandingPage />
-      </>
-    );
+    return <></>;
   },
 });

@@ -2,12 +2,12 @@ import {z} from 'zod';
 
 export const userLoginInfoSchema = z
   .object({
-    epinType: z
-      .string()
-      .refine((value) => ['online', 'later', 'e-pin'].includes(value), {
-        message: 'Invalid E-Pin Type',
-      }),
-    epinNo: z.string({required_error: 'E-Pin is required'}).optional(),
+    // epinType: z
+    //   .string()
+    //   .refine((value) => ['online', 'later', 'e-pin'].includes(value), {
+    //     message: 'Invalid E-Pin Type',
+    //   }),
+    // epinNo: z.string({required_error: 'E-Pin is required'}).optional(),
     password: z
       .string({required_error: 'Password is required'})
       .min(6, {message: 'Password must be at least 6 characters'}),
@@ -21,12 +21,12 @@ export const userLoginInfoSchema = z
   });
 
 export const sponserInfoSchema = z.object({
-  // sponsorId: z
-  //   .string({required_error: 'Sponsor ID is required'})
-  //   .min(5, {message: 'Sponsor ID must be at least 5 characters'}),
-  // side: z.enum(['A', 'B', 'C'], {
-  //   errorMap: () => ({message: "Please select either 'A' or 'B' or 'C'."}),
-  // }),
+  sponsorId: z
+    .string({required_error: 'Sponsor ID is required'})
+    .min(5, {message: 'Sponsor ID must be at least 5 characters'}),
+  side: z.enum(['LEFT', 'RIGHT'], {
+    errorMap: () => ({message: "Please select either 'LEFT' or 'RIGHT'."}),
+  }),
   // directSponsorId: z
   //   .string({required_error: 'Direct Sponser ID is required'})
   //   .min(5, {message: 'Direct Sponser ID must be at least 5 characters'}),

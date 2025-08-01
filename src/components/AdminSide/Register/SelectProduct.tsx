@@ -2,9 +2,8 @@ import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import {useRegistration} from '@/context/RegisterContext';
 import {useGetAllProducts} from '@/lib/react-query/Admin/Product/products';
 import React, {useState} from 'react';
-import {FormProvider, useForm, useFormContext} from 'react-hook-form';
+import {FormProvider, useForm} from 'react-hook-form';
 import toast from 'react-hot-toast';
-import {FiMinus, FiPlus} from 'react-icons/fi';
 
 interface SponserInfoProps {
   onNext: () => void;
@@ -15,7 +14,15 @@ export const SelectProduct: React.FC<SponserInfoProps> = ({onNext}) => {
   const {setSelectProduct} = useRegistration();
   const {data: products} = useGetAllProducts();
   const {data} = useRegistration();
-  console.log(data);
+
+  console.log('productss', products);
+  console.log('data', data.sponsorInfo?.epinData);
+
+  const filteredProducts = products?.filter(
+    (product) => product.discountedPrice === data.sponsorInfo?.epinData,
+  );
+
+  console.log('Filtered products:', filteredProducts);
 
   const [selectedProducts, setSelectedProducts] = useState<{
     [productId: string]: number;
@@ -32,15 +39,12 @@ export const SelectProduct: React.FC<SponserInfoProps> = ({onNext}) => {
 
   // Handlers
   const handleCardClick = (productId: string) => {
-    const currentCount = selectedProducts[productId] || 0;
-    if (currentCount < 3 && getTotalSelectedCount() < 3) {
-      setSelectedProducts((prev) => ({...prev, [productId]: currentCount + 1}));
-    }
+    setSelectedProducts({[productId]: 1}); // selecting one replaces the previous selection
   };
 
   const onSubmit = () => {
-    if (getTotalSelectedCount() !== 3) {
-      toast.error('Please select exactly 3 products to proceed');
+    if (getTotalSelectedCount() !== 1) {
+      toast.error('Please select exactly 1 product to proceed');
       return;
     }
 
@@ -61,20 +65,12 @@ export const SelectProduct: React.FC<SponserInfoProps> = ({onNext}) => {
             <h1 className="text-gray-900 mb-2 text-2xl font-bold dark:text-white sm:text-3xl">
               Select Your Products
             </h1>
-            <p className="text-gray-500 dark:text-gray-400">
-              Tap products to select (maximum 3 items total)
-            </p>
-            <div className="mt-4 flex justify-center">
-              <span className="rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800 dark:bg-blue-900/50 dark:text-blue-200">
-                {getTotalSelectedCount()}/3 selected
-              </span>
-            </div>
           </div>
 
           {/* Product Grid */}
           <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {products?.map((product) => {
+              {filteredProducts?.map((product) => {
                 const count = selectedProducts[product.id] || 0;
                 const canAddMore = count < 3 && getTotalSelectedCount() < 3;
 
@@ -97,7 +93,11 @@ export const SelectProduct: React.FC<SponserInfoProps> = ({onNext}) => {
 
                     {/* Product Image Placeholder */}
                     <div className="bg-gray-100 dark:bg-gray-700 mb-3 flex h-40 items-center justify-center rounded-lg">
-                      <span className="text-gray-400">Product Image</span>
+                      <img
+                        src={product.images}
+                        alt={product.name}
+                        className="h-full w-full object-contain"
+                      />
                     </div>
 
                     {/* Product Info */}
@@ -118,59 +118,6 @@ export const SelectProduct: React.FC<SponserInfoProps> = ({onNext}) => {
                           </span>
                         </div>
                       </div>
-                    </div>
-
-                    {/* Quantity Controls */}
-                    <div className="mt-4 flex items-center justify-between">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedProducts((prev) => {
-                            const current = prev[product.id] || 0;
-                            const updated = {
-                              ...prev,
-                              [product.id]: current - 1,
-                            };
-                            if (updated[product.id] <= 0)
-                              delete updated[product.id];
-                            return updated;
-                          });
-                        }}
-                        disabled={count === 0}
-                        className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                          count > 0
-                            ? 'bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/50 dark:text-red-300 dark:hover:bg-red-800'
-                            : 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500'
-                        } transition-colors`}
-                      >
-                        <FiMinus className="h-4 w-4" />
-                      </button>
-
-                      <span className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                        {count} selected
-                      </span>
-
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (canAddMore) {
-                            setSelectedProducts((prev) => ({
-                              ...prev,
-                              [product.id]: count + 1,
-                            }));
-                          }
-                        }}
-                        disabled={!canAddMore}
-                        className={`flex h-8 w-8 items-center justify-center rounded-full ${
-                          canAddMore
-                            ? 'bg-green-100 text-green-600 hover:bg-green-200 dark:bg-green-900/50 dark:text-green-300 dark:hover:bg-green-800'
-                            : 'bg-gray-100 text-gray-400 dark:bg-gray-700 dark:text-gray-500'
-                        } transition-colors`}
-                      >
-                        <FiPlus className="h-4 w-4" />
-                      </button>
                     </div>
                   </div>
                 );

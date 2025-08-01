@@ -208,7 +208,7 @@ export interface CustomerRegistrationPayload {
   firstName: string;
   lastName: string;
   sponsorId: string;
-  products: ProductSelection[];
+  productId: string;
   gender?: string;
   side: string;
   aadharNo?: string;

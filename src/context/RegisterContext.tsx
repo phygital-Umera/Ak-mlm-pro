@@ -5,7 +5,7 @@ import {z} from 'zod';
 import {
   userLoginInfoSchema,
   sponserInfoSchema,
-  selectProductSchema,
+  productSelectionSchema,
   conatctSchema,
   personalInfoSchema,
 } from '@/lib/validation/registerCustomerShema';
@@ -13,7 +13,7 @@ import {
 // Define types for form data
 type UserLoginInfo = z.infer<typeof userLoginInfoSchema>;
 type SponsorInfo = z.infer<typeof sponserInfoSchema>;
-type SelectProduct = z.infer<typeof selectProductSchema>;
+type SelectProduct = z.infer<typeof productSelectionSchema>;
 type ContactInfo = z.infer<typeof conatctSchema>;
 type PersonalInfo = z.infer<typeof personalInfoSchema>;
 

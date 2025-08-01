@@ -39,8 +39,6 @@ export const LoginInfo: React.FC = () => {
 
   const onSubmit = async (formValues: FormValues) => {
     setUserLoginInfo({
-      epinType: formValues.epinType,
-      epinNo: formValues.epinNo,
       password: formValues.password,
       confirmPassword: formValues.confirmPassword,
     });
@@ -51,7 +49,8 @@ export const LoginInfo: React.FC = () => {
       ...personalInfo,
       ...sponsorInfo,
       ...formValues,
-      products: selectProduct?.products ?? [],
+      productId: selectProduct?.products[0].productId,
+      epinNo: sponsorInfo?.epin,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -89,7 +88,7 @@ export const LoginInfo: React.FC = () => {
             onSubmit={methods.handleSubmit(onSubmit)}
             className="dark:bg-gray-800 border-gray-100 dark:border-gray-700 overflow-hidden rounded-xl border shadow-xl"
           >
-            <div className="space-y-6 p-6 sm:p-8 mb-5">
+            <div className="mb-5 space-y-6 p-6 sm:p-8">
               {/* Password Fields */}
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
@@ -119,7 +118,7 @@ export const LoginInfo: React.FC = () => {
               </div>
 
               {/* E-Pin Section */}
-              <div className="space-y-6">
+              {/* <div className="space-y-6">
                 <div className="space-y-2">
                   <GenericSearchDropdown
                     name="epinType"
@@ -152,7 +151,7 @@ export const LoginInfo: React.FC = () => {
                     </p>
                   </div>
                 )}
-              </div>
+              </div> */}
             </div>
 
             {/* Form Footer */}
