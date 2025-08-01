@@ -110,3 +110,44 @@ export const personalInfoSchema = z.object({
     .regex(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/g)
     .optional(),
 });
+
+export enum Gender {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
+  OTHER = 'OTHER',
+}
+
+export const updateProfileSchema = z.object({
+  user: z.object({
+    phoneNumber: z.string().optional(),
+
+    password: z.string(),
+    fullname: z.string().optional(),
+  }),
+  customer: z.object({
+    dob: z.string().optional(),
+    gender: z.nativeEnum(Gender).default(Gender.MALE),
+    pinCode: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    aadharNo: z
+      .string()
+
+      .optional(),
+    panNo: z
+      .string()
+      // .length(6, {message: 'PAN number must be exactly 6 characters'})
+      .optional(),
+    upiId: z.string().optional(),
+    landMark: z.string().optional(),
+    flatNo: z.string().optional(),
+    areaName: z.string().optional(),
+    bankName: z.string().optional(),
+    bankAccNo: z.string().optional(),
+    bankIFSC: z.string().optional(),
+    bankBranch: z
+      .string()
+
+      .optional(),
+  }),
+});

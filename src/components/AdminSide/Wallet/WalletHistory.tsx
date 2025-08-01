@@ -1,3 +1,5 @@
+/*eslint-disable*/
+
 import {Column} from '@/components/Forms/GenericImageTable';
 import GenericTable from '@/components/Forms/Table/GenericTable';
 import {useGetAdminWalletHistory} from '@/lib/react-query/Admin/WalletHistory/wallethistory';
@@ -18,20 +20,23 @@ const WalletHistory = () => {
 
   // ✅ Transform API data: rename `Date` to `createdAt`
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const historyData: history[] = rawData?.map((item: any) => ({
-    crnNo: item.crnNo,
-    direct: item.direct,
-    binery: item.binery,
-    genration: item.genration,
-    createdAt: item.Date.split('/').reverse().join('-'), // convert DD/MM/YYYY → YYYY-MM-DD
-  })) || [];
+  const historyData: history[] =
+    rawData?.map((item: any) => ({
+      crnNo: item.crnNo,
+      direct: item.direct,
+      binery: item.binery,
+      genration: item.genration,
+      createdAt: item.Date.split('/').reverse().join('-'), // convert DD/MM/YYYY → YYYY-MM-DD
+    })) || [];
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
   const filteredData = historyData.filter((item) => {
     const created = new Date(item.createdAt).toISOString().split('T')[0];
-    const start = startDate ? new Date(startDate).toISOString().split('T')[0] : '';
+    const start = startDate
+      ? new Date(startDate).toISOString().split('T')[0]
+      : '';
     const end = endDate ? new Date(endDate).toISOString().split('T')[0] : '';
 
     return (!start || created >= start) && (!end || created <= end);
