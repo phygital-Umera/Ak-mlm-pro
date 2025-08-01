@@ -35,6 +35,8 @@ export const CUSTOMER_QUERY_KEYS = {
   COMMISSION: 'commission',
   EPINS: 'epins',
   EPIN_REQUESTS: 'epinRequests',
+  EPIN_HISTORY: 'epinHistory',
+  PRODUCT_EPINS: 'product-epins',
   DASHBOARD: 'dashboard',
 };
 

@@ -384,23 +384,17 @@ type Product = {
 };
 
 export const ExternalRegistration: React.FC = () => {
-  const {params} = useMatch(
-    '/_registration/register/$name/$crnno/$sponsorid/$side' as any,
-  ) as {
+  const {params} = useMatch('/_registration/register/$name/$crnno' as any) as {
     params: {
       crnno: string;
       name: string;
-      sponsorid: string;
-      side: 'A' | 'B' | 'C';
     };
   };
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(externalRegistrationSchema),
     defaultValues: {
-      sponsorId: params.sponsorid || '',
       directSponsorId: params.crnno || '',
-      side: params.side || 'A',
       firstName: '',
       lastName: '',
       email: '',
@@ -429,6 +423,7 @@ export const ExternalRegistration: React.FC = () => {
     isPending,
     isSuccess,
     isError,
+    error,
   } = useCustomerRegistration();
 
   const getTotalSelectedCount = () =>
@@ -460,9 +455,7 @@ export const ExternalRegistration: React.FC = () => {
 
     const payload = {
       ...formValues,
-      sponsorId: formValues.sponsorId || params.sponsorid,
       directSponsorId: params.crnno,
-      side: params.side,
       products: selected,
     };
 
@@ -475,7 +468,7 @@ export const ExternalRegistration: React.FC = () => {
       toast.success('Registered successfully');
       navigate({to: role === 'ADMIN' ? '/dashboard' : '/customer/dashboard'});
     } else if (isError) {
-      toast.error('Registration failed');
+      toast.error(error?.message || 'Registration failed');
     }
   }, [isSuccess, isError, navigate, role]);
 
@@ -494,17 +487,11 @@ export const ExternalRegistration: React.FC = () => {
             Name: &nbsp;{params.name.replace('_', ' ')}
           </p>
           <div className="col-span-12 md:col-span-6">
-            <GenericInputField name="sponsorId" label="Sponsor ID" disabled />
-          </div>
-          <div className="col-span-12 md:col-span-6">
             <GenericInputField
               name="directSponsorId"
-              label="Direct Sponsor ID"
+              label="Sponsor ID"
               disabled
             />
-          </div>
-          <div className="col-span-12 md:col-span-6">
-            <GenericInputField name="side" label="Side" disabled />
           </div>
         </div>
 

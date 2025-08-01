@@ -58,7 +58,7 @@ const EpinUser: React.FC = () => {
         className="space-y-8 bg-white p-8 dark:bg-black"
       >
         <div className="space-y-4">
-          <h1 className="mb-4 text-lg font-semibold">Sponsor Info</h1>
+          <h1 className="mb-4 text-lg font-semibold">Epin Request</h1>
 
           {/* Input and Upload Fields in a single row */}
           <div className="flex flex-wrap items-center gap-4">

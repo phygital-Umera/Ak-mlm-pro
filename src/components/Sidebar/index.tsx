@@ -211,6 +211,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/epinc',
               icon: <PiNavigationArrowFill size={22} />,
             },
+            {
+              label: 'Product E-Pin',
+              path: '/customer/productepin',
+              icon: <PiNavigationArrowFill size={22} />,
+            },
             // {
             //   label: 'Repurchase Product',
             //   path: '/customer/repurchaseproduct',

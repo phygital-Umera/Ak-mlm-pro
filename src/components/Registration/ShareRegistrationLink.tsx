@@ -121,23 +121,18 @@
 //   );
 // };
 import React, {useEffect, useState} from 'react';
-import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import GenericInputField from '@/components/Forms/Input/GenericInputField';
 import {useRegistration} from '@/context/RegisterContext';
 import {zodResolver} from '@hookform/resolvers/zod';
-import {useForm, FormProvider, useWatch} from 'react-hook-form';
+import {useForm, FormProvider} from 'react-hook-form';
 import {z} from 'zod';
 import {useAuthContext} from '@/context/AuthContext';
 import {toast} from 'react-hot-toast';
-import {FiCopy, FiShare2, FiChevronDown} from 'react-icons/fi';
-import GenericDropdown from '../Forms/DropDown/GenericDropDown';
+import {FiCopy, FiShare2} from 'react-icons/fi';
 import {motion} from 'framer-motion';
 
 const shareLinkSchema = z.object({
-  sponsorId: z.string().optional(),
-  directSponsorId: z.string().optional(),
   link: z.string().min(1, 'Link is required'),
-  side: z.enum(['A', 'B', 'C']).optional(),
 });
 
 type FormValues = z.infer<typeof shareLinkSchema>;
@@ -148,41 +143,30 @@ interface SponsorInfoProps {
 
 export const ShareRegistrationLink: React.FC<SponsorInfoProps> = ({onNext}) => {
   const {user} = useAuthContext();
-  const {setSponsorInfo} = useRegistration();
   const [copied, setCopied] = useState(false);
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(shareLinkSchema),
     defaultValues: {
-      sponsorId: user?.crnNo || '',
-      directSponsorId: user?.crnNo || '',
       link: '',
-      side: 'A',
     },
   });
 
-  const {watch, setValue} = methods;
-  const directSponsorId = watch('sponsorId');
-  const side = watch('side');
+  const {setValue} = methods;
 
   const fullname = user?.fullname
     ? user.fullname.replace(/\s/g, '_')
     : 'unknown_user';
   const crnNo = user?.crnNo || 'CRN0000000';
-  const registrationLink = `demo.sigmmalyf.com/register/${fullname}/${crnNo}${
-    directSponsorId ? `/${directSponsorId}` : ''
-  }${directSponsorId && side ? `/${side}` : ''}`;
+  // const registrationLink = `https://demo.sigmmalyf.com/register/${fullname}/${crnNo}`;
+  const registrationLink = `http://localhost:5173/register/${fullname}/${crnNo}`;
 
   useEffect(() => {
     setValue('link', registrationLink);
-  }, [directSponsorId, user, side, setValue]);
+  }, [user, setValue]);
 
   const onSubmit = (formValues: FormValues) => {
-    setSponsorInfo({
-      side: formValues.side || 'A',
-      sponsorId: formValues.sponsorId || '',
-      directSponsorId: formValues.directSponsorId || '',
-    });
+    console.log(formValues);
     if (onNext) onNext();
   };
 
@@ -229,52 +213,12 @@ export const ShareRegistrationLink: React.FC<SponsorInfoProps> = ({onNext}) => {
         </div>
 
         <div className="grid grid-cols-1 gap-6">
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
-              <label className="text-gray-700 dark:text-gray-300 mb-1 block text-sm font-medium">
-                Sponsor ID
-              </label>
-              <div className="relative">
-                <GenericInputField
-                  name="sponsorId"
-                  placeholder="Enter Sponsor ID"
-                  // containerClass="mb-0"
-                />
-                {/* <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-500 font-mono">ID</span>
-                </div> */}
-              </div>
-            </div>
-
-            <div>
-              <GenericDropdown
-                label="Placement Side"
-                name="side"
-                onChange={(value: string) => {
-                  if (value === 'A' || value === 'B' || value === 'C') {
-                    setValue('side', value);
-                  }
-                }}
-                options={[
-                  {value: 'A', label: 'A Side'},
-                  {value: 'B', label: 'B Side'},
-                  {value: 'C', label: 'C Side'},
-                ]}
-              />
-            </div>
-          </div>
-
           <div>
             <label className="text-gray-700 dark:text-gray-300 mb-1 block text-sm font-medium">
               Your Referral Link
             </label>
             <div className="relative">
-              <GenericInputField
-                name="link"
-                disabled
-                // containerClass="mb-0"
-                // inputClass="pr-16 truncate"
-              />
+              <GenericInputField name="link" disabled />
               <div className="absolute inset-y-0 right-0 flex">
                 <motion.button
                   type="button"
@@ -314,13 +258,6 @@ export const ShareRegistrationLink: React.FC<SponsorInfoProps> = ({onNext}) => {
             <FiShare2 className="text-lg" />
             Share Link
           </motion.button>
-
-          {/* <GenericButton 
-            type="submit"
-            className="flex-1 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 shadow-md hover:shadow-lg"
-          >
-            Continue Registration
-          </GenericButton> */}
         </div>
 
         <div className="mt-6 rounded-lg border border-blue-100 bg-blue-50 p-4 dark:border-blue-800/50 dark:bg-blue-900/20">
@@ -331,7 +268,6 @@ export const ShareRegistrationLink: React.FC<SponsorInfoProps> = ({onNext}) => {
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-blue-700 dark:text-blue-300">
             <li>Share via WhatsApp, Email or Social Media</li>
             <li>Explain the benefits of joining your network</li>
-            {/* <li>Follow up with interested candidates</li> */}
           </ul>
         </div>
       </motion.form>
