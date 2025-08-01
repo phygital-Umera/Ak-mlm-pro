@@ -21,16 +21,19 @@ export const userLoginInfoSchema = z
   });
 
 export const sponserInfoSchema = z.object({
-  sponsorId: z
-    .string({required_error: 'Sponsor ID is required'})
-    .min(5, {message: 'Sponsor ID must be at least 5 characters'}),
-  side: z.enum(['A', 'B', 'C'], {
-    errorMap: () => ({message: "Please select either 'A' or 'B' or 'C'."}),
-  }),
-  directSponsorId: z
-    .string({required_error: 'Direct Sponser ID is required'})
-    .min(5, {message: 'Direct Sponser ID must be at least 5 characters'}),
+  // sponsorId: z
+  //   .string({required_error: 'Sponsor ID is required'})
+  //   .min(5, {message: 'Sponsor ID must be at least 5 characters'}),
+  // side: z.enum(['A', 'B', 'C'], {
+  //   errorMap: () => ({message: "Please select either 'A' or 'B' or 'C'."}),
+  // }),
+  // directSponsorId: z
+  //   .string({required_error: 'Direct Sponser ID is required'})
+  //   .min(5, {message: 'Direct Sponser ID must be at least 5 characters'}),
+  epin: z.string({required_error: 'E-Pin is required'}).optional(),
+  epinData: z.number({required_error: 'Amount is required'}).optional(),
 });
+
 export const productSelectionSchema = z.object({
   products: z.array(
     z.object({

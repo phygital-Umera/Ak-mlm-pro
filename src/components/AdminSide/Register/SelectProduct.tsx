@@ -2,9 +2,9 @@ import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import {useRegistration} from '@/context/RegisterContext';
 import {useGetAllProducts} from '@/lib/react-query/Admin/Product/products';
 import React, {useState} from 'react';
-import {FormProvider, useForm} from 'react-hook-form';
+import {FormProvider, useForm, useFormContext} from 'react-hook-form';
 import toast from 'react-hot-toast';
-import {FiMinus, FiPlus, FiShoppingBag} from 'react-icons/fi';
+import {FiMinus, FiPlus} from 'react-icons/fi';
 
 interface SponserInfoProps {
   onNext: () => void;
@@ -14,6 +14,8 @@ export const SelectProduct: React.FC<SponserInfoProps> = ({onNext}) => {
   const methods = useForm({defaultValues: {}});
   const {setSelectProduct} = useRegistration();
   const {data: products} = useGetAllProducts();
+  const {data} = useRegistration();
+  console.log(data);
 
   const [selectedProducts, setSelectedProducts] = useState<{
     [productId: string]: number;
@@ -56,7 +58,6 @@ export const SelectProduct: React.FC<SponserInfoProps> = ({onNext}) => {
         <div className="mx-auto max-w-4xl">
           {/* Header */}
           <div className="mb-8 text-center">
-          
             <h1 className="text-gray-900 mb-2 text-2xl font-bold dark:text-white sm:text-3xl">
               Select Your Products
             </h1>
@@ -177,7 +178,7 @@ export const SelectProduct: React.FC<SponserInfoProps> = ({onNext}) => {
             </div>
 
             {/* Footer */}
-            <div className="border-gray-200 dark:border-gray-700 dark:bg-gray-800/80 sticky bottom-0 rounded-xl border-t dark:bg-meta-4 p-4 backdrop-blur-sm">
+            <div className="border-gray-200 dark:border-gray-700 dark:bg-gray-800/80 sticky bottom-0 rounded-xl border-t p-4 backdrop-blur-sm dark:bg-meta-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-gray-500 dark:text-gray-400 text-sm">

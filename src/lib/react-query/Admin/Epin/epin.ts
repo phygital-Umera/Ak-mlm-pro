@@ -1,6 +1,7 @@
 /* eslint-disable  */
 import {
   ApproveEpinRequest,
+  checkEpin,
   createEPin,
   EpinHistory,
   getAdminEpins,
@@ -26,9 +27,9 @@ export const useCreateEPin = () => {
   return useMutation<
     CreateEPinResponse,
     ApiError,
-    {epincount: number; type: string; OTP: string}
+    {epincount: number; price: number}
   >({
-    mutationFn: ({epincount, type, OTP}) => createEPin(epincount, type, OTP), // Pass the epincount here
+    mutationFn: ({epincount, price}) => createEPin(epincount, price), // Pass the epincount here
     onSuccess: () => {
       // Additional logic on success if needed
     },
@@ -56,6 +57,14 @@ export const useGetAdminPins = () => {
   return useQuery({
     queryKey: [ADMIN_EPIN_QUERY_KEYS.GET_ALL_EPINS],
     queryFn: getAdminEpins,
+  });
+};
+
+export const useCheckEpin = (id: string) => {
+  return useQuery({
+    queryKey: ['checkEpin'],
+    queryFn: () => checkEpin(id),
+    enabled: !!id,
   });
 };
 

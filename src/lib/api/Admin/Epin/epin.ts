@@ -1,15 +1,12 @@
 import {api} from '@/utils/axios';
 
 // Create E-Pins
-export const createEPin = async (
-  epincount: number,
-  type: string,
-  OTP?: string,
-) => {
+export const createEPin = async (epincount: number, price: number) => {
   try {
+    console.log('epinssssscount', epincount);
+    console.log('prsssssice', price);
     const response = await api.post(`admin/epin/create-self/${epincount}`, {
-      type: type,
-      OTP: OTP,
+      price: price,
     });
     return response.data;
   } catch (error) {
@@ -126,6 +123,20 @@ export const EpinHistory = async () => {
   } catch (error) {
     console.error(
       'Error in EpinHistory:',
+      error.response?.data.message || error.message,
+    );
+    throw error;
+  }
+};
+
+export const checkEpin = async (epin: string) => {
+  try {
+    console.log('epin', epin);
+    const response = await api.get(`/epin/${epin}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error in checkEpin:',
       error.response?.data.message || error.message,
     );
     throw error;

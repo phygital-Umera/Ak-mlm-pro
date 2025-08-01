@@ -30,34 +30,15 @@ export const Epin: React.FC = () => {
   };
 
   console.log('count', countValue);
+  console.log('price', selectedType);
 
   const onSubmit = (data: FormValues) => {
     console.log('dataaa', data);
-    if (isOtpRequested) {
-      if (data.OTP) {
-        createEPin({
-          epincount: data.count,
-          type: data.type,
-          OTP: data.OTP,
-        });
-      } else {
-        createEPin({
-          epincount: data.count,
-          type: data.type,
-        });
-      }
-      setIsOtpRequested(false);
-      setSelectedType('');
-    } else {
-      getOtp(
-        {epincount: data.count.toString(), type: data.type},
-        {
-          onSuccess: () => {
-            setIsOtpRequested(true);
-          },
-        },
-      );
-    }
+    createEPin({
+      epincount: data.count,
+      price: Number(selectedType),
+    });
+    setSelectedType('');
   };
 
   useEffect(() => {
@@ -70,14 +51,20 @@ export const Epin: React.FC = () => {
     }
   }, [isSuccess]);
 
-  const errors = (error: any) => {
-    console.log('form error', error);
-  };
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success('E-Pin created successfully');
+      methods.reset();
+    }
+    if (error) {
+      toast.error('Error creating E-Pin');
+    }
+  }, [isSuccess]);
 
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onSubmit, errors)}
+        onSubmit={methods.handleSubmit(onSubmit)}
         className="space-y-8 bg-white p-8 dark:bg-black"
       >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
@@ -94,17 +81,17 @@ export const Epin: React.FC = () => {
 
           <div className="col-span-12 md:col-span-6">
             <GenericDropdown
-              label="Type"
-              name="type"
+              label="Price"
+              name="price"
               options={[
-                {label: 'ZERO', value: 'ZERO'},
-                {label: 'REGULAR', value: 'REGULAR'},
+                {label: 'Product 1 (3150)', value: '3150'},
+                {label: 'Product 2 (3600)', value: '3600'},
               ]}
               onChange={handleTypeChange}
             />
           </div>
 
-          {isOtpRequested && (
+          {/* {isOtpRequested && (
             <div className="col-span-12 md:col-span-6">
               <GenericInputField
                 name="OTP"
@@ -112,11 +99,11 @@ export const Epin: React.FC = () => {
                 placeholder="Enter OTP"
               />
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Form Buttons */}
-        <div className="flex justify-end space-x-4">
+        {/* <div className="flex justify-end space-x-4">
           <GenericButton type="submit">
             {isOtpRequested
               ? isPending
@@ -126,7 +113,9 @@ export const Epin: React.FC = () => {
                 ? 'getting...'
                 : 'get otp'}
           </GenericButton>
-        </div>
+        </div> */}
+
+        <GenericButton type="submit">Submit</GenericButton>
       </form>
     </FormProvider>
   );
