@@ -3,27 +3,30 @@ import {ContactInfo} from '@/components/AdminSide/Register/ContactInfo';
 import {LoginInfo} from '@/components/AdminSide/Register/LoginInfo';
 import {SponserInfo} from '@/components/AdminSide/Register/SponserInfo';
 import {SelectProduct} from '@/components/AdminSide/Register/SelectProduct';
+import {useRegistration} from '@/context/RegisterContext';
 // import {Personalnfo} from '@/components/AdminSide/Register/Personalnfo';
 
 interface StepComponentProps {
   onNext: () => void;
 }
 
-const steps: {
-  id: number;
-  title: string;
-  component: React.FC<StepComponentProps>;
-}[] = [
-  {id: 1, title: 'Sponsor Info', component: SponserInfo},
-  {id: 2, title: 'Select Product', component: SelectProduct},
-  {id: 3, title: 'Contact Info', component: ContactInfo},
-  {id: 4, title: 'Login Info', component: LoginInfo},
-  // {id: 4, title: 'Personal Info', component: Personalnfo},
-];
-
 const CustomerRegistration: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const {data} = useRegistration();
 
+  const steps: {
+    id: number;
+    title: string;
+    component: React.FC<StepComponentProps>;
+  }[] = [
+    {id: 1, title: 'Sponsor Info', component: SponserInfo},
+    ...(data.skipProduct
+      ? []
+      : [{id: 2, title: 'Select Product', component: SelectProduct}]),
+    {id: 3, title: 'Contact Info', component: ContactInfo},
+    {id: 4, title: 'Login Info', component: LoginInfo},
+    // {id: 4, title: 'Personal Info', component: Personalnfo},
+  ];
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);

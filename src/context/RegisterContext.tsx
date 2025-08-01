@@ -23,6 +23,7 @@ interface RegistrationData {
   selectProduct?: SelectProduct;
   contactInfo?: ContactInfo;
   personalInfo?: PersonalInfo;
+  skipProduct?: boolean;
 }
 
 interface RegistrationContextProps {
@@ -32,6 +33,8 @@ interface RegistrationContextProps {
   setSelectProduct: (info: SelectProduct) => void;
   setContactInfo: (info: ContactInfo) => void;
   setPersonalInfo: (info: PersonalInfo) => void;
+  setSkipProduct: (skip: boolean) => void;
+  clearRegistrationData: () => void;
 }
 
 const RegistrationContext = createContext<RegistrationContextProps | undefined>(
@@ -62,6 +65,12 @@ export const RegistrationProvider: React.FC<{children: React.ReactNode}> = ({
   const setPersonalInfo = (info: PersonalInfo) => {
     setData((prev) => ({...prev, personalInfo: info}));
   };
+  const setSkipProduct = (skip: boolean) => {
+    setData((prev) => ({...prev, skipProduct: skip}));
+  };
+  const clearRegistrationData = () => {
+    setData({});
+  };
 
   return (
     <RegistrationContext.Provider
@@ -72,6 +81,8 @@ export const RegistrationProvider: React.FC<{children: React.ReactNode}> = ({
         setSelectProduct,
         setContactInfo,
         setPersonalInfo,
+        setSkipProduct,
+        clearRegistrationData,
       }}
     >
       {children}

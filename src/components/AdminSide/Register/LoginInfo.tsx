@@ -25,7 +25,7 @@ export const LoginInfo: React.FC = () => {
   const {user} = useAuthContext();
   const role = user?.role;
   const navigate = useNavigate();
-  const {setUserLoginInfo, data} = useRegistration();
+  const {setUserLoginInfo, data, clearRegistrationData} = useRegistration();
 
   const {
     mutate: registerAdmin,
@@ -49,8 +49,12 @@ export const LoginInfo: React.FC = () => {
       ...personalInfo,
       ...sponsorInfo,
       ...formValues,
-      productId: selectProduct?.products[0].productId,
-      epinNo: sponsorInfo?.epin,
+      ...(selectProduct?.products?.[0]?.productId && {
+        productId: selectProduct.products[0].productId,
+      }),
+      ...(sponsorInfo?.epin && {
+        epinNo: sponsorInfo.epin,
+      }),
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,6 +64,7 @@ export const LoginInfo: React.FC = () => {
   useEffect(() => {
     if (isSuccess) {
       toast.success('Registration successful! Redirecting...');
+      clearRegistrationData();
       setTimeout(() => {
         navigate({to: role === 'ADMIN' ? '/dashboard' : '/customer/dashboard'});
       }, 1500);

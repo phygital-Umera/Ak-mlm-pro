@@ -11,15 +11,19 @@ import {z} from 'zod';
 import {useAuthContext} from '@/context/AuthContext';
 import {useCheckEpin} from '@/lib/react-query/Admin/Epin/epin';
 import toast from 'react-hot-toast';
+import {useState} from 'react';
 
 type FormValues = z.infer<typeof sponserInfoSchema>;
 interface SponserInfoProps {
   onNext: () => void;
 }
 
+// Add this at the top (or wherever appropriate)
+
 export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
   const {user} = useAuthContext();
-  const {setSponsorInfo} = useRegistration();
+  const {setSponsorInfo, setSkipProduct} = useRegistration();
+  const [skipProductSelection, setSkipProductSelection] = useState(false); // NEW
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(sponserInfoSchema),
@@ -33,37 +37,50 @@ export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
   const {mutateAsync: checkEpin, isPending: isCheckingEpin} = useCheckEpin();
 
   const onSubmit = async (formValues: FormValues) => {
-    const {epin} = formValues;
+    if (!skipProductSelection) {
+      const {epin} = formValues;
 
-    if (!epin) {
-      toast.error('Please enter E-Pin');
-      return;
-    }
-
-    try {
-      const toastId = toast.loading('Verifying E-Pin...');
-      const epinData = await checkEpin(epin);
-
-      if (!epinData) {
-        toast.dismiss(toastId);
-        toast.error('Invalid E-Pin or E-Pin already used');
+      if (!epin) {
+        toast.error('Please enter E-Pin');
         return;
       }
 
-      toast.dismiss(toastId);
-      toast.success('E-Pin verified');
+      try {
+        const toastId = toast.loading('Verifying E-Pin...');
+        const epinData = await checkEpin(epin);
 
+        if (!epinData) {
+          toast.dismiss(toastId);
+          toast.error('Invalid E-Pin or E-Pin already used');
+          return;
+        }
+
+        toast.dismiss(toastId);
+        toast.success('E-Pin verified');
+
+        setSponsorInfo({
+          sponsorId: formValues.sponsorId,
+          side: formValues.side,
+          epin: formValues.epin,
+          epinData: epinData,
+        });
+
+        onNext();
+      } catch (error: any) {
+        toast.dismiss();
+        toast.error(error?.response?.data?.message || 'Failed to verify E-Pin');
+      }
+    } else {
+      // Pay Later: skip E-Pin and product selection
       setSponsorInfo({
         sponsorId: formValues.sponsorId,
         side: formValues.side,
-        epin: formValues.epin,
-        epinData: epinData,
+        epin: '',
+        epinData: undefined,
       });
-
-      onNext();
-    } catch (error: any) {
-      toast.dismiss();
-      toast.error(error?.response?.data?.message || 'Failed to verify E-Pin');
+      // Skip one extra step (product)
+      setSkipProduct(true);
+      onNext(); // Call it twice or have custom logic in parent
     }
   };
 
@@ -91,19 +108,29 @@ export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
               ]}
             />
           </div>
-          <div className="col-span-6">
-            <GenericInputField
-              name="epin"
-              label="E-Pin"
-              placeholder="Enter E-Pin"
-            />
-          </div>
+          {!skipProductSelection && (
+            <div className="col-span-6">
+              <GenericInputField
+                name="epin"
+                label="E-Pin"
+                placeholder="Enter E-Pin"
+              />
+            </div>
+          )}
         </div>
 
-        <div className="bg-gray-50 dark:bg-gray-700/30 border-gray-100 dark:border-gray-700 flex justify-end border-t px-6 py-4 sm:px-8">
+        <div className="bg-gray-50 dark:bg-gray-700/30 border-gray-100 dark:border-gray-700 flex justify-end gap-4 border-t px-6 py-4 sm:px-8">
+          <GenericButton
+            type="submit"
+            onClick={() => setSkipProductSelection(true)}
+            className="border-gray-300 text-gray-700 hover:bg-gray-100 rounded-lg border px-6 py-3"
+          >
+            Pay Later
+          </GenericButton>
           <GenericButton
             type="submit"
             disabled={isCheckingEpin}
+            onClick={() => setSkipProductSelection(false)}
             className="relative overflow-hidden rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 font-medium text-white shadow-md transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <span className="flex items-center">
