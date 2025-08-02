@@ -196,6 +196,12 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/walletc',
               icon: <PiSquaresFourLight size={22} />,
             },
+            {
+              label: 'History Payout',
+              path: '/customer/historypayout',
+              icon: <PiSquaresFourLight size={22} />,
+            },
+
             // {
             //   label: 'Withdraw Amount',
             //   path: '/customer/withdraw',
