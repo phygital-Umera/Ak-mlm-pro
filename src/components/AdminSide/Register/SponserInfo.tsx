@@ -35,6 +35,7 @@ export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
   });
 
   const {mutateAsync: checkEpin, isPending: isCheckingEpin} = useCheckEpin();
+  const {mutateAsync: checkEpin, isPending: isCheckingEpin} = useCheckEpin();
 
   const onSubmit = async (formValues: FormValues) => {
     if (!skipProductSelection) {
@@ -134,6 +135,7 @@ export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
             className="relative overflow-hidden rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 font-medium text-white shadow-md transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
             <span className="flex items-center">
+              {isCheckingEpin ? 'Verifying...' : 'Continue'}
               {isCheckingEpin ? 'Verifying...' : 'Continue'}
               <svg
                 className="ml-2 h-4 w-4"
