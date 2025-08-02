@@ -108,7 +108,6 @@ const TreeNode = ({network}) => {
 
   const transformNetworkData = (data) => {
     const transformNode = (node) => {
-      console.log('UUUUUUUUUUUU', node.data);
       const {
         side,
         id,
