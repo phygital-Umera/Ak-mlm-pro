@@ -5,6 +5,8 @@ import UserOne from '../../assets/images/user/user.png';
 import {IoIosArrowDown} from 'react-icons/io';
 import {QUERY_KEYS} from '@/lib/react-query/QueryKeys';
 import {useAuthContext} from '@/context/AuthContext';
+import {FiEdit} from 'react-icons/fi';
+import {jwtDecode} from 'jwt-decode';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
@@ -22,6 +24,19 @@ const DropdownUser = () => {
       window.location.reload();
     }
   };
+
+  const token = localStorage.getItem('token'); // or your key name
+  let decoded;
+  if (token) {
+    try {
+      decoded = jwtDecode(token);
+      console.log('Decoded Token:', decoded?.role);
+    } catch (error) {
+      console.error('Invalid token:', error);
+    }
+  } else {
+    console.log('No token found');
+  }
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -136,26 +151,37 @@ const DropdownUser = () => {
               </div>
             </div>
           </div>
-
-          <button
-            onClick={handleSignOut}
-            className="hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3 px-6 py-3 text-sm font-medium text-red-600 duration-300 ease-in-out hover:text-red-700 lg:text-base"
-          >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="flex">
+            <button
+              onClick={handleSignOut}
+              className="hover:bg-gray-50 dark:hover:bg-gray-800 flex items-center gap-3 px-6 py-3 text-sm font-medium text-red-600 duration-300 ease-in-out hover:text-red-700 lg:text-base"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            Sign Out
-          </button>
+              <svg
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                />
+              </svg>
+              Sign Out
+            </button>
+
+            {decoded?.role === 'ADMIN' && (
+              <Link
+                to="/admin/updateprofile"
+                className="flex items-center gap-1 px-2 text-blue-600"
+              >
+                <FiEdit />
+                Edit
+              </Link>
+            )}
+          </div>
         </div>
       )}
       {/* Dropdown End */}

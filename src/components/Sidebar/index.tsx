@@ -161,11 +161,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/customerregisterc',
               icon: <RegistrationIcon size={22} />,
             },
-            // {
-            //   label: 'Customer List',
-            //   path: '/customer/customerlist',
-            //   icon: <ProfileIcon size={22} />,
-            // },
+            {
+              label: 'Customer Profile',
+              path: '/customer/profile',
+              icon: <ProfileIcon size={22} />,
+            },
             {
               label: 'Network',
               path: '/customer/networkc',
