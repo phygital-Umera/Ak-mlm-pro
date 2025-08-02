@@ -11,20 +11,24 @@ import React from 'react';
 import {updateProfileSchema} from '@/lib/validation/customerListSchema';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {
+  useGetCustomerProfile,
   useGetProfile,
+  useUpdateCustomerProfile,
   useUpdateProfile,
 } from '@/lib/react-query/Admin/profile/profile';
+import {useUpdateCustomer} from '@/lib/react-query/updateCustomer';
 
 type formValues = z.infer<typeof updateProfileSchema>;
-const UpdateProfile: React.FC = () => {
+const CustomerUpdateProfile: React.FC = () => {
   const methods = useForm<formValues>({
     resolver: zodResolver(updateProfileSchema),
   });
 
   const {user} = useAuthContext();
-  const {mutateAsync: updateProfile} = useUpdateProfile();
-  const {data: profileData} = useGetProfile();
+  const {mutateAsync: updateProfile} = useUpdateCustomerProfile();
+  const {data: profileData} = useGetCustomerProfile();
 
+  console.log('profileee', profileData);
   useEffect(() => {
     if (profileData) {
       methods.reset({
@@ -258,4 +262,4 @@ const UpdateProfile: React.FC = () => {
   );
 };
 
-export default UpdateProfile;
+export default CustomerUpdateProfile;

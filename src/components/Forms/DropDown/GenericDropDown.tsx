@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Controller, Control} from 'react-hook-form';
+import {Controller, useFormContext} from 'react-hook-form';
 import {DownIcon} from '../../../icons';
 
 interface Option {
@@ -12,7 +12,6 @@ interface GenericDropdownProps {
   label: string;
   options: Option[];
   defaultOption?: string;
-  control?: Control<Record<string, unknown>>; // Specify the correct type based on your form setup
   onChange?: (value: string) => void;
 }
 
@@ -21,18 +20,24 @@ const GenericDropdown: React.FC<GenericDropdownProps> = ({
   label,
   options,
   defaultOption = '',
-  control,
   onChange: externalOnChange,
 }) => {
   const [isOptionSelected, setIsOptionSelected] =
     useState<boolean>(!!defaultOption);
+  const {
+    control,
+    formState: {errors},
+  } = useFormContext();
+
+  // Safely access error message using optional chaining
+  const errorMessage = (errors as unknown)?.[name]?.message;
 
   return (
     <Controller
       name={name}
       control={control}
       render={({field: {onChange, onBlur, value, name}}) => (
-        <div>
+        <div className="mb-4">
           <label className="mb-3 block text-black dark:text-white">
             {label}
           </label>
@@ -52,9 +57,7 @@ const GenericDropdown: React.FC<GenericDropdownProps> = ({
                 externalOnChange?.(selectedValue);
               }}
               onBlur={onBlur}
-              className={`relative z-20 w-full appearance-none rounded border border-stroke bg-transparent px-12 py-3 outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input ${
-                isOptionSelected ? 'text-black dark:text-white' : ''
-              }`}
+              className={`relative z-20 w-full appearance-none rounded border px-12 py-3 outline-none transition ${errorMessage ? 'border-red-500' : 'border-stroke'} dark:border-form-strokedark dark:bg-form-input ${isOptionSelected ? 'text-black dark:text-white' : ''}`}
             >
               <option
                 value=""
@@ -78,6 +81,11 @@ const GenericDropdown: React.FC<GenericDropdownProps> = ({
               <DownIcon />
             </span>
           </div>
+
+          {/* ✅ Show error */}
+          {errorMessage && (
+            <p className="mt-1 text-sm text-red-500">{errorMessage}</p>
+          )}
         </div>
       )}
     />

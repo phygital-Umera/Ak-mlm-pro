@@ -3,12 +3,12 @@ import {api} from '@/utils/axios';
 export type adminData = {
   user: {
     phoneNumber?: string;
-    password: string;
-    fullname?: string;
+    password?: string;
+    fullname: string;
   };
   customer: {
     dob?: string;
-    gender: string;
+    gender?: string;
     pinCode?: string;
     city?: string;
     state?: string;
@@ -24,24 +24,47 @@ export type adminData = {
     bankBranch?: string;
   };
 };
-
-export const updateProfile = async (id: string, data: adminData) => {
+export const updateProfile = async (data: adminData) => {
   try {
-    const response = await api.post(`/admin/profile`, data);
+    const response = await api.put('/admin/profile', data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error in edit customer:',
+      error.response?.data.message || error.message,
+    );
+    throw error;
+  }
+};
+export const getProfile = async () => {
+  try {
+    const response = await api.get('/admin/profile');
     return response.data;
   } catch (error) {
     const err = error; // Type assertion to ApiError
     console.error(
-      'Error updatinng admin:',
+      'Error getting admin:',
       err.response?.data.message || err.message,
     );
     throw err.response?.data || err;
   }
 };
 
-export const getProfile = async () => {
+export const updateCustomerProfile = async (data: adminData) => {
   try {
-    const response = await api.get('/admin/profile');
+    const response = await api.put('/customers/profile', data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error in edit customer:',
+      error.response?.data.message || error.message,
+    );
+    throw error;
+  }
+};
+export const getCustomerProfile = async () => {
+  try {
+    const response = await api.get('/customers/profile');
     return response.data;
   } catch (error) {
     const err = error; // Type assertion to ApiError
