@@ -5,6 +5,14 @@ import {
   FaShoppingBasket,
   FaUserPlus,
   FaChartLine,
+  FaAward,
+  FaCrown,
+  FaMoneyBillWave,
+  FaRedoAlt,
+  FaShoppingCart,
+  FaSitemap,
+  FaTicketAlt,
+  FaHandHoldingUsd,
 } from 'react-icons/fa';
 import {motion} from 'framer-motion';
 import StatCard from './StatCard';
@@ -14,6 +22,7 @@ import TeamPerformance from '@/components/Charts/TeamPerformance';
 import ChartOne from '@/components/Charts/ChartOne';
 import Loader from '@/components/common/Loader';
 import {useAuthContext} from '@/context/AuthContext';
+import {FaKey, FaWallet} from 'react-icons/fa6';
 
 interface StatCardProps {
   amount: string;
@@ -28,72 +37,100 @@ const Home: React.FC = () => {
   const {user} = useAuthContext();
   const id = user?.id;
 
+  console.log('rtreport', data);
   const [statsData, setStatsData] = useState<StatCardProps[]>([]);
   const [showExtraBoxes, setShowExtraBoxes] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
+  const [selectedView, setSelectedView] = useState<'today' | 'month'>('today');
+  console.log(selectedView);
 
   useEffect(() => {
     if (isSuccess && data) {
+      const commission =
+        selectedView === 'today'
+          ? data?.todayscommission
+          : data?.totalCommission;
+      const binaryCommission =
+        selectedView === 'today' ? data?.todayBinary : data?.binary;
+      const royalty =
+        selectedView === 'today' ? data?.todayRoyalty : data?.royelty;
+      const achiverReport =
+        selectedView === 'today' ? data?.todaysrewards : data?.totalrewards;
+      const repurchaseCommission =
+        selectedView === 'today'
+          ? data?.todayRepurchaseCommission
+          : data?.repurchaseCommission;
+      const repurchaseAmount =
+        selectedView === 'today'
+          ? data?.todayRepurchaseAmount
+          : data?.repurchaseAmount;
       setStatsData([
         {
-          title: 'Total Customers',
-          amount: `${data.customerCount}`,
-          icon: <FaUserPlus className="text-2xl text-blue-500" />,
+          title: 'Total Income',
+          amount: `${data?.totalIncome}`,
+          icon: <FaWallet className="text-2xl text-blue-500" />,
           trend: 'up',
           trendValue: '12%',
         },
         {
-          title: 'Products',
-          amount: `${data.mlmProductCount}`,
-          icon: <FaShoppingBasket className="text-2xl text-green-500" />,
+          title: 'Total Commission',
+          amount: `${commission}`,
+          icon: <FaHandHoldingUsd className="text-2xl text-green-500" />,
           trend: 'up',
           trendValue: '8%',
         },
         {
-          title: 'Total Revenue',
-          amount: `₹${data.totalRevenue}`,
-          icon: <FaDollarSign className="text-2xl text-purple-500" />,
+          title: 'Epin Given',
+          amount: `₹${data?.givenEpin}`,
+          icon: <FaKey className="text-2xl text-purple-500" />,
           trend: 'up',
           trendValue: '24%',
         },
         {
-          title: 'Joining Revenue',
-          amount: `₹${data.joiningRevenue}`,
-          icon: <IoWalletSharp className="text-2xl text-yellow-500" />,
+          title: 'Epin Used',
+          amount: `₹${data?.usedEpin}`,
+          icon: <FaKey className="text-2xl text-yellow-500" />,
           trend: 'up',
           trendValue: '18%',
         },
         {
-          title: 'Direct Income',
-          amount: `₹${data.directIncome}`,
-          icon: <FaChartLine className="text-2xl text-teal-500" />,
+          title: 'Binary Commission',
+          amount: `₹${binaryCommission}`,
+          icon: <FaSitemap className="text-2xl text-teal-500" />,
           trend: 'up',
           trendValue: '15%',
         },
         {
-          title: 'Pair Commission',
-          amount: `₹${data.pairCommission}`,
-          icon: <FaDollarSign className="text-2xl text-pink-500" />,
+          title: 'Royalty Commission',
+          amount: `₹${royalty}`,
+          icon: <FaCrown className="text-2xl text-pink-500" />,
           trend: 'up',
           trendValue: '10%',
         },
         {
-          title: 'ROI Revenue',
-          amount: `₹${data.roiRevenue}`,
-          icon: <FaChartLine className="text-2xl text-indigo-500" />,
+          title: 'Rewards Achiever Report',
+          amount: `₹${achiverReport}`,
+          icon: <FaAward className="text-2xl text-indigo-500" />,
           trend: 'up',
           trendValue: '5%',
         },
         {
-          title: 'Purchase Balance',
-          amount: `₹${data.purchaseBalance}`,
-          icon: <IoWalletSharp className="text-2xl text-amber-500" />,
+          title: 'Repurchase Commission',
+          amount: `₹${repurchaseCommission}`,
+          icon: <FaRedoAlt className="text-2xl text-amber-500" />,
+          trend: 'up',
+          trendValue: '20%',
+        },
+        {
+          title: 'Repurchase Amount',
+          amount: `₹${repurchaseAmount}`,
+          icon: <FaShoppingCart className="text-2xl text-amber-500" />,
           trend: 'up',
           trendValue: '20%',
         },
       ]);
     }
-  }, [isSuccess, data, isPending]);
+  }, [isSuccess, data, isPending, selectedView]);
 
   if (isError) {
     return (
@@ -150,27 +187,28 @@ const Home: React.FC = () => {
       transition={{duration: 0.5}}
       className="p-4 md:p-6"
     >
-      {/* <div className="border-gray-200 mb-6 flex space-x-4 border-b">
+      <div className="mb-6 flex items-center gap-4">
         <button
-          className={`px-4 pb-2 ${activeTab === 'overview' ? 'border-b-2 border-blue-500 font-medium text-blue-600' : 'text-gray-500'}`}
-          onClick={() => setActiveTab('overview')}
+          onClick={() => setSelectedView('today')}
+          className={`rounded-lg px-4 py-2 text-sm font-medium ${
+            selectedView === 'today'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-800'
+          }`}
         >
-          Overview
+          Today
         </button>
         <button
-          className={`px-4 pb-2 ${activeTab === 'customers' ? 'border-b-2 border-blue-500 font-medium text-blue-600' : 'text-gray-500'}`}
-          onClick={() => setActiveTab('customers')}
+          onClick={() => setSelectedView('month')}
+          className={`rounded-lg px-4 py-2 text-sm font-medium ${
+            selectedView === 'month'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-800'
+          }`}
         >
-          Customers
+          All
         </button>
-        <button
-          className={`px-4 pb-2 ${activeTab === 'analytics' ? 'border-b-2 border-blue-500 font-medium text-blue-600' : 'text-gray-500'}`}
-          onClick={() => setActiveTab('analytics')}
-        >
-          Analytics
-        </button>
-      </div> */}
-
+      </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         {displayedStats.map((stat, index) => (
           <motion.div
