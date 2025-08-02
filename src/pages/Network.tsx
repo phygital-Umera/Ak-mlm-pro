@@ -10,7 +10,6 @@ const Network = () => {
   const {user} = useAuthContext();
 
   const {data, isSuccess, isPending, isError} = useGetNetwotkTree();
-  console.log('datasssssssss', data);
 
   return (
     <>
