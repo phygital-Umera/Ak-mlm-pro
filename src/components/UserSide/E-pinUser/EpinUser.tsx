@@ -14,6 +14,7 @@ import GenericTable from '@/components/Forms/Table/GenericTable';
 import {Column} from '@/types';
 import DisplayEpinUser from './DisplayEpinUser';
 import toast from 'react-hot-toast';
+import GenericDropdown from '@/components/Forms/DropDown/GenericDropDown';
 
 type FormValues = z.infer<typeof epinCountSchema>;
 
@@ -33,11 +34,13 @@ const EpinUser: React.FC = () => {
   } = useCreateEpinRequest();
 
   const onSubmit = (data: FormValues) => {
+    console.log(data);
     const seelctedFile =
       wathchfiles instanceof FileList ? Array.from(wathchfiles) : [];
     // console.log(data);
     createEpinRequest({
       paidAmount: data.paidAmount,
+      price: data.price,
       imageFile: seelctedFile[0],
     });
   };
@@ -68,6 +71,16 @@ const EpinUser: React.FC = () => {
                 name="paidAmount"
                 label="Paid Amount"
                 placeholder="Enter Paid Amount"
+              />
+            </div>
+            <div className="flex-1">
+              <GenericDropdown
+                name="price"
+                label="Price"
+                options={[
+                  {value: '3150', label: '3150'},
+                  {value: '3600', label: '3600'},
+                ]}
               />
             </div>
 

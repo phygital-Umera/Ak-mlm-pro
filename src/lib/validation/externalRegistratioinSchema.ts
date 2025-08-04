@@ -6,19 +6,23 @@ export const externalRegistrationSchema = z
       .string()
       .refine((value) => ['online', 'later', 'e-pin'].includes(value), {
         message: 'Invalid E-Pin Type',
-      }),
+      }).optional(),
     sponsorId: z
       .string({required_error: 'Sponsor ID is required'})
-      .min(5, {message: 'Sponsor ID must be at least 5 characters'}),
-    side: z.enum(['A', 'B', 'C'], {
-      errorMap: () => ({message: "Please select either 'A' or 'B' or 'C'."}),
-    }),
+      .min(5, {message: 'Sponsor ID must be at least 5 characters'}).optional(),
+    side: z.enum(['LEFT', 'RIGHT'], {
+      errorMap: () => ({message: "Please select either 'LEFT' or 'RIGHT'."}),
+    }).optional(),
     directSponsorId: z.string().optional(),
     products: z.array(
-      z.object({
-        productId: z.string({required_error: 'Product Id is required'}).min(3),
-        quantity: z.number({required_error: 'Quantity is required'}).min(1),
-      }),
+      z
+        .object({
+          productId: z
+            .string({required_error: 'Product Id is required'})
+            .min(3),
+          quantity: z.number({required_error: 'Quantity is required'}).min(1),
+        })
+        .optional(),
     ),
     firstName: z
       .string({required_error: 'First name is required'})

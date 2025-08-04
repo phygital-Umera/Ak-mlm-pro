@@ -15,6 +15,16 @@ export const epinCountSchema = z.object({
   imageFile: z.instanceof(FileList).refine((files) => files.length > 0, {
     message: 'At least one file is required',
   }),
+  price: z
+    .string()
+    .refine(
+      (val) => {
+        const num = Number(val);
+        return !isNaN(num) && num > 0;
+      },
+      {message: 'Amount must be at least 1 and greater than 0'},
+    )
+    .transform((val) => Number(val)),
 });
 
 export const epinSchema = z.object({

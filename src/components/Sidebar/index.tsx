@@ -16,7 +16,7 @@ import {MdApproval} from 'react-icons/md';
 import {FaHistory, FaNetworkWired} from 'react-icons/fa';
 import {GiTargetPoster} from 'react-icons/gi';
 import {LuAlignVerticalDistributeEnd} from 'react-icons/lu';
-import Logo from '../../../src/assets2/lg.png';
+import Logo from '../../../public/logo.png';
 import {TbBinaryTree2Filled} from 'react-icons/tb';
 const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
   const {user} = useAuthContext();
@@ -294,14 +294,14 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
           to="/"
           className="bg-gray-300 hover:bg-gray-400 flex h-16 w-auto items-center justify-start space-x-4 rounded-full px-4 py-2 transition-all"
         >
-          {/* <div className="flex h-20 w-40 items-center justify-center overflow-hidden rounded-full">
+          <div className="flex h-15 w-20 items-center justify-center overflow-hidden rounded-full">
             <img
               src={Logo}
               alt="Logo"
               className="h-full w-full object-contain"
             />
-          </div> */}
-          <h1 className="text-2xl font-semibold text-gray">AK MLM</h1>
+          </div>
+          <h1 className="text-2xl font-semibold text-gray">TMS LIFE</h1>
         </Link>
 
         <button

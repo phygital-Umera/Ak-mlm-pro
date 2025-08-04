@@ -29,7 +29,7 @@ const DisplayPendingCommisionReport: React.FC = () => {
   const queryClient = useQueryClient();
   const {data, isSuccess, isError, isPending} = useFetchAdminCommsion();
   console.log('====================================');
-  console.log(data);
+  console.log('data', data);
   console.log('====================================');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
@@ -110,7 +110,10 @@ const DisplayPendingCommisionReport: React.FC = () => {
   // Filter and process data
   const filterData = (data: PendingCommission[], filter: string | null) => {
     const filteredData = data.filter(
-      (item) => item.details.toLowerCase() !== 'fleshout',
+      (item) =>
+        item.details.toLowerCase() !== 'fleshout' &&
+        item.status === 'PENDING' &&
+        item.amount > 0, // ✅ Only keep rows where amount > 0
     );
 
     if (!filter || filter === 'All') return filteredData;

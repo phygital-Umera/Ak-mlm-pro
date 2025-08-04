@@ -35,8 +35,6 @@ export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
   });
 
   const {mutateAsync: checkEpin, isPending: isCheckingEpin} = useCheckEpin();
-  const {mutateAsync: checkEpin, isPending: isCheckingEpin} = useCheckEpin();
-
   const onSubmit = async (formValues: FormValues) => {
     if (!skipProductSelection) {
       const {epin} = formValues;

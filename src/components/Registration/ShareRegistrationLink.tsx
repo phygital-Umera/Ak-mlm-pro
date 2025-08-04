@@ -120,6 +120,7 @@
 //     </FormProvider>
 //   );
 // };
+
 import React, {useEffect, useState} from 'react';
 import GenericInputField from '@/components/Forms/Input/GenericInputField';
 import {useRegistration} from '@/context/RegisterContext';
@@ -130,9 +131,13 @@ import {useAuthContext} from '@/context/AuthContext';
 import {toast} from 'react-hot-toast';
 import {FiCopy, FiShare2} from 'react-icons/fi';
 import {motion} from 'framer-motion';
+import GenericDropdown from '../Forms/DropDown/GenericDropDown';
 
 const shareLinkSchema = z.object({
   link: z.string().min(1, 'Link is required'),
+  side: z.enum(['A', 'B', 'C'], {
+    errorMap: () => ({message: "Please select either 'Left' or 'Right'"}),
+  }),
 });
 
 type FormValues = z.infer<typeof shareLinkSchema>;
@@ -149,17 +154,19 @@ export const ShareRegistrationLink: React.FC<SponsorInfoProps> = ({onNext}) => {
     resolver: zodResolver(shareLinkSchema),
     defaultValues: {
       link: '',
+      side: 'LEFT',
     },
   });
 
-  const {setValue} = methods;
+  const {watch, setValue} = methods;
+  const side = watch('side');
 
   const fullname = user?.fullname
     ? user.fullname.replace(/\s/g, '_')
     : 'unknown_user';
   const crnNo = user?.crnNo || 'CRN0000000';
-  // const registrationLink = `https://demo.sigmmalyf.com/register/${fullname}/${crnNo}`;
-  const registrationLink = `http://localhost:5173/register/${fullname}/${crnNo}`;
+  const registrationLink = `https://tmslife.biz/register/${fullname}/${crnNo}/${side}`;
+  // const registrationLink = `http://localhost:5173/register/${fullname}/${crnNo}/${side}`;
 
   useEffect(() => {
     setValue('link', registrationLink);
@@ -169,6 +176,9 @@ export const ShareRegistrationLink: React.FC<SponsorInfoProps> = ({onNext}) => {
     console.log(formValues);
     if (onNext) onNext();
   };
+  useEffect(() => {
+    setValue('link', registrationLink);
+  }, [user, side, setValue]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(registrationLink);
@@ -240,6 +250,21 @@ export const ShareRegistrationLink: React.FC<SponsorInfoProps> = ({onNext}) => {
                   )}
                 </motion.button>
               </div>
+            </div>
+            <div className="col-span-4">
+              <GenericDropdown
+                name="side"
+                label="Side"
+                onChange={(value: string) => {
+                  if (value === 'A' || value === 'B' || value === 'C') {
+                    setValue('side', value);
+                  }
+                }}
+                options={[
+                  {value: 'LEFT', label: 'LEFT'},
+                  {value: 'RIGHT', label: 'RIGHT'},
+                ]}
+              />
             </div>
             <p className="text-gray-500 dark:text-gray-400 mt-2 text-xs">
               Share this link with others to register under your network

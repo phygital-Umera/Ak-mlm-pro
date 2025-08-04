@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  useFetchAdminCommsion,
   useGetAdminPaidCommission,
   usePayCommission,
   usePayCommissionAll,
@@ -44,9 +45,9 @@ const DisplayCommisionReport: React.FC = () => {
     isSuccess,
     isError,
     isPending,
-  } = useGetAdminPaidCommission();
+  } = useFetchAdminCommsion();
 
-  // console.log('paidCommissionData', paidCommissionData);
+  console.log('paidCommissionData', paidCommissionData);
 
   const [data, setData] = useState<PaidCommission[]>([]);
 
@@ -69,24 +70,38 @@ const DisplayCommisionReport: React.FC = () => {
   //   }
   // };
 
-  useEffect(() => {
-    if (paidCommissionData && paidCommissionData.PaidCommitions) {
-      setData(
-        paidCommissionData.PaidCommitions.sort(
-          (a: PaidCommission, b: PaidCommission) =>
-            b.date.localeCompare(a.date),
-        ).map((item: PaidCommission) => ({
-          ...item,
-          date: new Date(item.date).toLocaleDateString('en-IN', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          }),
-          // Add any transformations here if needed
-        })),
-      );
+  const filterData = (data: PaidCommission[], filter: string | null) => {
+    const filteredData = data.filter(
+      (item) =>
+        item.details.toLowerCase() !== 'fleshout' &&
+        item.status === 'PAID' &&
+        item.amount > 0, // ✅ Only keep rows where amount > 0
+    );
+
+    if (!filter || filter === 'All') return filteredData;
+
+    switch (filter) {
+      case 'Golden Pair':
+        return filteredData.filter((item) => item.type === 'golden pair');
+      case 'Silver Pair':
+        return filteredData.filter((item) => item.type === 'Silver pair');
+      case 'Helping':
+        return filteredData.filter(
+          (item) =>
+            item.details.toLowerCase() === 'helping' ||
+            item.type.toLowerCase() === 'helping',
+        );
+      case 'BDF':
+        return filteredData.filter(
+          (item) =>
+            item.details.toLowerCase() === 'wallet withdraw' ||
+            item.type.toLowerCase() === 'withdraw',
+        );
+      default:
+        return filteredData;
     }
-  }, [paidCommissionData]);
+  };
+
 
   if (isPending) {
     return <Loader />;

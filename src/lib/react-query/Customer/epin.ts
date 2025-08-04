@@ -17,10 +17,10 @@ export const useCreateEpinRequest = () => {
   return useMutation<
     EpinResponse,
     unknown,
-    {paidAmount: number; imageFile: File}
+    {paidAmount: number; price: number; imageFile: File}
   >({
-    mutationFn: ({paidAmount, imageFile}) =>
-      createEpinRequest(paidAmount, imageFile),
+    mutationFn: ({paidAmount, price, imageFile}) =>
+      createEpinRequest(paidAmount, price, imageFile),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [CUSTOMER_QUERY_KEYS.EPIN_REQUESTS],

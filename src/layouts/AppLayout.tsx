@@ -9,7 +9,7 @@ const AppLayout = () => {
   const {isAuthenticated} = useAuthContext();
 
   if (!isAuthenticated) {
-    return <Navigate to="/signin" />;
+    return <Navigate to="/landing" />;
   }
 
   return (

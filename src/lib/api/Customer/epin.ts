@@ -6,12 +6,14 @@ import axios from 'axios';
 
 export const createEpinRequest = async (
   paidAmount: number,
+  price: number,
   imageFile: File,
 ) => {
   try {
     // Prepare the form data
     const formData = new FormData();
     formData.append('paidAmount', String(paidAmount));
+    formData.append('price', String(price));
     formData.append('imageFile', imageFile);
 
     // Send the POST request with form data

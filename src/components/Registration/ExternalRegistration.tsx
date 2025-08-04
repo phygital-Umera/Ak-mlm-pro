@@ -355,6 +355,7 @@
 //     </FormProvider>
 //   );
 // };
+
 /* eslint-disable */
 import React, {useEffect, useState} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
@@ -365,12 +366,14 @@ import {useMatch, useNavigate} from '@tanstack/react-router';
 
 import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import GenericInputField from '@/components/Forms/Input/GenericInputField';
-import GenericSearchDropdown from '../Forms/SearchDropDown/GenericSearchDropdown';
+import GenericDropdown from '../Forms/DropDown/GenericDropDown';
+
 import {useAuthContext} from '@/context/AuthContext';
 import {useRegistration} from '@/context/RegisterContext';
 import {useCustomerRegistration} from '@/lib/react-query/Auth/auth';
 import {externalRegistrationSchema} from '@/lib/validation/externalRegistratioinSchema';
 import {useGetAllProducts} from '@/lib/react-query/Admin/Product/products';
+import {useCheckEpin} from '@/lib/react-query/Admin/Epin/epin';
 
 type FormValues = z.infer<typeof externalRegistrationSchema>;
 
@@ -384,17 +387,20 @@ type Product = {
 };
 
 export const ExternalRegistration: React.FC = () => {
-  const {params} = useMatch('/_registration/register/$name/$crnno' as any) as {
+  const {params} = useMatch(
+    '/_registration/register/$name/$crnno/$id' as any,
+  ) as {
     params: {
       crnno: string;
       name: string;
+      id: string;
     };
   };
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(externalRegistrationSchema),
     defaultValues: {
-      directSponsorId: params.crnno || '',
+      sponsorId: params.crnno || '',
       firstName: '',
       lastName: '',
       email: '',
@@ -403,17 +409,20 @@ export const ExternalRegistration: React.FC = () => {
       password: '',
       confirmPassword: '',
       epinType: 'later',
-      products: [], // ✅ added for Zod compatibility
+      products: [],
     },
   });
 
   const [selectedProducts, setSelectedProducts] = useState<
     Record<string, number>
   >({});
+  const [useWithoutEpin, setUseWithoutEpin] = useState(false);
+
   const {setSelectProduct} = useRegistration();
   const {data: products} = useGetAllProducts();
   const epinType = methods.watch('epinType');
-
+  methods.setValue('side', params?.id);
+  
   const {user} = useAuthContext();
   const role = user?.role;
   const navigate = useNavigate();
@@ -426,40 +435,64 @@ export const ExternalRegistration: React.FC = () => {
     error,
   } = useCustomerRegistration();
 
+  const {
+    mutateAsync: checkEpin,
+    data: checkEpinData,
+    isPending: isCheckingEpin,
+  } = useCheckEpin();
+
+  const verifyEpin = () => {
+    checkEpin(methods.getValues('epinNo'));
+    setUseWithoutEpin(false);
+  };
+
+  const filteredProducts = products?.filter(
+    (product) => product.discountedPrice === checkEpinData,
+  );
+
+  console.log('filteredProducts', filteredProducts);
   const getTotalSelectedCount = () =>
     Object.values(selectedProducts).reduce((a, b) => a + b, 0);
 
   const handleCardClick = (productId: string) => {
     const count = selectedProducts[productId] || 0;
-    if (count < 3 && getTotalSelectedCount() < 3) {
+    if (count < 1 && getTotalSelectedCount() < 1) {
       setSelectedProducts((prev) => ({...prev, [productId]: count + 1}));
     }
   };
 
-  const getTotalPrice = () => {
-    if (!products || !Array.isArray(products)) return 0;
-    return Object.entries(selectedProducts).reduce((total, [id, count]) => {
-      const product = products.find((p) => p.id === id);
-      return total + (product ? product.discountedPrice * count : 0);
-    }, 0);
-  };
-
   const onSubmit = (formValues: FormValues) => {
-    const selected = Object.entries(selectedProducts).map(([id, quantity]) => ({
-      productId: id,
-      quantity,
-    }));
+    console.log('formValues', formValues);
+    let selected = [];
 
-    // ✅ set form field value to satisfy Zod validation
-    methods.setValue('products', selected);
+    if (!useWithoutEpin) {
+      selected = Object.entries(selectedProducts).map(([id, quantity]) => ({
+        productId: id,
+        quantity,
+      }));
+      methods.setValue('products', selected);
+      setSelectProduct({products: selected});
+    } else {
+      methods.setValue('products', []);
+      setSelectProduct({products: []});
+    }
 
-    const payload = {
-      ...formValues,
-      directSponsorId: params.crnno,
-      products: selected,
+    const payload: any = {
+      sponsorId: params.crnno,
+      firstName: formValues.firstName,
+      lastName: formValues.lastName,
+      email: formValues.email || undefined,
+      phone: formValues.phone || undefined,
+      password: formValues.password,
+      confirmPassword: formValues.confirmPassword,
+      side: formValues.side,
     };
 
-    setSelectProduct({products: selected});
+    if (!useWithoutEpin) {
+      payload.epinNo = formValues.epinNo;
+      payload.products = selected;
+    }
+
     registerAdmin(payload);
   };
 
@@ -487,109 +520,94 @@ export const ExternalRegistration: React.FC = () => {
             Name: &nbsp;{params.name.replace('_', ' ')}
           </p>
           <div className="col-span-12 md:col-span-6">
-            <GenericInputField
-              name="directSponsorId"
-              label="Sponsor ID"
-              disabled
-            />
+            <GenericInputField name="sponsorId" label="Sponsor ID" disabled />
           </div>
+          <div className="col-span-12 md:col-span-6">
+            <GenericInputField name="side" label="Side" disabled />
+          </div>
+          {!useWithoutEpin && (
+            <>
+              <div className="col-span-12 md:col-span-6">
+                <GenericInputField name="epinNo" label="E-Pin" />
+              </div>
+            </>
+          )}
         </div>
+
+        {/* Verify and Without Epin Buttons */}
+        {!useWithoutEpin && (
+          <div className="flex items-center gap-4">
+            <GenericButton type="button" onClick={verifyEpin}>
+              Verify Epin
+            </GenericButton>
+
+            <GenericButton
+              type="button"
+              onClick={() => {
+                setUseWithoutEpin(true);
+                setSelectedProducts({});
+                methods.setValue('epinNo', '');
+              }}
+            >
+              Without Epin
+            </GenericButton>
+          </div>
+        )}
 
         {/* Product Selection */}
-        <h1 className="text-gray-800 mb-6 text-xl font-bold dark:text-white">
-          Select up to 3 Products{' '}
-          <span className="text-sm font-normal">(Tap to add/remove)</span>
-        </h1>
+        {!useWithoutEpin && (
+          <>
+            <h1 className="text-gray-800 mb-6 text-xl font-bold dark:text-white">
+              Select up to 3 Products{' '}
+              <span className="text-sm font-normal">(Tap to add/remove)</span>
+            </h1>
 
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.isArray(products) &&
-            products.map((product: Product) => {
-              const count = selectedProducts[product.id] || 0;
-              const canAddMore = count < 3 && getTotalSelectedCount() < 3;
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.isArray(filteredProducts) &&
+                filteredProducts?.map((product: Product) => {
+                  const count = selectedProducts[product.id] || 0;
 
-              return (
-                <div
-                  key={product.id}
-                  onClick={() => handleCardClick(product.id)}
-                  className={`relative cursor-pointer overflow-hidden rounded-2xl border bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-lg transition-all duration-300 hover:shadow-xl ${
-                    count > 0
-                      ? 'border-blue-500 ring-1 ring-blue-300 dark:ring-blue-500'
-                      : 'border-gray-200 hover:border-blue-300'
-                  } dark:bg-gray-800`}
-                >
-                  {count > 0 && (
-                    <div className="absolute right-3 top-3 rounded-full bg-blue-500 px-2 py-1 text-xs font-bold text-white">
-                      {count} selected
-                    </div>
-                  )}
-                  <div className="space-y-4">
-                    <h2 className="text-gray-900 text-xl font-bold dark:text-white">
-                      {product.name}
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">
-                      {product.description}
-                    </p>
-                    <div className="mt-3 flex items-center gap-2">
-                      <span className="text-2xl font-bold text-green-400">
-                        ₹{product.discountedPrice}
-                      </span>
-                      <span className="text-gray-400 text-base line-through">
-                        ₹{product.actualPrice}
-                      </span>
-                      <span className="ml-auto rounded-full bg-green-100 px-2 py-1 text-xs text-green-800">
-                        Save ₹{product.actualPrice - product.discountedPrice}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between border-t pt-3">
-                      <span
-                        className={`text-sm font-medium ${count > 0 ? 'text-green-500' : ''}`}
-                      >
-                        {count} in cart
-                      </span>
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          className="h-10 w-10 rounded-full bg-red-100 text-red-600 hover:bg-red-200"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setSelectedProducts((prev) => {
-                              const current = prev[product.id] || 0;
-                              const updated = {
-                                ...prev,
-                                [product.id]: current - 1,
-                              };
-                              if (updated[product.id] <= 0)
-                                delete updated[product.id];
-                              return updated;
-                            });
-                          }}
-                          disabled={count === 0}
-                        >
-                          −
-                        </button>
-                        <button
-                          type="button"
-                          className="h-10 w-10 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (canAddMore) {
-                              setSelectedProducts((prev) => ({
-                                ...prev,
-                                [product.id]: count + 1,
-                              }));
-                            }
-                          }}
-                          disabled={!canAddMore}
-                        >
-                          +
-                        </button>
+                  return (
+                    <div
+                      key={product.id}
+                      onClick={() => handleCardClick(product.id)}
+                      className={`relative cursor-pointer overflow-hidden rounded-2xl border bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-lg transition-all duration-300 hover:shadow-xl ${
+                        count > 0
+                          ? 'border-blue-500 ring-1 ring-blue-300 dark:ring-blue-500'
+                          : 'border-gray-200 hover:border-blue-300'
+                      } dark:bg-gray-800`}
+                    >
+                      {count > 0 && (
+                        <div className="absolute right-3 top-3 rounded-full bg-blue-500 px-2 py-1 text-xs font-bold text-white">
+                          {count} selected
+                        </div>
+                      )}
+                      <div className="space-y-4">
+                        <h2 className="text-gray-900 text-xl font-bold dark:text-white">
+                          {product.name}
+                        </h2>
+                        <p className="text-gray-600 dark:text-gray-300 text-sm">
+                          {product.description}
+                        </p>
+                        <div className="mt-3 flex items-center gap-2">
+                          <span className="text-2xl font-bold text-green-400">
+                            ₹{product.discountedPrice}
+                          </span>
+                          <span className="text-gray-400 text-base line-through">
+                            ₹{product.actualPrice}
+                          </span>
+                          <span className="ml-auto rounded-full bg-green-100 px-2 py-1 text-xs text-green-800">
+                            Save ₹
+                            {product.actualPrice - product.discountedPrice}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
-        </div>
+                  );
+                })}
+            </div>
+          </>
+        )}
 
         {/* Contact Info */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
@@ -643,32 +661,9 @@ export const ExternalRegistration: React.FC = () => {
               placeholder="Enter Confirm Password"
             />
           </div>
-          <div className="col-span-12 md:col-span-6">
-            <GenericSearchDropdown
-              name="epinType"
-              label="E-Pin Option"
-              options={[
-                {value: 'later', label: 'Active later'},
-                {value: 'e-pin', label: 'With E-pin'},
-                {value: 'online', label: 'Online'},
-              ]}
-            />
-          </div>
-          {epinType === 'e-pin' && (
-            <div className="col-span-12 md:col-span-6">
-              <GenericInputField
-                name="epinNo"
-                label="E-Pin Number"
-                placeholder="Enter E-Pin Number"
-              />
-            </div>
-          )}
         </div>
 
-        {/* Price + Submit */}
-        <div className="text-gray-900 text-lg font-semibold dark:text-white">
-          Total Price: ₹{getTotalPrice()}
-        </div>
+        {/* Submit */}
         <div className="flex justify-end space-x-4">
           <GenericButton type="submit" disabled={isPending}>
             {isPending ? 'Submitting...' : 'Submit'}
