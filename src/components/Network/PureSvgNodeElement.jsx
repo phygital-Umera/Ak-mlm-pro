@@ -1,32 +1,17 @@
 /*eslint-disable */
-import React from 'react';
+import React, {useState} from 'react';
 import {user, userbw, golden, userRed} from '../../assets/images/user';
 
 const textLayout = {
   vertical: {
-    title: {
-      textAnchor: 'start',
-      x: 40,
-    },
+    title: {textAnchor: 'start', x: 40},
     attributes: {},
-    attribute: {
-      x: 40,
-      dy: '1.2em',
-    },
+    attribute: {x: 40, dy: '1.2em'},
   },
   horizontal: {
-    title: {
-      textAnchor: 'start',
-      y: 40,
-    },
-    attributes: {
-      x: 0,
-      y: 40,
-    },
-    attribute: {
-      x: 0,
-      dy: '1.2em',
-    },
+    title: {textAnchor: 'start', y: 40},
+    attributes: {x: 0, y: 40},
+    attribute: {x: 0, dy: '1.2em'},
   },
 };
 
@@ -37,41 +22,38 @@ const PureSvgNodeElement = ({
   onNodeClick,
   matchedNode,
 }) => {
-  // Only render minimal invisible node for connector
+  const [showPopup, setShowPopup] = useState(false);
+
   if (nodeDatum._invisible) {
-    return (
-      <>
-        {/* Needed to render connector lines, otherwise line disappears */}
-        <circle r={1} fill="transparent" />
-      </>
-    );
-  }
-  if (matchedNode?.__rd3t?.id === nodeDatum.__rd3t?.id) {
-    circleFill = 'yellow'; // highlight background
+    return <circle r={1} fill="transparent" />;
   }
 
-  // Rest of your original rendering logic
   const filteredAttributes = Object.entries(nodeDatum.attributes || {})
     .filter(([key]) => key !== 'IsGolden')
     .map(([key, value]) => {
       if (key === 'IsActive') {
-        return ['__status', value ? 'Active' : 'Inactive']; // Custom label only
+        return ['__status', value ? 'Active' : 'Inactive'];
       }
       return [key, value];
     });
 
+  const handleTogglePopup = (e) => {
+    e.stopPropagation();
+    setShowPopup((prev) => !prev);
+  };
+
+  const imageSource = !nodeDatum.attributes.IsActive
+    ? userRed
+    : nodeDatum.attributes.IsGolden
+      ? golden
+      : nodeDatum.children?.length
+        ? user
+        : userbw;
+
   return (
     <>
       <image
-        href={
-          !nodeDatum.attributes.IsActive
-            ? userRed
-            : nodeDatum.attributes.IsGolden
-              ? golden
-              : nodeDatum.children?.length
-                ? user
-                : userbw
-        }
+        href={imageSource}
         width={45}
         height={45}
         onClick={toggleNode}
@@ -87,40 +69,67 @@ const PureSvgNodeElement = ({
         y={-20}
       />
 
-      <g className="rd3t-label">
+      <g className="rd3t-label__title">
+        {/* Only show ID */}
         <text
+          onClick={handleTogglePopup}
           className="rd3t-label__title"
           {...textLayout[orientation].title}
-          onClick={onNodeClick}
           style={{
             fill: nodeDatum?.attributes?.IsActive ? '' : 'red',
           }}
         >
-          {nodeDatum.name}
+          <tspan x={textLayout[orientation].title.x} dy="0">
+            {nodeDatum.name}
+          </tspan>
+          <tspan
+            x={textLayout[orientation].title.x}
+            dy="1.2em"
+            onClick={handleTogglePopup}
+            style={{cursor: 'pointer'}}
+          >
+            {nodeDatum.attributes?.ID}
+          </tspan>
         </text>
-        <text
-          className="rd3t-label__attributes"
-          {...textLayout[orientation].attributes}
-        >
-          {filteredAttributes.map(([labelKey, labelValue], i) => (
-            <tspan
-              key={`${labelKey}-${i}`}
-              {...textLayout[orientation].attribute}
-              style={
-                labelKey === '__status'
-                  ? {
-                      fill: labelValue === 'Active' ? 'green' : 'red',
-                      fontWeight: 'bold',
-                    }
-                  : {}
-              }
+
+        {/* Popup Tooltip for other attributes */}
+        {showPopup && (
+          <foreignObject x={50} y={20} width={200} height={150}>
+            <div
+              xmlns="http://www.w3.org/1999/xhtml"
+              style={{
+                background: 'white',
+                border: '1px solid gray',
+                borderRadius: 6,
+                padding: 8,
+                boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                fontSize: 12,
+              }}
+              onClick={(e) => e.stopPropagation()}
             >
-              {labelKey === '__status'
-                ? labelValue
-                : `${labelKey}: ${labelValue}`}
-            </tspan>
-          ))}
-        </text>
+              {filteredAttributes.map(([key, value]) => (
+                <div
+                  key={key}
+                  style={{
+                    fontWeight: key === '__status' ? 'bold' : 'normal',
+                    color:
+                      key === '__status'
+                        ? value === 'Active'
+                          ? 'green'
+                          : 'red'
+                        : 'black',
+                  }}
+                >
+                  {key === '__status'
+                    ? value
+                    : key === 'ID'
+                      ? `CRN: ${value}`
+                      : `${key}: ${value}`}
+                </div>
+              ))}
+            </div>
+          </foreignObject>
+        )}
       </g>
     </>
   );

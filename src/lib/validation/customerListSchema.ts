@@ -19,7 +19,7 @@ export const updateProfileSchema = z.object({
 
   password: z
     .string({required_error: 'Password is required'})
-    .min(8, 'Password must be at least 8 characters'),
+    .min(6, 'Password must be at least 6 characters'),
 
   fullname: z.string({required_error: 'Full name is required'}),
 

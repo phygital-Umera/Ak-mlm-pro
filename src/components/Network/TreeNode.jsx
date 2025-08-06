@@ -24,7 +24,7 @@ const TreeNode = ({network}) => {
       side = '',
       id = '',
       first_name = '',
-      sponserer_username = '',
+      directSponsorId = '',
       isGolden = false,
       isActive = false,
     } = node.data;
@@ -67,7 +67,7 @@ const TreeNode = ({network}) => {
       attributes: {
         ID: id,
         FirstName: first_name,
-        Sponserer: sponserer_username,
+        DirectSponsorId: directSponsorId,
         Side: side,
         IsGolden: isGolden,
         IsActive: isActive,
