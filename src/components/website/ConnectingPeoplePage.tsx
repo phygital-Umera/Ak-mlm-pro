@@ -33,7 +33,7 @@ const benefits = [
   },
 ];
 
-const BenefitsSection = () => {
+const ConnectingPeoplePage = () => {
   return (
     <section className="bg-slate-50 py-5">
       <div className="mx-auto max-w-6xl px-6">
@@ -96,4 +96,4 @@ const BenefitsSection = () => {
   );
 };
 
-export default BenefitsSection;
+export default ConnectingPeoplePage;

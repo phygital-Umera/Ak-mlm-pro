@@ -55,7 +55,7 @@ const specializedTours = [
   {name: 'Corporate Groups', icon: '👥'},
 ];
 
-const PackagePage = () => {
+const BannerPage = () => {
   const [activeTab, setActiveTab] = useState('domestic');
 
   return (
@@ -128,4 +128,4 @@ const PackagePage = () => {
   );
 };
 
-export default PackagePage;
+export default BannerPage;

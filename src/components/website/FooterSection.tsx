@@ -2,7 +2,7 @@ import React from 'react';
 import {FaTwitter, FaLinkedinIn, FaGoogle} from 'react-icons/fa';
 import logo from '../../assets/images/icon/logo.png';
 
-const SigmaFooter = () => {
+const FooterSection = () => {
   return (
     <footer className="bg-white/95 px-6 py-12 text-slate-700 dark:bg-slate-900 dark:text-slate-200 md:px-16">
       <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 md:grid-cols-4">
@@ -117,4 +117,4 @@ const SigmaFooter = () => {
   );
 };
 
-export default SigmaFooter;
+export default FooterSection;
