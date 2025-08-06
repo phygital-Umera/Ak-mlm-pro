@@ -33,7 +33,7 @@ const SignIn: React.FC = () => {
   const onSubmit = async (values: SignInFormValues) => {
     try {
       const res = await signIn({
-        email: values.identifier,
+        username: values.identifier,
         password: values.password,
       });
       setUser(jwtDecode(res.data.token.accessToken || ''));
