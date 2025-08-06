@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* eslint-disable */
 import GenericTable from '@/components/Forms/Table/GenericTable';
 import React from 'react';
 import {useGetAllProductsReport} from '@/lib/react-query/Admin/Product/products';

@@ -31,36 +31,69 @@ const TreeNode = ({network}) => {
 
     let children = [];
 
-    if (node.children && node.children.length > 0) {
-      const leftChild = node.children.find(
-        (child) => child.data.side === 'LEFT',
-      );
-      const rightChild = node.children.find(
-        (child) => child.data.side === 'RIGHT',
-      );
+    // if (node.children && node.children.length > 0) {
+    //   const leftChild = node.children.find(
+    //     (child) => child.data.side === 'LEFT',
+    //   );
+    //   const rightChild = node.children.find(
+    //     (child) => child.data.side === 'RIGHT',
+    //   );
 
-      if (leftChild) {
-        children.push(transformNode(leftChild));
-      } else {
-        children.push({
-          name: ' ',
-          attributes: {},
-          _invisible: true, // Custom flag if you want to skip rendering content
-          children: [],
-        });
-      }
+    //   if (leftChild) {
+    //     children.push(transformNode(leftChild));
+    //   } else {
+    //     children.push({
+    //       name: ' ',
+    //       attributes: {},
+    //       _invisible: true, // Custom flag if you want to skip rendering content
+    //       children: [],
+    //     });
+    //   }
 
-      if (rightChild) {
-        children.push(transformNode(rightChild));
-      } else {
-        children.push({
-          name: ' ',
-          attributes: {},
-          _invisible: true,
-          children: [],
-        });
-      }
-    }
+    //   if (rightChild) {
+    //     children.push(transformNode(rightChild));
+    //   } else {
+    //     children.push({
+    //       name: ' ',
+    //       attributes: {},
+    //       _invisible: true,
+    //       children: [],
+    //     });
+    //   }
+    // }
+
+    const leftChild = node.children?.find(
+      (child) => child.data.side === 'LEFT',
+    );
+    const rightChild = node.children?.find(
+      (child) => child.data.side === 'RIGHT',
+    );
+
+    children.push(
+      leftChild
+        ? transformNode(leftChild)
+        : {
+            name: ' ',
+            attributes: {},
+            _invisible: true,
+            __side: 'LEFT',
+            __parentId: id,
+            children: [],
+          },
+    );
+
+    children.push(
+      rightChild
+        ? transformNode(rightChild)
+        : {
+            name: ' ',
+            attributes: {},
+            _invisible: true,
+            __side: 'RIGHT',
+            __parentId: id,
+            children: [],
+          },
+    );
 
     return {
       name: first_name,

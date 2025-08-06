@@ -31,7 +31,7 @@ const HistoryPayout: React.FC = () => {
       );
       setTableData(transformedData);
     } else {
-      setTableData([]); // no fallback if API fails, or add static fallback here
+      setTableData([]);
     }
   }, [apiData]);
 
@@ -39,8 +39,8 @@ const HistoryPayout: React.FC = () => {
     {header: 'Sr. No.', accessor: 'srNo'},
     {header: 'Date', accessor: 'date'},
     {header: 'Matching Income', accessor: 'binary'},
-    {header: 'Generation Income', accessor: 'generation'},
-    {header: 'Direct Sponsor Income', accessor: 'direct'},
+    {header: 'Direct Sponsor Income', accessor: 'generation'},
+    {header: 'Repurchase Income', accessor: 'direct'},
     {header: 'Total', accessor: 'total'},
   ];
 

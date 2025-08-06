@@ -16,7 +16,7 @@ type CustomerData = {
   phoneNumber: string;
   email: string;
   sponsorId: string;
-  // password: string;
+  password: string;
 };
 interface DecodedToken extends JwtPayload {
   user: {
@@ -30,16 +30,13 @@ const columns: Column<CustomerData>[] = [
   {header: 'Mobile No', accessor: 'phoneNumber'},
   {header: 'Email', accessor: 'email'},
   // {header: 'Sponsor ID', accessor: 'sponsorId'},
-  // {header: 'Password', accessor: 'password'},
+  {header: 'Password', accessor: 'password'},
 ];
 
 const DisplayCustomerList: React.FC = () => {
   const {mutateAsync: signIn} = useAdminLogin();
   const navigate = useNavigate();
   const {data: apiData, isLoading, error} = useFetchCustomerList();
-  console.log('====================================');
-  console.log('apiData', apiData);
-  console.log('====================================');
   const [customerData, setCustomerData] = useState<CustomerData[]>([]);
 
   useEffect(() => {
@@ -52,7 +49,7 @@ const DisplayCustomerList: React.FC = () => {
         phoneNumber: customer.phoneNumber,
         email: customer.email,
         sponsorId: customer.sponsorId,
-        // password: customer.password,
+        password: customer.password,
         action: 'Edit/Delete',
       }));
       // Sort customers by creation date to show new customers at the top

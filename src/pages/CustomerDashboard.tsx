@@ -48,8 +48,9 @@ const CustomerDashboard: React.FC = () => {
   } = useFetchCustomerHome();
 
   console.log('====================================');
-  console.log('dataa', dataa);
+  console.log('FFFFFFFFFFFFFFFFFFF', dataa);
   console.log('====================================');
+
   const [statsData, setStatsData] = useState<StatCardProps[]>([]);
   const [lastCustomers, setLastCustomers] = useState<Customer[]>([]);
   const [topCustomers, setTopCustomers] = useState<Customer[]>([]);
@@ -177,19 +178,25 @@ const CustomerDashboard: React.FC = () => {
           amount: `${dataa?.carry_forward_count || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
+        {
+          title: 'Carry Forward Branch',
+          amount: `${dataa?.carry_forward_Branch || 0}`,
+          icon: <IoTodaySharp className="text-2xl" />,
+        },
       ];
 
       const allStats = [
+        {
+          title: 'Total Income',
+          amount: `${dataa?.totalCommission || 0}`,
+          icon: <IoWalletSharp className="text-2xl" />,
+        },
         {
           title: 'Total Matching Income',
           amount: `${dataa?.binary || 0}`,
           icon: <IoWalletSharp className="text-2xl" />,
         },
-        {
-          title: 'Total Pair Count',
-          amount: `${dataa?.pairCount || 0}`,
-          icon: <IoWalletSharp className="text-2xl" />,
-        },
+
         {
           title: 'Total Direct Sponsor Income',
           amount: `${dataa?.royelty || 0}`,
@@ -201,8 +208,8 @@ const CustomerDashboard: React.FC = () => {
           icon: <IoWalletSharp className="text-2xl" />,
         },
         {
-          title: 'Income Amount',
-          amount: `${dataa?.commitionamount || 0}`,
+          title: 'Total Pair Count',
+          amount: `${dataa?.pairCount || 0}`,
           icon: <IoWalletSharp className="text-2xl" />,
         },
         {

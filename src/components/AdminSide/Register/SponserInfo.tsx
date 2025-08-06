@@ -12,24 +12,25 @@ import {useAuthContext} from '@/context/AuthContext';
 import {useCheckEpin} from '@/lib/react-query/Admin/Epin/epin';
 import toast from 'react-hot-toast';
 import {useState} from 'react';
+import {useRouter} from '@tanstack/react-router';
 
 type FormValues = z.infer<typeof sponserInfoSchema>;
 interface SponserInfoProps {
   onNext: () => void;
 }
-
 // Add this at the top (or wherever appropriate)
-
 export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
   const {user} = useAuthContext();
   const {setSponsorInfo, setSkipProduct} = useRegistration();
   const [skipProductSelection, setSkipProductSelection] = useState(false); // NEW
+  const {state} = useRouter();
+  const location = state?.location?.state?.data;
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(sponserInfoSchema),
     defaultValues: {
-      sponsorId: user?.crnNo || '',
-      side: 'LEFT',
+      sponsorId: location?.parentId || user?.crnNo || '',
+      side: location?.side || 'LEFT',
       epin: '',
     },
   });

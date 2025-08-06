@@ -1,15 +1,14 @@
+import logo from '@/assets2/logo.jpeg';
+import {useAuthContext} from '@/context/AuthContext';
+import {useCustomerLogin} from '@/lib/react-query/Auth/auth';
+import {signInSchema} from '@/lib/validation/signInSchema';
+import {zodResolver} from '@hookform/resolvers/zod';
+import {jwtDecode, JwtPayload} from 'jwt-decode';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {z} from 'zod';
-import {Link, useRouter} from '@tanstack/react-router';
-import {useAuthContext} from '@/context/AuthContext';
-import {jwtDecode, JwtPayload} from 'jwt-decode';
-import {FiEye, FiLock, FiMail} from 'react-icons/fi';
-import SyncLoader from 'react-spinners/SyncLoader';
-import {signInSchema} from '@/lib/validation/signInSchema';
-import {useCustomerLogin} from '@/lib/react-query/Auth/auth';
+import {FiEye, FiMail} from 'react-icons/fi';
 import {LuEyeOff} from 'react-icons/lu';
+import {z} from 'zod';
 
 type SignInFormValues = z.infer<typeof signInSchema>;
 interface DecodedToken extends JwtPayload {
@@ -60,6 +59,12 @@ const SignIn: React.FC = () => {
 
   return (
     <>
+      <div className="mb-6 flex justify-center">
+        <img src={logo} alt="Logo" className="h-26 w-auto" />
+      </div>
+      <p className="text-center text-base font-bold text-black dark:text-white">
+        TMS LIFE SOLUTIONS
+      </p>
       <h2 className="mb-9 text-center text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
         Sign In
       </h2>

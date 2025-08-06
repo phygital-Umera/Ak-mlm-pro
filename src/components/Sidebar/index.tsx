@@ -289,15 +289,15 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
   return (
     <aside
       ref={sidebar}
-      className={`absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
+      className={`absolute left-0 top-0 z-9999 flex h-screen w-60 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-center gap-2 px-6 pt-4">
+      <div className="flex items-center justify-center gap-1 pt-4">
         <Link
           to="/"
-          className="bg-gray-300 hover:bg-gray-400 flex h-16 w-auto items-center justify-start space-x-4 rounded-full px-4 py-2 transition-all"
+          className="bg-gray-300 hover:bg-gray-400 flex h-16 w-auto items-center justify-start space-x-4 rounded-full px-2 py-2 transition-all"
         >
           <div className="flex h-15 w-20 items-center justify-center overflow-hidden rounded-full">
             <img
@@ -306,7 +306,10 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               className="h-full w-full object-contain"
             />
           </div>
-          <h1 className="text-2xl font-semibold text-gray">TMS LIFE</h1>
+          <div className="flex flex-col">
+            <h1 className="text-base font-semibold text-gray">TMS LIFE</h1>
+            <p className="text-sm font-semibold text-gray">Solutions</p>
+          </div>
         </Link>
 
         <button

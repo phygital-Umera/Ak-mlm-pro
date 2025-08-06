@@ -1,6 +1,8 @@
 /*eslint-disable */
 import React, {useState} from 'react';
 import {user, userbw, golden, userRed} from '../../assets/images/user';
+import {FiPlus} from 'react-icons/fi';
+import {useNavigate} from '@tanstack/react-router';
 
 const textLayout = {
   vertical: {
@@ -22,11 +24,8 @@ const PureSvgNodeElement = ({
   onNodeClick,
   matchedNode,
 }) => {
+  const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
-
-  if (nodeDatum._invisible) {
-    return <circle r={1} fill="transparent" />;
-  }
 
   const filteredAttributes = Object.entries(nodeDatum.attributes || {})
     .filter(([key]) => key !== 'IsGolden')
@@ -41,6 +40,47 @@ const PureSvgNodeElement = ({
     e.stopPropagation();
     setShowPopup((prev) => !prev);
   };
+
+  if (nodeDatum._invisible) {
+    return (
+      <>
+        <circle r={1} fill="transparent" />
+        <foreignObject x={-20} y={-20} width={50} height={50}>
+          <div
+            xmlns="http://www.w3.org/1999/xhtml"
+            style={{
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: '#f0f0f0',
+              borderRadius: '50%',
+              cursor: 'pointer',
+              border: '1px dashed gray',
+            }}
+            onClick={
+              () =>
+                navigate({
+                  to: '/admin/customerregister',
+                  state: {
+                    data: {
+                      side: nodeDatum.__side,
+                      parentId: nodeDatum.__parentId,
+                    },
+                  },
+                })
+              // console.log(
+              //   `Add child at ${nodeDatum.__side} of CRN: ${nodeDatum.__parentId}`,
+              // )
+            }
+          >
+            <FiPlus />
+          </div>
+        </foreignObject>
+      </>
+    );
+  }
 
   const imageSource = !nodeDatum.attributes.IsActive
     ? userRed
@@ -70,7 +110,6 @@ const PureSvgNodeElement = ({
       />
 
       <g className="rd3t-label__title">
-        {/* Only show ID */}
         <text
           onClick={handleTogglePopup}
           className="rd3t-label__title"
@@ -92,7 +131,6 @@ const PureSvgNodeElement = ({
           </tspan>
         </text>
 
-        {/* Popup Tooltip for other attributes */}
         {showPopup && (
           <foreignObject x={50} y={20} width={200} height={150}>
             <div
