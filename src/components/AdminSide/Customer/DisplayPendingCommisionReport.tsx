@@ -28,9 +28,6 @@ type PendingCommission = {
 const DisplayPendingCommisionReport: React.FC = () => {
   const queryClient = useQueryClient();
   const {data, isSuccess, isError, isPending} = useFetchAdminCommsion();
-  console.log('====================================');
-  console.log('data', data);
-  console.log('====================================');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
   const itemsPerPage = 10;
