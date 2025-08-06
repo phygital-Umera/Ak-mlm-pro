@@ -212,7 +212,7 @@ export const LoginInfo: React.FC = () => {
                 {responseData.fullname}
               </div>
               <div className="text-gray-500 flex items-center font-medium">
-                <KeyIcon className="mr-2 h-4 w-4 opacity-70" /> CRN:
+                <KeyIcon className="mr-2 h-4 w-4 opacity-70" /> User ID:
               </div>
               <div className="font-mono text-gray-800 bg-gray-50 truncate rounded-lg px-3 py-2 text-sm">
                 {responseData.crnNo}

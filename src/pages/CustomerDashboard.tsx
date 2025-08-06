@@ -39,7 +39,6 @@ interface RewardTier {
 
 const CustomerDashboard: React.FC = () => {
   const {user, customer} = useAuthContext();
-  // console.log('user', user);
   const {
     data: dataa,
     isError,
@@ -47,8 +46,10 @@ const CustomerDashboard: React.FC = () => {
     refetch,
     isSuccess,
   } = useFetchCustomerHome();
-  // console.log('firsttttttttt', dataa);
 
+  console.log('====================================');
+  console.log('dataa', dataa);
+  console.log('====================================');
   const [statsData, setStatsData] = useState<StatCardProps[]>([]);
   const [lastCustomers, setLastCustomers] = useState<Customer[]>([]);
   const [topCustomers, setTopCustomers] = useState<Customer[]>([]);
@@ -57,7 +58,7 @@ const CustomerDashboard: React.FC = () => {
   const [currentTier, setCurrentTier] = useState<RewardTier | null>(null);
   const [nextTier, setNextTier] = useState<RewardTier | null>(null);
   const [progressPercentage, setProgressPercentage] = useState(0);
-  const [selectedView, setSelectedView] = useState<'today' | 'month'>('today');
+  const [selectedView, setSelectedView] = useState<'today' | 'all'>('today');
 
   const isCustomerProfileIncomplete = (customer: any) => {
     if (!customer) return true;
@@ -150,81 +151,10 @@ const CustomerDashboard: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess && dataa) {
-      setStatsData([
-        // {
-        //   title: 'Income',
-        //   amount: `${dataa?.wallet?.amount || 0}`,
-        //   icon: <IoWalletSharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'Repurchase Amount',
-        //   amount: `${dataa?.wallet?.purchaseAmount || 0}`,
-        //   icon: <IoWalletSharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'Today A Count',
-        //   amount: `${dataa?.Todays_A_count || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'Today B Count',
-        //   amount: `${dataa?.Todays_B_count || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'Today C Count',
-        //   amount: `${dataa?.Todays_C_count || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'A Count',
-        //   amount: `${dataa?.A_count || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'B Count',
-        //   amount: `${dataa?.B_count || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'C Count',
-        //   amount: `${dataa?.C_count || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'Total Pair Count',
-        //   amount: `${dataa?.total_Pair_Count || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'Today Pair Count',
-        //   amount: `${dataa?.Todays_Pair_Count || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-
-        // {
-        //   title: 'Total Income',
-        //   amount: `${dataa?.total_Income || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
+      const todayStats = [
         {
-          title: 'Commission Amount',
-          amount: `${dataa?.commitionamount || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
-        },
-        {
-          title: 'Total Matching Commission',
-          amount: `${dataa?.binary || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
-        },
-        {
-          title: 'Today Matching Commission',
+          title: 'Today Matching Income',
           amount: `${dataa?.todayBinary || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
-        },
-        {
-          title: 'Total Pair Count',
-          amount: `${dataa?.pairCount || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
@@ -233,18 +163,8 @@ const CustomerDashboard: React.FC = () => {
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
-          title: 'Total Direct Sponsor Income ',
-          amount: `${dataa?.royelty || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
-        },
-        {
           title: 'Today Direct Sponsor Income',
           amount: `${dataa?.todayRoyalty || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
-        },
-        {
-          title: 'Total Repurchase Balance',
-          amount: `${dataa?.repurchase || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
@@ -253,25 +173,64 @@ const CustomerDashboard: React.FC = () => {
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
-          title: 'Total Repurchase Amount',
-          amount: `${dataa?.repurchase_Amount || 0}`,
+          title: 'Carry Forward Count',
+          amount: `${dataa?.carry_forward_count || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
+        },
+      ];
+
+      const allStats = [
+        {
+          title: 'Total Matching Income',
+          amount: `${dataa?.binary || 0}`,
+          icon: <IoWalletSharp className="text-2xl" />,
         },
         {
-          title: 'Today Repurchase Amount',
-          amount: `${dataa?.todayRepurchase_Amount || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
+          title: 'Total Pair Count',
+          amount: `${dataa?.pairCount || 0}`,
+          icon: <IoWalletSharp className="text-2xl" />,
         },
-      ]);
+        {
+          title: 'Total Direct Sponsor Income',
+          amount: `${dataa?.royelty || 0}`,
+          icon: <IoWalletSharp className="text-2xl" />,
+        },
+        {
+          title: 'Total Repurchase Balance',
+          amount: `${dataa?.repurchase || 0}`,
+          icon: <IoWalletSharp className="text-2xl" />,
+        },
+        {
+          title: 'Income Amount',
+          amount: `${dataa?.commitionamount || 0}`,
+          icon: <IoWalletSharp className="text-2xl" />,
+        },
+        {
+          title: 'Left Team Count',
+          amount: `${dataa?.leftCount || 0}`,
+          icon: <PiAlignLeftSimpleDuotone className="text-2xl" />,
+        },
+        {
+          title: 'Right Team Count',
+          amount: `${dataa?.rightCount || 0}`,
+          icon: <PiAlignRightSimpleDuotone className="text-2xl" />,
+        },
+        {
+          title: 'Carry Forward Count',
+          amount: `${dataa?.carry_forward_count || 0}`,
+          icon: <IoWalletSharp className="text-2xl" />,
+        },
+      ];
 
+      setStatsData(selectedView === 'today' ? todayStats : allStats);
       setLastCustomers(dataa.lastCustomers || []);
       setTopCustomers(dataa.topCustomers || []);
 
       // Calculate current tier and progress
-      const totalPairs = dataa.total_Pair_Count || 0;
+      const totalPairs = dataa.pairCount || 0;
       calculateTierProgress(totalPairs);
     }
-  }, [isSuccess, dataa]);
+  }, [isSuccess, dataa, selectedView]);
 
   const calculateTierProgress = (totalPairs: number) => {
     let current = null;
@@ -315,16 +274,6 @@ const CustomerDashboard: React.FC = () => {
     setShowExtraBoxes(!showExtraBoxes);
   };
 
-  // useEffect(() => {
-  //   if (!isPopup) {
-  //     refetch();
-  //   }
-  // }, [isPopup, refetch]);
-
-  // if (isPending) {
-  //   return <Loader />;
-  // }
-
   if (isError) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
@@ -357,19 +306,20 @@ const CustomerDashboard: React.FC = () => {
                 : 'bg-gray-200 text-gray-800'
             }`}
           >
-            Today
+            Today's Data
           </button>
           <button
-            onClick={() => setSelectedView('month')}
+            onClick={() => setSelectedView('all')}
             className={`rounded-lg px-4 py-2 text-sm font-medium ${
-              selectedView === 'month'
+              selectedView === 'all'
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-200 text-gray-800'
             }`}
           >
-            All
+            All Data
           </button>
         </div>
+
         {/* Reward Progress Section */}
         <div className="mb-6 rounded-lg border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="flex items-center justify-between">
@@ -448,48 +398,48 @@ const CustomerDashboard: React.FC = () => {
             ))}
         </div>
 
-        {/* Rest of your existing code... */}
-        {!showExtraBoxes ? (
+        {statsData.length > 4 && (
           <button
             onClick={handleToggle}
             className="mt-4 flex items-center text-blue-600"
           >
-            <span>Show More</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="ml-2 h-5 w-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </button>
-        ) : (
-          <button
-            onClick={handleToggle}
-            className="mt-4 flex items-center text-blue-600"
-          >
-            <span>Show Less</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              className="ml-2 h-5 w-5"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5 15l7-7 7 7"
-              />
-            </svg>
+            {showExtraBoxes ? (
+              <>
+                <span>Show Less</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="ml-2 h-5 w-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M5 15l7-7 7 7"
+                  />
+                </svg>
+              </>
+            ) : (
+              <>
+                <span>Show More</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="ml-2 h-5 w-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </>
+            )}
           </button>
         )}
 

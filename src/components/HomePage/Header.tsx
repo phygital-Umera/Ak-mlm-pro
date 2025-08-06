@@ -12,16 +12,17 @@ const Header = () => {
 
   return (
     <>
-      <header className="border-gray-200/50 fixed left-0 z-50 mb-10 w-full border-b bg-white shadow-lg">
-        <div className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6 md:py-5">
+      <header className="border-gray-200/50 fixed left-0 top-0 z-50 mb-10 w-full border-b bg-white shadow-lg">
+        <div className="relative mx-auto flex max-w-4xl items-center justify-between px-2 py-2 md:px-4 md:py-3">
           {/* LEFT: Logo */}
           <div className="flex items-center">
             <Link to="/" className="group">
               <img
                 src={Logo}
                 alt="logo"
-                className="h-12 w-auto transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-md"
+                className="h-15 w-auto transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-md"
               />
+              {/* <h2 className="text-sm">TMS LIFE SOLUTION (OPC) PVT LTD</h2> */}
             </Link>
           </div>
 
@@ -106,7 +107,6 @@ const Header = () => {
             </button>
           </div>
         </div>
-
         {/* MOBILE: Slide-in Side Menu */}
         <div
           className={`fixed left-0 top-0 z-40 h-full w-full bg-white p-6 shadow-lg duration-300 md:hidden ${
@@ -122,6 +122,7 @@ const Header = () => {
                 className="h-12 w-auto transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-md"
               />
             </Link>
+            {/* <h2 className="text-sm">TMS LIFE SOLUTION (OPC) PVT LTD</h2> */}
             {/* Close button */}
             <button
               onClick={toggleMenu}

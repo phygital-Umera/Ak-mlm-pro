@@ -17,14 +17,13 @@ export const useCreateEpinRequest = () => {
   return useMutation<
     EpinResponse,
     unknown,
-    {paidAmount: number; price: number; imageFile: File}
+    FormData // Accept FormData directly
   >({
-    mutationFn: ({paidAmount, price, imageFile}) =>
-      createEpinRequest(paidAmount, price, imageFile),
+    mutationFn: (formData) => createEpinRequest(formData),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [CUSTOMER_QUERY_KEYS.EPIN_REQUESTS],
-      }); // Invalidate cache after creation
+      });
     },
     onError: (error) => {
       console.error('Failed to create E-Pin request:', error);

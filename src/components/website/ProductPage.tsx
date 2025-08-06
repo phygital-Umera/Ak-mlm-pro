@@ -1,37 +1,41 @@
 import React, {useState} from 'react';
-import icon1 from '../../assets/images/product/icon1.png';
-import icon2 from '../../assets/images/product/icon2.png';
-import icon4 from '../../assets/images/product/icon4.png';
-import icon5 from '../../assets/images/product/icon5.png';
-import icon6 from '../../assets/images/product/icon6.png';
+import icon1 from '../../assets2/products/sanitary.png';
+import icon2 from '../../assets2/products/Barry.png';
+import icon3 from '../../assets2/products/Baldand.png';
+// import icon4 from '../../assets2/products/Baldand.png';
+// import icon5 from '../../assets2/products/Baldand.png';
+// import icon5 from '../../assets2/products/';
+// import icon6 from '../../assets2/products/';
 
-const partners = [icon1, icon2, icon4, icon5, icon6];
+const partners = [icon1, icon2, icon3];
 
 const domesticPackages = [
   {
-    title: 'Domestic Holiday Packages',
-    img: 'https://png.pngtree.com/png-vector/20210602/ourmid/pngtree-3d-beauty-cosmetics-product-design-png-image_3350323.jpg',
-    description:
-      'Popular destinations include: Goa, Kerala Backwaters, Himachal, Uttarakhand, Rajasthan, Northeast India.',
-    price: '₹15,999',
-    color: 'bg-blue-50',
-    accent: 'bg-blue-500',
-  },
-  {
-    title: 'International Holiday Packages',
-    img: 'https://png.pngtree.com/png-vector/20210602/ourmid/pngtree-3d-beauty-cosmetics-product-design-png-image_3350323.jpg',
-    description:
-      'Asia: Thailand, Singapore, Malaysia, Dubai. Europe: Switzerland, Paris, Italy. America: USA highlights, Caribbean cruises. Australia & New Zealand',
-    price: '₹18,999',
+    title: 'Stepwell',
+    img: icon1,
+
+    description: '18 Box (144 pic)',
+    price: '₹3600',
+    discount: '₹3150',
     color: 'bg-green-50',
     accent: 'bg-green-500',
   },
   {
-    title: 'International Holiday Packages',
-    img: 'https://png.pngtree.com/png-vector/20210602/ourmid/pngtree-3d-beauty-cosmetics-product-design-png-image_3350323.jpg',
-    description:
-      'Asia: Thailand, Singapore, Malaysia, Dubai. Europe: Switzerland, Paris, Italy. America: USA highlights, Caribbean cruises. Australia & New Zealand',
-    price: '₹18,999',
+    title: 'Super Berry Bottle',
+    img: icon2,
+
+    description: '3 Bottles',
+    price: '₹5400',
+    discount: '₹3300',
+    color: 'bg-blue-50',
+    accent: 'bg-blue-500',
+  },
+  {
+    title: 'Baldand 125',
+    img: icon3,
+    description: '4 Bottle / 4 Ltr',
+    price: '₹6000',
+    discount: '₹3600',
     color: 'bg-green-50',
     accent: 'bg-green-500',
   },
@@ -43,9 +47,9 @@ const ProductPage = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
       {/* Header */}
-      <div className="bg-white shadow-sm">
+      <div className="rounded-sm bg-black shadow-sm">
         <div className="mx-auto max-w-7xl px-4 py-6 text-center">
-          <h1 className="text-gray-900 text-3xl font-bold md:text-4xl">
+          <h1 className="text-3xl font-bold text-white md:text-4xl">
             Products
           </h1>
         </div>
@@ -73,6 +77,9 @@ const ProductPage = () => {
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-gray-800 text-base font-semibold">
                     {pkg.price}
+                  </span>
+                  <span className="text-gray-800 text-base font-semibold">
+                    {pkg.discount}
                   </span>
                 </div>
 

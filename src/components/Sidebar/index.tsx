@@ -62,6 +62,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             path: '/admin/sharelink',
             icon: <PiShareLight size={22} />,
           },
+          {
+            label: 'Product Report',
+            path: '/admin/productreport',
+            icon: <PiShareLight size={22} />,
+          },
           // {
           //   label: 'Wallet Report',
           //   path: '/admin/wallethistory',

@@ -3,6 +3,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  getAllProductsReport,
 } from '@/lib/api/Admin/Product/product';
 import {ProductResponse, Product, ApiError} from '@/types';
 import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query';
@@ -73,5 +74,12 @@ export const useDeleteProduct = () => {
         err.response?.data.message || err.message,
       );
     },
+  });
+};
+
+export const useGetAllProductsReport = () => {
+  return useQuery<ProductResponse>({
+    queryKey: ['products-report'],
+    queryFn: getAllProductsReport,
   });
 };

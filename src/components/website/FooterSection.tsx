@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Mail, Phone, Instagram, Facebook, Twitter, Youtube} from 'lucide-react';
+import logo from '../../assets/images/logo/tmslogo.png';
 
 const FooterSection: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -60,11 +61,9 @@ const FooterSection: React.FC = () => {
           {/* Company Logo and Info */}
           <div className="md:col-span-1">
             <div className="mb-6 flex items-center">
-              <div className="mr-3 flex h-12 w-12 items-center justify-center rounded bg-green-600">
-                <span className="text-lg font-bold text-white">✓</span>
-              </div>
-              <span className="text-gray-800 text-2xl font-bold">VESTIGE</span>
+              <img src={logo} alt="Logo" className="h-12 w-12" />
             </div>
+            <h2 className="text-sm font-bold">TMS LIFE SOLUTION (OPC) PVT LTD</h2>
           </div>
 
           {/* Company Links */}

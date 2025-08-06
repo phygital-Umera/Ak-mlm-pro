@@ -47,3 +47,14 @@ export const deleteProduct = async (id) => {
     throw err;
   }
 };
+
+export const getAllProductsReport = async () => {
+  try {
+    const response = await api.get('/admin/product/report');
+    return response.data;
+  } catch (error) {
+    const err = error.response?.data || error;
+    console.error('Error fetching products:', err.message);
+    throw err;
+  }
+};

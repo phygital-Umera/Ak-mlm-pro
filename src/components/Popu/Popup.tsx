@@ -8,6 +8,7 @@ import GenericButton from '../Forms/Buttons/GenericButton';
 import toast from 'react-hot-toast';
 import {QUERY_KEYS} from '@/lib/react-query/QueryKeys';
 import {useUpdateCustomerActive} from '@/lib/react-query/updateCustomer';
+import { useCheckEpin } from '@/lib/react-query/Admin/Epin/epin';
 // import QrCode from '../../../public/qrcode.jpeg';
 
 interface PopupProps {
@@ -29,6 +30,7 @@ const Popup: React.FC<PopupProps> = ({}) => {
   const {handleSubmit, reset} = methods;
   const navigate = useNavigate();
   const [isModalVisible, setModalVisible] = useState<boolean>(true);
+  const {mutateAsync: checkEpin, isPending: isCheckingEpin} = useCheckEpin();
 
   const {
     mutate: updateProfile,

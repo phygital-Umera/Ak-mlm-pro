@@ -5,55 +5,42 @@ import {useFetchPayout} from '@/lib/react-query/Customer/payout';
 
 interface PayoutEntry {
   srNo: number;
-  crn: string;
-  name: string;
+  date: string;
   binary: number;
-  royalty: number;
-  repurchase: number;
+  generation: number;
+  direct: number;
   total: number;
 }
-
-// Static fallback data
-const staticData: PayoutEntry[] = [
-  {
-    srNo: 1,
-    crn: 'CRN001',
-    name: 'John Doe',
-    binary: 1000,
-    royalty: 500,
-    repurchase: 300,
-    total: 1800,
-  },
-  {
-    srNo: 2,
-    crn: 'CRN002',
-    name: 'Jane Smith',
-    binary: 800,
-    royalty: 200,
-    repurchase: 400,
-    total: 1400,
-  },
-];
 
 const HistoryPayout: React.FC = () => {
   const {data: apiData, isLoading, error} = useFetchPayout();
   const [tableData, setTableData] = useState<PayoutEntry[]>([]);
 
   useEffect(() => {
-    if (apiData?.data && apiData.data.length > 0) {
-      setTableData(apiData.data);
+    if (apiData?.data && Array.isArray(apiData.data)) {
+      const transformedData: PayoutEntry[] = apiData.data.map(
+        (item, index) => ({
+          srNo: index + 1,
+          date: item.Date || '-',
+          binary: item.binery || 0,
+          generation: item.genration || 0,
+          direct: item.direct || 0,
+          total:
+            (item.binery || 0) + (item.genration || 0) + (item.direct || 0),
+        }),
+      );
+      setTableData(transformedData);
     } else {
-      setTableData(staticData); // fallback if no API data
+      setTableData([]); // no fallback if API fails, or add static fallback here
     }
   }, [apiData]);
 
   const columns: Column<PayoutEntry>[] = [
     {header: 'Sr. No.', accessor: 'srNo'},
-    {header: 'CRN', accessor: 'crn'},
-    {header: 'Name', accessor: 'name'},
-    {header: 'Matching income', accessor: 'binary'},
-    {header: 'Direct sponser income', accessor: 'royalty'},
-    {header: 'Repurchase', accessor: 'repurchase'},
+    {header: 'Date', accessor: 'date'},
+    {header: 'Matching Income', accessor: 'binary'},
+    {header: 'Generation Income', accessor: 'generation'},
+    {header: 'Direct Sponsor Income', accessor: 'direct'},
     {header: 'Total', accessor: 'total'},
   ];
 
@@ -64,13 +51,7 @@ const HistoryPayout: React.FC = () => {
   if (error) {
     return (
       <div className="text-center text-red-500">
-        Failed to fetch payout data. Showing default data.
-        <GenericTable
-          title="Payout History (Static)"
-          data={staticData}
-          columns={columns}
-          itemsPerPage={5}
-        />
+        Failed to fetch payout data.
       </div>
     );
   }

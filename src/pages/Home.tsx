@@ -64,6 +64,8 @@ const Home: React.FC = () => {
         selectedView === 'today'
           ? data?.todayRepurchaseAmount
           : data?.repurchaseAmount;
+      const inActiveCustomer =
+        selectedView === 'today' ? data?.inActive : data?.inActive;
       setStatsData([
         {
           title: 'Total Income',
@@ -124,6 +126,13 @@ const Home: React.FC = () => {
         {
           title: 'Repurchase Amount',
           amount: `₹${repurchaseAmount}`,
+          icon: <FaShoppingCart className="text-2xl text-amber-500" />,
+          trend: 'up',
+          trendValue: '20%',
+        },
+        {
+          title: 'In Active Customer',
+          amount: `₹${inActiveCustomer}`,
           icon: <FaShoppingCart className="text-2xl text-amber-500" />,
           trend: 'up',
           trendValue: '20%',

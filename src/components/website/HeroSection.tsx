@@ -1,12 +1,22 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ChevronLeft, ChevronRight} from 'lucide-react';
 
+import banner1 from '../../assets2/Images/slider1.png';
+import banner2 from '../../assets2/Images/slider2.png';
+import banner3 from '../../assets2/Images/slider3.png';
+
+import banner4 from '../../assets2/Images/slider.png';
+// import banner4 from '../../assets2/Images/banner4.jpeg';
+// import banner5 from '../../assets2/Images/banner5.jpeg';
+
 const images: string[] = [
-  'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Dew_Garden_Fly_Web_banners_Main_Web_c19d703cf9.jpg',
-  'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Anniversary_Offer_Web_Banner_07b843ead1.jpg',
-  'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Dew_Garden_Fly_Web_banners_Main_Web_c19d703cf9.jpg',
-  'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Anniversary_Offer_Web_Banner_07b843ead1.jpg',
-  'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Dew_Garden_Fly_Web_banners_Main_Web_c19d703cf9.jpg',
+  banner1,
+  banner2,
+  banner3,
+  banner4,
+  // banner5,
+  // 'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Anniversary_Offer_Web_Banner_07b843ead1.jpg',
+  // 'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Dew_Garden_Fly_Web_banners_Main_Web_c19d703cf9.jpg',
 ];
 
 const HeroSection: React.FC = () => {
@@ -20,15 +30,30 @@ const HeroSection: React.FC = () => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isPaused) {
+        nextSlide();
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [currentIndex, isPaused]);
+
   return (
-    <section className="relative h-[50vh] w-full overflow-hidden sm:h-[60vh] md:h-[70vh] lg:h-[80vh] xl:h-[90vh]">
+    <section
+      className="relative h-[50vh] w-full overflow-hidden sm:h-[60vh] md:h-[70vh] lg:h-[80vh] xl:h-[90vh]"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
       {/* Image */}
       <img
         src={images[currentIndex]}
         alt={`Slide ${currentIndex + 1}`}
-        className="h-full w-full object-cover transition-all duration-500"
+        className="h-full w-full object-contain transition-all duration-500"
       />
-
       {/* Navigation Buttons */}
       <button
         onClick={prevSlide}
@@ -36,14 +61,12 @@ const HeroSection: React.FC = () => {
       >
         <ChevronLeft size={20} className="sm:size-6" />
       </button>
-
       <button
         onClick={nextSlide}
         className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white hover:bg-black/60 sm:right-4 sm:p-3"
       >
         <ChevronRight size={20} className="sm:size-6" />
       </button>
-
       {/* Dot Indicators */}
       <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-4">
         {images.map((_, idx) => (

@@ -3,25 +3,17 @@ import {api} from '@/utils/axios';
 
 // Create an E-Pin request
 import axios from 'axios';
-
-export const createEpinRequest = async (
-  paidAmount: number,
-  price: number,
-  imageFile: File,
-) => {
+export const createEpinRequest = async (formData: FormData) => {
   try {
-    // Prepare the form data
-    const formData = new FormData();
-    formData.append('paidAmount', String(paidAmount));
-    formData.append('price', String(price));
-    formData.append('imageFile', imageFile);
-
-    // Send the POST request with form data
     const response = await api.post<EpinResponse>(
       'customers/epin/request',
       formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
     );
-
     return response.data;
   } catch (error: unknown) {
     const apiError = error as ApiError;
