@@ -24,7 +24,7 @@ const reviews = [
   },
 ];
 
-const ExpertReviews = () => {
+const AboutUs = () => {
   return (
     <section className="bg-slate-50 py-5">
       <div className="mx-auto max-w-7xl px-6">
@@ -136,4 +136,4 @@ const ExpertReviews = () => {
   );
 };
 
-export default ExpertReviews;
+export default AboutUs;

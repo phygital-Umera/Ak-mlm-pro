@@ -3,7 +3,7 @@ import product1 from '../../assets/images/product/product1.jpg';
 import product2 from '../../assets/images/product/product2.jpg';
 import product3 from '../../assets/images/product/product3.jpg';
 import product4 from '../../assets/images/product/product5.jpg';
-import Footer from './Footer';
+import Footer from './FooterSection';
 import Header from '../HomePage/Header';
 
 const products = [

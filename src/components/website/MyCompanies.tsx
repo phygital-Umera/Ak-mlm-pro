@@ -4,7 +4,7 @@ import techboxLogo from '../../assets/images/banner/card2.jpg';
 import forecastrLogo from '../../assets/images/banner/card3.jpg';
 import unitedLogo from '../../assets/images/banner/card4.jpg';
 import rocketFactoryLogo from '../../assets/images/banner/card5.jpg';
-import Footer from './Footer';
+import Footer from './FooterSection';
 import Header from '../HomePage/Header';
 
 const companies = [

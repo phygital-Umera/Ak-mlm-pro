@@ -30,7 +30,7 @@ const steps = [
   },
 ];
 
-const Result = () => {
+const MissionVision = () => {
   const [activeIndex, setActiveIndex] = useState(null);
 
   const toggleIndex = (index) => {
@@ -96,4 +96,4 @@ const Result = () => {
     </section>
   );
 };
-export default Result;
+export default MissionVision;

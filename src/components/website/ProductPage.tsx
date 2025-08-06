@@ -90,7 +90,7 @@ const steps = [
   // },
 ];
 
-const SecondPage = () => {
+const ProductPage = () => {
   const [activeStep, setActiveStep] = useState(1);
 
   return (
@@ -302,4 +302,4 @@ const SecondPage = () => {
   );
 };
 
-export default SecondPage;
+export default ProductPage;
