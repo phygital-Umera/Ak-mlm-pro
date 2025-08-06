@@ -4,6 +4,7 @@ import {FiMenu, FiX} from 'react-icons/fi';
 import React from 'react';
 import logo1 from '../../assets/images/icon/logo.png';
 import sigma from '../../../public/sigmanew.pdf';
+import {Logo} from '@/assets';
 
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -18,7 +19,7 @@ const Header = () => {
           <div className="flex items-center">
             <Link to="/" className="group">
               <img
-                src={logo1}
+                src={Logo}
                 alt="logo"
                 className="h-12 w-auto transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-md"
               />

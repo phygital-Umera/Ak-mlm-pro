@@ -37,7 +37,7 @@ const LandingPage = () => {
       <BannerPage />
       <HeroSection />
       <ConnectingPeoplePage />
-      <AboutUs />
+      {/* <AboutUs /> */}
       <MissionVision />
       <ProductPage />
       <FooterSection />

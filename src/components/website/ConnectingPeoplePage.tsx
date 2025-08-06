@@ -1,98 +1,50 @@
 import React from 'react';
 
-const benefits = [
-  {
-    title: 'Benefit ONE',
-    description:
-      'Create your account and explore our exclusive lifestyle, mobility, and wellness offerings.',
-  },
-  {
-    title: 'Benefit TWO',
-    description:
-      'Choose from a wide range of EV bikes, wellness subscriptions, or smart tech gadgets.',
-  },
-  {
-    title: 'Benefit THREE',
-    description:
-      'Track your product usage, service plans, and stay updated through your dashboard.',
-  },
-  {
-    title: 'Benefit FOUR',
-    description:
-      'Access personalized lifestyle upgrades curated just for you by Siggmalyf.',
-  },
-  {
-    title: 'Benefit FIVE',
-    description:
-      'Enjoy seamless mobility services and wellness support, all in one platform.',
-  },
-  {
-    title: 'Benefit SIX',
-    description:
-      'Get priority support and special rewards as a valued Siggmalyf member.',
-  },
-];
-
-const ConnectingPeoplePage = () => {
+const ConnectingPeoplePage: React.FC = () => {
   return (
-    <section className="bg-slate-50 py-5">
-      <div className="mx-auto max-w-6xl px-6">
-        {/* Header */}
-        <div className="mb-16 text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm">
-            <div className="h-2 w-2 rounded-full bg-slate-400"></div>
-            KEY BENEFITS
-          </div>
+    <div className="flex items-center justify-center bg-white px-8 py-30">
+      <div className="grid w-full max-w-6xl grid-cols-1 items-center gap-4 lg:grid-cols-2 lg:gap-12">
+        {/* Left side - Image mosaic */}
+        <img
+          src="https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Business_Opportunities_01dbaae13a.jpg"
+          alt="Image"
+          className="rounded-xl"
+        />
 
-          <h2 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl">
-            Highlight the Biggest Benefits
+        {/* Right side - Content */}
+        <div className="">
+          <h2 className="text-4xl font-bold leading-tight text-blue-600 md:text-5xl">
+            About Us
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-slate-600">
-            Discover why thousands choose our platform for their lifestyle and
-            wellness needs
+
+          <p className="text-gray-700 text-lg leading-relaxed">
+            The starting point for every journey is knowledge, if you have the
+            knowledge about the path on which you have to travel, then the
+            journey is going to be easier and more successful. We at Vestige,
+            emphasize that when you register yourself as a Vestige Distributor,
+            please read the Marketing Plan and understand the opportunity that
+            can help you fulfil your dreams.
           </p>
-        </div>
 
-        {/* Benefits Grid */}
-        <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2">
-          {benefits.map((benefit, index) => (
-            <div
-              key={index}
-              className="group rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:border-slate-300 hover:shadow-md"
+          {/* <button className="group flex items-center gap-2 rounded-lg bg-blue-600 px-8 py-4 font-semibold text-white transition-colors duration-300 hover:bg-blue-700">
+            Start you business
+            <svg
+              className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <div className="flex items-start gap-4">
-                {/* Icon */}
-                <div className="mt-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 transition-colors duration-300 group-hover:bg-slate-200">
-                  <svg
-                    className="h-4 w-4 text-slate-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-
-                {/* Content */}
-                <div className="flex-1">
-                  <h3 className="mb-2 font-semibold text-slate-900 transition-colors duration-300 group-hover:text-slate-700">
-                    {benefit.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed text-slate-600">
-                    {benefit.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
+          </button> */}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
