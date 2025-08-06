@@ -12,7 +12,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="border-gray-200/50 fixed left-0 z-50 mb-10 w-full border-b bg-whiter shadow-lg">
+      <header className="border-gray-200/50 fixed left-0 z-50 mb-10 w-full border-b bg-white shadow-lg">
         <div className="relative mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:px-6 md:py-5">
           {/* LEFT: Logo */}
           <div className="flex items-center">
