@@ -197,6 +197,9 @@ const DisplayPendingCommisionReport: React.FC = () => {
                 TDS
               </th>
               <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
+                Admin Charges
+              </th>
+              <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
                 Details
               </th>
               <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
@@ -228,8 +231,9 @@ const DisplayPendingCommisionReport: React.FC = () => {
                 className="border-b border-stroke dark:border-strokedark"
               >
                 <td className="px-4 py-2 text-left">{row.crnNo}</td>
-                <td className="px-4 py-2 text-left">{row.amount}</td>
+                <td className="px-4 py-2 text-left">{row.payableAmount}</td>
                 <td className="px-4 py-2 text-left">{row.tdsAmount}</td>
+                <td className="px-4 py-2 text-left">{row.tdsAmount * 4}</td>
                 <td className="px-4 py-2 text-left">{row.details}</td>
                 <td className="px-4 py-2 text-left">{row.type}</td>
                 <td className="px-4 py-2 text-left">

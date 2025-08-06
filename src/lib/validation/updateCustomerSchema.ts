@@ -2,18 +2,18 @@ import {z} from 'zod';
 
 export const updateCustomerSchema = z
   .object({
-    // crnNo: z
-    //   .string({required_error: 'CRN No is required'})
-    //   .min(5, {message: 'CRN No must be at least 5 characters'}),
-    sponsorId: z
-      .string({required_error: 'Sponsor ID is required'})
-      .min(5, {message: 'Sponsor ID must be at least 5 characters'}),
+    crnNo: z
+      .string({required_error: 'CRN No is required'})
+      .min(5, {message: 'CRN No must be at least 5 characters'}),
+    // sponsorId: z
+    //   .string({required_error: 'Sponsor ID is required'})
+    //   .min(5, {message: 'Sponsor ID must be at least 5 characters'}),
     firstName: z
       .string({required_error: 'First name is required'})
       .min(3, {message: 'First name must be at least 3 characters'}),
-    // lastName: z
-    //   .string({required_error: 'Last name is required'})
-    //   .min(3, {message: 'Last name must be at least 3 characters'}),
+    lastName: z
+      .string({required_error: 'Last name is required'})
+      .min(3, {message: 'Last name must be at least 3 characters'}),
     gender: z.string({required_error: 'Gender is required'}).optional(),
     dob: z.string().optional(),
     email: z

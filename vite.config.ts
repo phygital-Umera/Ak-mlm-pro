@@ -1,7 +1,7 @@
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 import viteReact from '@vitejs/plugin-react';
-import {TanStackRouterVite} from '@tanstack/router-plugin/vite';
-import {resolve} from 'path';
+import { TanStackRouterVite } from '@tanstack/router-plugin/vite';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [TanStackRouterVite(), viteReact()],
@@ -12,5 +12,9 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 2500,
+  },
+  server: {
+    host: '0.0.0.0',  // 👈 This exposes it to the network
+    port: 5173        // 👈 Optional: avoid random port change
   },
 });

@@ -11,7 +11,7 @@ import {FaArrowLeftLong, FaUnderline} from 'react-icons/fa6';
 import {IoIosArrowDown} from 'react-icons/io';
 import {NetworkIcon, ProfileIcon, RegistrationIcon, ReportIcon} from '@/icons';
 import {useAuthContext} from '@/context/AuthContext';
-import {BiListUl, BiRupee} from 'react-icons/bi';
+import {BiAward, BiListUl, BiRupee} from 'react-icons/bi';
 import {MdApproval} from 'react-icons/md';
 import {FaHistory, FaNetworkWired} from 'react-icons/fa';
 import {GiTargetPoster} from 'react-icons/gi';
@@ -62,11 +62,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             path: '/admin/sharelink',
             icon: <PiShareLight size={22} />,
           },
-          {
-            label: 'Wallet Report',
-            path: '/admin/wallethistory',
-            icon: <FaHistory size={20} />,
-          },
+          // {
+          //   label: 'Wallet Report',
+          //   path: '/admin/wallethistory',
+          //   icon: <FaHistory size={20} />,
+          // },
 
           // {
           //   label: 'Sales Report',
@@ -161,11 +161,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/customerregisterc',
               icon: <RegistrationIcon size={22} />,
             },
-            {
-              label: 'Customer Profile',
-              path: '/customer/profile',
-              icon: <ProfileIcon size={22} />,
-            },
+            // {
+            //   label: 'Customer Profile',
+            //   path: '/customer/profile',
+            //   icon: <ProfileIcon size={22} />,
+            // },
             {
               label: 'Network',
               path: '/customer/networkc',
@@ -191,13 +191,13 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/customersidesharelink',
               icon: <PiSquaresFourLight size={22} />,
             },
+            // {
+            //   label: 'Wallet',
+            //   path: '/customer/walletc',
+            //   icon: <PiSquaresFourLight size={22} />,
+            // },
             {
-              label: 'Wallet',
-              path: '/customer/walletc',
-              icon: <PiSquaresFourLight size={22} />,
-            },
-            {
-              label: 'History Payout',
+              label: ' Payout History',
               path: '/customer/historypayout',
               icon: <PiSquaresFourLight size={22} />,
             },
@@ -217,11 +217,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/epinc',
               icon: <PiNavigationArrowFill size={22} />,
             },
-            {
-              label: 'Product E-Pin',
-              path: '/customer/productepin',
-              icon: <PiNavigationArrowFill size={22} />,
-            },
+            // {
+            //   label: 'Product E-Pin',
+            //   path: '/customer/productepin',
+            //   icon: <PiNavigationArrowFill size={22} />,
+            // },
             // {
             //   label: 'Repurchase Product',
             //   path: '/customer/repurchaseproduct',

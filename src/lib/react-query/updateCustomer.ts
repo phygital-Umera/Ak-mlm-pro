@@ -10,6 +10,7 @@ import {
   assignEpin,
   getAllCustomers,
   getAllEmails,
+  getCustomerById,
   updateCustomer,
   updateCustomerActive,
   updateCustomerEmail,
@@ -20,8 +21,7 @@ import {getAllEPins} from '../api/Admin/Epin/epin';
 export const useUpdateCustomer = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({id, data}: {id: string; data: UpdateCustomerData}) =>
-      updateCustomer(id, data),
+    mutationFn: (data: UpdateCustomerData) => updateCustomer(data),
     onSuccess: () => {
       // console.log('Customer updated successfully:', res);
       queryClient.invalidateQueries({
@@ -95,5 +95,12 @@ export const useUpdateCustomerActive = () => {
     onError: (error: unknown) => {
       console.error(error);
     },
+  });
+};
+
+export const useGetCustomerById = () => {
+  return useQuery({
+    queryKey: ['profile'],
+    queryFn: getCustomerById,
   });
 };

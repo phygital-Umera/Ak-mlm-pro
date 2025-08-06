@@ -22,6 +22,7 @@ export const useCustomerLogin = () => {
     mutationFn: loginCustomer,
     onSuccess: (res) => {
       localStorage.setItem(QUERY_KEYS.TOKEN, JSON.stringify(res.data.token));
+      localStorage.setItem(QUERY_KEYS.CUSTOMER, JSON.stringify(res.data.customer));
     },
     onError: (error: Error) => {
       console.error('Error during login:', error.message);

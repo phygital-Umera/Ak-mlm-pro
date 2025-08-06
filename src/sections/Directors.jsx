@@ -152,7 +152,7 @@ const Directors = () => {
         whileInView="visible"
         viewport={{once: false, margin: '-100px', reverse: true}}
       >
-        Our Leadership
+        Mr. Akshay Kadam
       </Title>
 
       <motion.div
@@ -162,11 +162,16 @@ const Directors = () => {
         viewport={{once: false, margin: '-50px', reverse: true}}
       >
         <Director variants={itemVariants}>
-          <Name>Mr. Akshay Kadam (CEO) – The Visionary Strategist</Name>
+          {/* <Name> (CEO) – The Visionary Strategist</Name> */}
           <Description>
-            Over 25 years in pharmaceuticals and 5+ years in direct selling, Mr.
-            Gondhali built a ₹500 Cr company, launched 1300+ e-bike showrooms,
-            and shaped Siggmalyf&apos;s strategic direction.
+            Hello, I am Akshay Sanjay Kadam (Chairman & Managing Director of TMS
+            LIFE SOLUTION PVT LTD.) Through this company, the aim is to provide
+            youth employment along with good daily necessities. TMS LIFE
+            SOLUTION PVT LTD company is working to provide good quality
+            facilities like daily life health items, organic farming products
+            etc. The aim of TMS LIFE SOLUTION PVT LTD is to achieve stability in
+            all sectors that will impact human life in the coming period, such
+            as economic, social, health, and industrial.
           </Description>
         </Director>
         {/* 

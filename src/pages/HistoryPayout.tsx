@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import GenericTable from '@/components/Forms/Table/GenericTable';
 import {Column} from '@/types';
 import {useFetchPayout} from '@/lib/react-query/Customer/payout';
@@ -13,46 +13,39 @@ interface PayoutEntry {
   total: number;
 }
 
+// Static fallback data
+const staticData: PayoutEntry[] = [
+  {
+    srNo: 1,
+    crn: 'CRN001',
+    name: 'John Doe',
+    binary: 1000,
+    royalty: 500,
+    repurchase: 300,
+    total: 1800,
+  },
+  {
+    srNo: 2,
+    crn: 'CRN002',
+    name: 'Jane Smith',
+    binary: 800,
+    royalty: 200,
+    repurchase: 400,
+    total: 1400,
+  },
+];
+
 const HistoryPayout: React.FC = () => {
   const {data: apiData, isLoading, error} = useFetchPayout();
-  const [payoutData, setPayoutData] = useState<PayoutEntry[]>([]);
-  const [form, setForm] = useState({
-    crn: '',
-    name: '',
-    binary: '',
-    royalty: '',
-    repurchase: '',
-  });
+  const [tableData, setTableData] = useState<PayoutEntry[]>([]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target;
-    setForm({...form, [name]: value});
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const newEntry: PayoutEntry = {
-      srNo: payoutData.length + 1,
-      crn: form.crn,
-      name: form.name,
-      binary: Number(form.binary),
-      royalty: Number(form.royalty),
-      repurchase: Number(form.repurchase),
-      total:
-        Number(form.binary) + Number(form.royalty) + Number(form.repurchase),
-    };
-
-    setPayoutData([...payoutData, newEntry]);
-
-    setForm({
-      crn: '',
-      name: '',
-      binary: '',
-      royalty: '',
-      repurchase: '',
-    });
-  };
+  useEffect(() => {
+    if (apiData?.data && apiData.data.length > 0) {
+      setTableData(apiData.data);
+    } else {
+      setTableData(staticData); // fallback if no API data
+    }
+  }, [apiData]);
 
   const columns: Column<PayoutEntry>[] = [
     {header: 'Sr. No.', accessor: 'srNo'},
@@ -64,19 +57,31 @@ const HistoryPayout: React.FC = () => {
     {header: 'Total', accessor: 'total'},
   ];
 
-  return (
-    <div>
-      {isLoading ? (
-        <p className="text-center">Pending...</p>
-      ) : (
+  if (isLoading) {
+    return <p className="text-center text-blue-600">Loading payout data...</p>;
+  }
+
+  if (error) {
+    return (
+      <div className="text-center text-red-500">
+        Failed to fetch payout data. Showing default data.
         <GenericTable
-          title="Payout History"
-          data={apiData?.data}
+          title="Payout History (Static)"
+          data={staticData}
           columns={columns}
           itemsPerPage={5}
         />
-      )}
-    </div>
+      </div>
+    );
+  }
+
+  return (
+    <GenericTable
+      title="Payout History"
+      data={tableData}
+      columns={columns}
+      itemsPerPage={5}
+    />
   );
 };
 

@@ -27,7 +27,7 @@ const SignIn: React.FC = () => {
     defaultValues: {},
   });
 
-  const {setUser, setIsAuthenticated, setToken} = useAuthContext();
+  const {setUser, setIsAuthenticated, setToken, setCustomer} = useAuthContext();
   const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (values: SignInFormValues) => {
@@ -37,25 +37,24 @@ const SignIn: React.FC = () => {
         password: values.password,
       });
       setUser(jwtDecode(res.data.token.accessToken || ''));
+      setCustomer(res.data?.customer);
+
       setToken(res.data?.token);
       setIsAuthenticated(true);
       const decoded = jwtDecode<DecodedToken>(res.data.token.accessToken || '');
-
       const role = decoded.role;
-      console.log(decoded.role);
       if (role === 'ADMIN') {
         window.location.href = '/dashboard';
       }
       if (role === 'CUSTOMER') {
         window.location.href = '/customer/dashboard';
       }
-      // if (role === 'SELLER') {
-      //   window.location.href = '/seller/dashboard';
-      // }
+      if (role === 'SELLER') {
+        window.location.href = '/seller/dashboard';
+      }
     } catch (error) {
       if (error.response.status === 401) {
       }
-      console.error(error);
     }
   };
 

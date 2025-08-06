@@ -112,7 +112,9 @@ function App() {
           <AnimatePresence>
             <main className="App" data-scroll-container ref={containerRef}>
               <Home />
+              <div style={{height: '5rem'}} />
               <About />
+              <div style={{height: '5rem'}} />
               <Directors />
               <Shop />
               <Banner />

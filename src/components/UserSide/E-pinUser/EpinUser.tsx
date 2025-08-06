@@ -79,6 +79,7 @@ const EpinUser: React.FC = () => {
                 label="Price"
                 options={[
                   {value: '3150', label: '3150'},
+                  {value: '3300', label: '3300'},
                   {value: '3600', label: '3600'},
                 ]}
               />

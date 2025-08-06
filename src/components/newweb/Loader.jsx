@@ -2,91 +2,169 @@ import {motion} from 'framer-motion';
 import React from 'react';
 import styled from 'styled-components';
 
+// Modern gradient background container
 const Container = styled(motion.div)`
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  touch-action: none;
-  overflow: hidden;
-  width: 100vw;
-  height: 100vh;
-  z-index: 6;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: black;
+  background: linear-gradient(135deg, #121212 0%, #1a1a1a 100%);
+  z-index: 9999;
+  overflow: hidden;
+  touch-action: none;
+`;
 
-  svg {
-    width: 10vw;
-    height: auto;
-    overflow: visible;
+// Animated gradient circle
+const LoaderCircle = styled(motion.div)`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #00c6fb 0%, #005bea 100%);
+  box-shadow: 0 0 20px rgba(0, 198, 251, 0.4);
+  margin-bottom: 2rem;
+  position: relative;
 
-    path {
-      stroke: #fff;
-      fill: none;
-      stroke-width: 0.8;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
+  &::after {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #005bea 0%, #00c6fb 100%);
+    z-index: -1;
+    filter: blur(10px);
+    opacity: 0.7;
   }
 
-  @media (max-width: 48em) {
-    svg {
-      width: 20vw;
-    }
+  @media (max-width: 768px) {
+    width: 60px;
+    height: 60px;
   }
 `;
 
-const textVariants = {
+// Modern text styling
+const Text = styled(motion.span)`
+  font-size: ${(props) => props.theme.fontxl || '2rem'};
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #ffffff 0%, #d1d1d1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0.25rem 0;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: ${(props) => props.theme.fontlg || '1.5rem'};
+  }
+`;
+
+// Additional decorative element
+const DecorativeLine = styled(motion.div)`
+  width: 100px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 198, 251, 0.8) 50%,
+    transparent 100%
+  );
+  margin: 1rem 0;
+`;
+
+// Animation variants
+const containerVariants = {
   hidden: {opacity: 0},
   visible: {
     opacity: 1,
     transition: {
-      duration: 1,
-      yoyo: Infinity,
-      ease: 'easeInOut',
+      staggerChildren: 0.2,
+      when: 'beforeChildren',
+    },
+  },
+  exit: {
+    y: '100%',
+    opacity: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1],
     },
   },
 };
 
-const Text = styled(motion.span)`
-  font-size: ${(props) => props.theme.fontxl};
-  color: ${(props) => props.theme.text};
-  padding-top: 0.5rem;
-  @media (max-width: 48em) {
-    font-size: ${(props) => props.theme.fontlg};
-  }
-`;
+const circleVariants = {
+  hidden: {scale: 0.8, opacity: 0},
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1],
+      repeatType: 'mirror',
+      repeat: Infinity,
+      repeatDelay: 1,
+    },
+  },
+};
+
+const textVariants = {
+  hidden: {opacity: 0, y: 10},
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
+
+const lineVariants = {
+  hidden: {scaleX: 0, opacity: 0},
+  visible: {
+    scaleX: 1,
+    opacity: 1,
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
 
 const Loader = () => {
   return (
     <Container
-      initial={{y: 0, opacity: 1}}
-      exit={{y: '100%', opacity: 0}}
-      transition={{duration: 2}}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      exit="exit"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
-        <motion.path
-          key="sigma-path"
-          variants={{
-            hidden: {pathLength: 0, opacity: 0},
-            visible: {
-              pathLength: 1,
-              opacity: 1,
-              transition: {duration: 1.5, ease: 'easeIn'},
-            },
-          }}
-          initial="hidden"
-          animate="visible"
-          d="M16,16H10.41l3.3-3.29a1,1,0,0,0,0-1.42L10.41,8H16a1,1,0,0,0,0-2H8a1,1,0,0,0-.92.62,1,1,0,0,0,.21,1.09L11.59,12l-4.3,4.29a1,1,0,0,0-.21,1.09A1,1,0,0,0,8,18h8a1,1,0,0,0,0-2Z"
-        />
-      </svg>
-      <Text variants={textVariants} initial="hidden" animate="visible">
-        TMS LIFE
-      </Text>
+      <LoaderCircle
+        variants={circleVariants}
+        animate={{
+          rotate: 360,
+          transition: {
+            duration: 2,
+            repeat: Infinity,
+            ease: 'linear',
+          },
+        }}
+      />
+
+      <DecorativeLine variants={lineVariants} />
+
+      <Text variants={textVariants}>WELCOME TO</Text>
+      <Text variants={textVariants}>TMS LIFE</Text>
+      <Text variants={textVariants}>SOLUTION</Text>
     </Container>
   );
 };

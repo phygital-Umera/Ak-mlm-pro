@@ -145,6 +145,11 @@ const CoverVideo = () => {
             data-scroll
             data-scroll-delay="0.5"
             data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
           >
             T
           </motion.h1>
@@ -153,6 +158,11 @@ const CoverVideo = () => {
             data-scroll
             data-scroll-delay="0.4"
             data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Mobile-first size with growth
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
           >
             M
           </motion.h1>
@@ -161,6 +171,11 @@ const CoverVideo = () => {
             data-scroll
             data-scroll-delay="0.3"
             data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
           >
             S
           </motion.h1>
@@ -169,6 +184,11 @@ const CoverVideo = () => {
             data-scroll
             data-scroll-delay="0.2"
             data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
           >
             L
           </motion.h1>
@@ -177,6 +197,11 @@ const CoverVideo = () => {
             data-scroll
             data-scroll-delay="0.1"
             data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
           >
             I
           </motion.h1>
@@ -185,6 +210,11 @@ const CoverVideo = () => {
             data-scroll
             data-scroll-delay="0.09"
             data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
           >
             F
           </motion.h1>
@@ -193,25 +223,118 @@ const CoverVideo = () => {
             data-scroll
             data-scroll-delay="0.08"
             data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
           >
             E
           </motion.h1>
-          {/* <motion.h1
+          <motion.h1
             variants={item}
             data-scroll
             data-scroll-delay="0.07"
             data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
           >
-            y
+            S
           </motion.h1>
           <motion.h1
             variants={item}
             data-scroll
             data-scroll-delay="0.06"
             data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
           >
-            f
-          </motion.h1> */}
+            O
+          </motion.h1>
+          <motion.h1
+            variants={item}
+            data-scroll
+            data-scroll-delay="0.06"
+            data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
+          >
+            L
+          </motion.h1>
+          <motion.h1
+            variants={item}
+            data-scroll
+            data-scroll-delay="0.06"
+            data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
+          >
+            U
+          </motion.h1>
+          <motion.h1
+            variants={item}
+            data-scroll
+            data-scroll-delay="0.06"
+            data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
+          >
+            T
+          </motion.h1>
+          <motion.h1
+            variants={item}
+            data-scroll
+            data-scroll-delay="0.06"
+            data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
+          >
+            I
+          </motion.h1>
+          <motion.h1
+            variants={item}
+            data-scroll
+            data-scroll-delay="0.06"
+            data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
+          >
+            O
+          </motion.h1>
+          <motion.h1
+            variants={item}
+            data-scroll
+            data-scroll-delay="0.06"
+            data-scroll-speed="4"
+            style={{
+              fontSize: 'calc(2.5rem + 1vw)', // Medium size fallback
+              fontFamily: 'Kaushan Script',
+              textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+            }}
+          >
+            N
+          </motion.h1>
         </div>
         <motion.h2
           variants={item}

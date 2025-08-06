@@ -41,25 +41,25 @@ export const Epin: React.FC = () => {
     setSelectedType('');
   };
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success('E-Pin created successfully');
-      methods.reset();
-    }
-    if (error) {
-      toast.error('Error creating E-Pin');
-    }
-  }, [isSuccess]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     toast.success('E-Pin created successfully');
+  //     methods.reset();
+  //   }
+  //   if (error) {
+  //     toast.error('Error creating E-Pin');
+  //   }
+  // }, [isSuccess]);
 
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success('E-Pin created successfully');
-      methods.reset();
-    }
-    if (error) {
-      toast.error('Error creating E-Pin');
-    }
-  }, [isSuccess]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     toast.success('E-Pin created successfully');
+  //     methods.reset();
+  //   }
+  //   if (error) {
+  //     toast.error('Error creating E-Pin');
+  //   }
+  // }, [isSuccess]);
 
   return (
     <FormProvider {...methods}>
@@ -85,7 +85,8 @@ export const Epin: React.FC = () => {
               name="price"
               options={[
                 {label: 'Product 1 (3150)', value: '3150'},
-                {label: 'Product 2 (3600)', value: '3600'},
+                {label: 'Product 2 (3300)', value: '3300'},
+                {label: 'Product 3 (3600)', value: '3600'},
               ]}
               onChange={handleTypeChange}
             />

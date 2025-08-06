@@ -49,9 +49,9 @@ const Text = styled(motion.span)`
 const Logo = () => {
   return (
     <Container>
-      <Link to="/">
-        <img src={logo} alt="SIGGMALYF" />
-      </Link>
+      {/* <Link to="/"> */}
+        <img src={logo} alt="logo" />
+      {/* </Link> */}
     </Container>
   );
 };

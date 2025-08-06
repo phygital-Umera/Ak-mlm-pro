@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, {useEffect, useState} from 'react';
 import {IoTodaySharp, IoWalletSharp} from 'react-icons/io5';
 import {
@@ -12,6 +13,7 @@ import {useFetchCustomerHome} from '@/lib/react-query/Customer/home';
 import Loader from '@/components/common/Loader';
 import Popup from '@/components/Popu/Popup';
 import {BsWalletFill} from 'react-icons/bs';
+import IncompleteProfilePopup from '@/components/Popu/IncompleteProfilePopup';
 
 interface StatCardProps {
   amount: string;
@@ -36,7 +38,8 @@ interface RewardTier {
 }
 
 const CustomerDashboard: React.FC = () => {
-  const {user} = useAuthContext();
+  const {user, customer} = useAuthContext();
+  // console.log('user', user);
   const {
     data: dataa,
     isError,
@@ -44,7 +47,7 @@ const CustomerDashboard: React.FC = () => {
     refetch,
     isSuccess,
   } = useFetchCustomerHome();
-  console.log('firsttttttttt', dataa);
+  // console.log('firsttttttttt', dataa);
 
   const [statsData, setStatsData] = useState<StatCardProps[]>([]);
   const [lastCustomers, setLastCustomers] = useState<Customer[]>([]);
@@ -54,6 +57,47 @@ const CustomerDashboard: React.FC = () => {
   const [currentTier, setCurrentTier] = useState<RewardTier | null>(null);
   const [nextTier, setNextTier] = useState<RewardTier | null>(null);
   const [progressPercentage, setProgressPercentage] = useState(0);
+  const [selectedView, setSelectedView] = useState<'today' | 'month'>('today');
+
+  const isCustomerProfileIncomplete = (customer: any) => {
+    if (!customer) return true;
+
+    const requiredFields = [
+      'dob',
+      'gender',
+      'flatNo',
+      'areaName',
+      'landMark',
+      'pinCode',
+      'city',
+      'state',
+      'aadharNo',
+      'panNo',
+      'bankName',
+      'bankAccNo',
+      'bankIFSC',
+      'bankBranch',
+      'upiId',
+    ];
+
+    return requiredFields.some((field) => customer[field] == null);
+  };
+
+  const [showIncompletePopup, setShowIncompletePopup] = useState(
+    isCustomerProfileIncomplete(customer),
+  );
+  const [showEpinPopup, setShowEpinPopup] = useState(
+    !isCustomerProfileIncomplete(customer) && !user?.isActive,
+  );
+
+  useEffect(() => {
+    if (!isCustomerProfileIncomplete(customer)) {
+      setShowIncompletePopup(false);
+      if (!user?.isActive) {
+        setShowEpinPopup(true);
+      }
+    }
+  }, [customer, user?.isActive]);
 
   // Define all reward tiers
   const rewardTiers: RewardTier[] = [
@@ -169,12 +213,12 @@ const CustomerDashboard: React.FC = () => {
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
-          title: 'Total Binary Commission',
+          title: 'Total Matching Commission',
           amount: `${dataa?.binary || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
-          title: 'Today Binary Commission',
+          title: 'Today Matching Commission',
           amount: `${dataa?.todayBinary || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
@@ -189,12 +233,12 @@ const CustomerDashboard: React.FC = () => {
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
-          title: 'Total Royalty Commission',
+          title: 'Total Direct Sponsor Income ',
           amount: `${dataa?.royelty || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
-          title: 'Today Royalty Commission',
+          title: 'Today Direct Sponsor Income',
           amount: `${dataa?.todayRoyalty || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
@@ -299,9 +343,33 @@ const CustomerDashboard: React.FC = () => {
 
   return (
     <>
-      {/* {isPopup && <Popup onClose={handlePopupClose} />} */}
-
+      {showEpinPopup && <Popup onClose={() => setShowEpinPopup(false)} />}
+      {showIncompletePopup && (
+        <IncompleteProfilePopup onClose={() => setShowIncompletePopup(false)} />
+      )}
       <div>
+        <div className="mb-6 flex items-center gap-4">
+          <button
+            onClick={() => setSelectedView('today')}
+            className={`rounded-lg px-4 py-2 text-sm font-medium ${
+              selectedView === 'today'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-800'
+            }`}
+          >
+            Today
+          </button>
+          <button
+            onClick={() => setSelectedView('month')}
+            className={`rounded-lg px-4 py-2 text-sm font-medium ${
+              selectedView === 'month'
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-800'
+            }`}
+          >
+            All
+          </button>
+        </div>
         {/* Reward Progress Section */}
         <div className="mb-6 rounded-lg border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="flex items-center justify-between">

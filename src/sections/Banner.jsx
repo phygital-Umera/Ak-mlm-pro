@@ -3,24 +3,24 @@ import styled from 'styled-components';
 
 const Section = styled.section`
   min-height: 100vh;
-  width: 80vw;
+  width: 90vw;  // Increased from 80vw
+  max-width: 1200px;  // Added maximum width
   margin: 0 auto;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  /* background-color: blue; */
   position: relative;
 
   @media (max-width: 48em) {
-    width: 90vw;
+    width: 95vw;  // Increased for mobile
   }
 `;
 
 const Container = styled.div`
   min-height: 100vh;
-
+  width: 100%;  // Added to ensure full width
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -32,34 +32,39 @@ const Container = styled.div`
 `;
 
 const BannerComponent = styled.h1`
-  font-size: ${(props) => props.theme.fontxxxl};
-  font-family: 'Kaushan Script';
+  font-size: ${(props) => props.theme.fontxxl};  // Increased size
+  font-family: 'Kaushan Script', cursive;
   color: ${(props) => props.theme.text};
-  /* position: absolute; */
   white-space: nowrap;
   text-transform: uppercase;
-  line-height: 1;
+  line-height: 1.5;  // Reduced line height
+  font-weight: 500;
+  width: 100%;  // Added to ensure full width
+  text-align: center;  // Center alignment
 
   @media (max-width: 70em) {
-    font-size: ${(props) => props.theme.fontxxl};
+    font-size: ${(props) => props.theme.fontxl};  // Adjusted size
   }
   @media (max-width: 64em) {
-    margin: 1rem 0;
+    margin: 1rem 0;  // Increased margin
+    font-size: ${(props) => props.theme.fontlg};
   }
-
   @media (max-width: 48em) {
-    font-size: ${(props) => props.theme.fontxl};
-    margin: 0.5rem 0;
+    font-size: ${(props) => props.theme.fontmd};
+    margin: 0.75rem 0;
+    white-space: normal;  // Allow text to wrap on mobile
   }
   @media (max-width: 30em) {
-    font-size: ${(props) => props.theme.fontlg};
+    font-size: ${(props) => props.theme.fontsm};
   }
 
   span {
-    display: block;
+    display: inline-block;  // Changed from block to inline-block
     background-color: ${(props) => props.theme.body};
-
-    padding: 1rem 2rem;
+    padding: 0.75rem 2rem;  // Increased horizontal padding
+    border-radius: 8px;
+    text-align: center;
+    margin: 0.5rem 0;  // Added vertical margin
   }
 `;
 

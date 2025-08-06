@@ -8,6 +8,7 @@ import GenericButton from '../Forms/Buttons/GenericButton';
 import toast from 'react-hot-toast';
 import {QUERY_KEYS} from '@/lib/react-query/QueryKeys';
 import {useUpdateCustomerActive} from '@/lib/react-query/updateCustomer';
+// import QrCode from '../../../public/qrcode.jpeg';
 
 interface PopupProps {
   onClose: () => void;
@@ -17,7 +18,7 @@ const epinSchema = z.object({
   epinNo: z.string().min(1, 'EPIN is required'),
 });
 
-const Popup: React.FC<PopupProps> = ({onClose}) => {
+const Popup: React.FC<PopupProps> = ({}) => {
   const methods = useForm({
     resolver: zodResolver(epinSchema),
     defaultValues: {
@@ -131,6 +132,16 @@ const Popup: React.FC<PopupProps> = ({onClose}) => {
                 </div>
               </div>
             </form>
+            {/* <div className="mb-20 flex flex-col items-center sm:mt-10 lg:mt-12">
+              <h2 className="text-md mb-2 font-semibold md:text-lg lg:text-xl">
+                Scan to Pay
+              </h2>
+              <img
+                src={QrCode}
+                alt="SIGGMALYF Ventures QR"
+                className="h-40 w-50 rounded-lg border shadow-lg sm:h-48 sm:w-48 md:max-w-[250px] lg:h-80 lg:w-56"
+              />
+            </div> */}
           </FormProvider>
         )}
       </div>

@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useState} from 'react';
 import {AuthContext} from './AuthContext';
-import {Token, User} from '@/types';
+import {Token, User, Customer} from '@/types';
 import {QUERY_KEYS} from '@/lib/react-query/QueryKeys';
 import {jwtDecode} from 'jwt-decode';
 
@@ -10,10 +10,14 @@ const AuthContextProvider = ({children}: {children: ReactNode}) => {
   const [token, setToken] = useState<Token | null>(null);
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [customer, setCustomer] = useState<Customer | null>(null);
 
   useEffect(() => {
     const localToken = JSON.parse(
       localStorage.getItem(QUERY_KEYS.TOKEN) || 'null',
+    );
+    const localCustomer = JSON.parse(
+      localStorage.getItem(QUERY_KEYS.CUSTOMER) || 'null',
     );
 
     if (localToken) {
@@ -26,11 +30,13 @@ const AuthContextProvider = ({children}: {children: ReactNode}) => {
         setRole(null);
         setIsSuperAdmin(false);
         setIsAuthenticated(false);
+        setCustomer(null);
       } else {
         setToken(localToken);
         setUser(decodedToken);
         setRole(decodedToken.role);
         setIsAuthenticated(true);
+        setCustomer(localCustomer);
       }
     }
   }, []);
@@ -46,6 +52,8 @@ const AuthContextProvider = ({children}: {children: ReactNode}) => {
     setIsAuthenticated,
     isSuperAdmin,
     setIsSuperAdmin,
+    customer,
+    setCustomer,
   };
 
   return (

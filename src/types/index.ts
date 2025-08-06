@@ -48,6 +48,30 @@ export interface User {
   id: string;
 }
 
+export interface Customer {
+  userId: string;
+  crnNo: string;
+  dob?: string;
+  gender?: string;
+  flatNo?: string;
+  areaName?: string;
+  landMark?: string;
+  pinCode?: string;
+  city?: string;
+  state?: string;
+  aadharNo?: string;
+  panNo?: string;
+  bankName?: string;
+  level?: string;
+  bankAccNo?: string;
+  bankIFSC?: string;
+  bankBranch?: string;
+  upiId?: string;
+  walletId?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type UserRole = {
   Role: string;
 };
@@ -64,6 +88,8 @@ export interface AuthContextType {
   setToken: React.Dispatch<React.SetStateAction<Token | null>>;
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  customer: Customer | null;
+  setCustomer: React.Dispatch<React.SetStateAction<Customer | null>>;
 }
 
 // **Pagination Interfaces**

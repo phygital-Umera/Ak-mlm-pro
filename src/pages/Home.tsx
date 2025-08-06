@@ -94,14 +94,14 @@ const Home: React.FC = () => {
           trendValue: '18%',
         },
         {
-          title: 'Binary Commission',
+          title: 'Pair Matching Income  ',
           amount: `₹${binaryCommission}`,
           icon: <FaSitemap className="text-2xl text-teal-500" />,
           trend: 'up',
           trendValue: '15%',
         },
         {
-          title: 'Royalty Commission',
+          title: 'Direct Sponsor Income',
           amount: `₹${royalty}`,
           icon: <FaCrown className="text-2xl text-pink-500" />,
           trend: 'up',

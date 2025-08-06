@@ -1,9 +1,9 @@
 import {EditEmails, UpdateCustomerData} from '@/types';
 import {api} from '@/utils/axios';
 
-export const updateCustomer = async (id: string, data: UpdateCustomerData) => {
+export const updateCustomer = async (data: UpdateCustomerData) => {
   try {
-    const response = await api.put(`/customers/${id}`, data);
+    const response = await api.put(`/customers/profile`, data);
     return response.data;
   } catch (error) {
     console.error(error.response?.data.message || error.message);
@@ -75,9 +75,9 @@ export const updateCustomerActive = async (data: {epinNo: string}) => {
   }
 };
 
-export const useGetCustomerById = async () => {
+export const getCustomerById = async () => {
   try {
-    const response = await api.get('/customers');
+    const response = await api.get('/customers/profile');
     return response.data;
   } catch (error) {
     console.error(

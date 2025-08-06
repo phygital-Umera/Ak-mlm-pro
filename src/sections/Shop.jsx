@@ -6,9 +6,9 @@ import React, {useLayoutEffect, useRef} from 'react';
 import styled from 'styled-components';
 
 // Replace these with your actual product images
-import waterIonizer from '../assets2/Products/Ionizer.jpg';
-import ebike from '../assets2/Products/Bicycle.jpg';
-import ebikeSpecs from '../assets2/Products/specs.jpg';
+import waterIonizer from '../assets2/Products/p1.jpeg';
+import ebike from '../assets2/Products/p2.jpeg';
+import ebikeSpecs from '../assets2/Products/p3.jpeg';
 // import cleanWater from "../assets/Products/cleanwater.jpg";
 
 const ShopReset = styled.div`
@@ -43,15 +43,20 @@ const Title = styled.h1`
   color: ${(props) => props.theme.text};
   text-shadow: 1px 1px 1px ${(props) => props.theme.body};
   position: absolute;
-  top: 1rem;
-  left: 5%;
+  top: 3rem;
+  left: 2%;
   z-index: 11;
 
   @media (max-width: 64em) {
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: 1rem;
     font-size: ${(props) => props.theme.fontxxl};
+    text-align: center;
   }
   @media (max-width: 48em) {
-    font-size: ${(props) => props.theme.fontxl};
+    font-size: ${(props) => props.theme.fontlg};
   }
 `;
 
@@ -232,21 +237,18 @@ const Shop = () => {
   const products = [
     {
       img: waterIonizer,
-      title: 'SIGGMA Water Ionizer',
-      description:
-        'Advanced ionized water system for a healthier lifestyle and better hydration.',
+      title: 'Berry Bottle',
+      description: 'Price: RS. 5400/- | Discount Price: RS. 3300/-',
     },
     {
       img: ebike,
-      title: 'SIGGMA Electric Bicycle',
-      description:
-        'Eco-friendly e-bike with long battery life, designed for urban commutes.',
+      title: 'Baldand 125',
+      description: 'Price: RS. 6000/- | Discount Price: RS. 3600/-',
     },
     {
       img: ebikeSpecs,
-      title: 'SIGGMA Cycle Specs',
-      description:
-        'Detailed specs of our electric bike, combining style, speed, and strength.',
+      title: 'Stepwell ',
+      description: 'Price: RS. 3600/- | Discount Price: RS. 3150/-',
     },
   ];
 
@@ -259,25 +261,25 @@ const Shop = () => {
         </Title>
         <Left className="full-version">
           <p>
-            SIGGMA Ventures brings you revolutionary products designed to
-            enhance your lifestyle. From advanced water solutions to
-            eco-friendly transportation, we combine innovation with
+            TMS Life Solutions Pvt. Ltd. brings you revolutionary products
+            designed to enhance your lifestyle. From advanced water solutions to
+            sustainable wellness innovations, we combine innovation with
             sustainability to create products that make a difference.
             <br />
             <br />
-            Our water ionizers transform ordinary water into antioxidant-rich
-            alkaline water, while our electric bicycles offer clean urban
-            mobility. Each product is engineered with cutting-edge technology
-            and premium materials.
+            Our offerings include the <strong>Baldand</strong>,{' '}
+            <strong>Berry Bottle</strong>, and <strong>Stepwell</strong> — all
+            crafted with cutting-edge technology and premium materials to
+            promote better health and eco-conscious living.
           </p>
         </Left>
         <Left className="mobile-version">
           <p>
-            SIGGMA Ventures delivers innovative lifestyle products combining
-            advanced technology with sustainability. Our water ionizers create
-            antioxidant-rich alkaline water, while our electric bicycles provide
-            eco-friendly urban mobility - all crafted with premium materials and
-            cutting-edge engineering.
+            TMS Life Solutions Pvt. Ltd. delivers innovative lifestyle products
+            combining advanced technology with sustainability. Our offerings
+            include the Baldand, Berry Bottle, and Stepwell — all crafted using
+            premium materials and cutting-edge engineering to promote health,
+            wellness, and eco-conscious living.
           </p>
         </Left>
         <Right data-scroll ref={Horizontalref}>

@@ -1,5 +1,6 @@
 export enum QUERY_KEYS {
   TOKEN = 'token',
+  CUSTOMER = 'customer',
 }
 // Admin Query Keys
 
