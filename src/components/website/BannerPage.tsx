@@ -1,15 +1,13 @@
 import React from 'react';
+import BannerTms from '@/assets/images/banner/bannerTms.png';
 
 const BannerPage: React.FC = () => {
-  const bannerImage =
-    'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Anniversary_Offer_Web_Banner_07b843ead1.jpg';
-
   return (
-    <section className="mb-8 h-[25vh] w-full overflow-hidden sm:h-[30vh] md:h-[30vh] lg:h-[40vh]">
+    <section className="relative -mb-2 h-[25vh] w-full overflow-hidden sm:h-[30vh] md:h-[30vh] lg:h-[40vh]">
       <img
-        src={bannerImage}
+        src={BannerTms}
         alt="Banner"
-        className="h-full w-full object-cover"
+        className="absolute left-1/2 top-1/2 w-[120%] -translate-x-1/2 -translate-y-1/2 object-contain"
       />
     </section>
   );

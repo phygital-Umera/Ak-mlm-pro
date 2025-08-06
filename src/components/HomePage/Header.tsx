@@ -110,7 +110,7 @@ const Header = () => {
         {/* MOBILE: Slide-in Side Menu */}
         <div
           className={`fixed left-0 top-0 z-40 h-full w-full bg-white p-6 shadow-lg duration-300 md:hidden ${
-            isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+            isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
           <div className="flex items-center justify-between">
