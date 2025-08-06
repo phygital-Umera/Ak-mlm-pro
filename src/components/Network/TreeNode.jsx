@@ -140,6 +140,7 @@ const TreeNode = ({network}) => {
     centeringTransitionDuration: 800,
     translateX: smallScreen ? 187 : 548,
     translateY: smallScreen ? 140 : 115,
+    pathFunc: '',
     collapsible: true,
     shouldCollapseNeighborNodes: false,
     initialDepth: 6,

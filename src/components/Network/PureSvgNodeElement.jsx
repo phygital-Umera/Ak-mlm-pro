@@ -30,83 +30,6 @@ const textLayout = {
   },
 };
 
-// const PureSvgNodeElement = ({
-//   nodeDatum,
-//   orientation,
-//   toggleNode,
-//   onNodeClick,
-// }) => {
-//   // Add Only This Const code for remove IsGolden Text from Node Tree
-//   const filteredAttributes = Object.entries(nodeDatum.attributes || {}).filter(
-//     ([key]) => key !== 'IsGolden',
-//   );
-
-//   if (nodeDatum._invisible) {
-//     return (
-//       <>
-//         {/* Draw a transparent circle just to ensure the line gets drawn */}
-//         <circle r={1} fill="transparent" />
-//       </>
-//     );
-//   }
-
-//   return (
-//     <>
-//       <image
-//         href={
-//           !nodeDatum.attributes.IsActive
-//             ? userRed
-//             : nodeDatum.attributes.IsGolden
-//               ? golden
-//               : nodeDatum.children?.length
-//                 ? user
-//                 : userbw
-//         }
-//         width={45}
-//         height={45}
-//         onClick={toggleNode}
-//         style={{cursor: 'pointer'}}
-//         x={-20} // Adjust x and y to center the image if needed
-//         y={-20}
-//       />
-
-//       <g className="rd3t-label">
-//         <text
-//           className="rd3t-label__title"
-//           {...textLayout[orientation].title}
-//           onClick={onNodeClick}
-//           style={{
-//             fill: nodeDatum?.attributes?.IsActive ? '' : 'red', // Add styles as needed
-//           }}
-//         >
-//           {nodeDatum.name}
-//         </text>
-//         <text
-//           className="rd3t-label__attributes"
-//           {...textLayout[orientation].attributes}
-//         >
-//           {/* {nodeDatum.attributes &&
-//             Object.entries(nodeDatum.attributes).map(
-//               ([labelKey, labelValue], i) => ( */}
-//           {filteredAttributes.map(
-//             (
-//               [labelKey, labelValue],
-//               i, // Add this line For remove IsGolden Text from Node Tree
-//             ) => (
-//               <tspan
-//                 key={`${labelKey}-${i}`}
-//                 {...textLayout[orientation].attribute}
-//               >
-//                 {labelKey}: {labelValue}
-//               </tspan>
-//             ),
-//           )}
-//         </text>
-//       </g>
-//     </>
-//   );
-// };
-
 const PureSvgNodeElement = ({
   nodeDatum,
   orientation,
@@ -128,9 +51,14 @@ const PureSvgNodeElement = ({
   }
 
   // Rest of your original rendering logic
-  const filteredAttributes = Object.entries(nodeDatum.attributes || {}).filter(
-    ([key]) => key !== 'IsGolden',
-  );
+  const filteredAttributes = Object.entries(nodeDatum.attributes || {})
+    .filter(([key]) => key !== 'IsGolden')
+    .map(([key, value]) => {
+      if (key === 'IsActive') {
+        return ['__status', value ? 'Active' : 'Inactive']; // Custom label only
+      }
+      return [key, value];
+    });
 
   return (
     <>
@@ -178,8 +106,18 @@ const PureSvgNodeElement = ({
             <tspan
               key={`${labelKey}-${i}`}
               {...textLayout[orientation].attribute}
+              style={
+                labelKey === '__status'
+                  ? {
+                      fill: labelValue === 'Active' ? 'green' : 'red',
+                      fontWeight: 'bold',
+                    }
+                  : {}
+              }
             >
-              {labelKey}: {labelValue}
+              {labelKey === '__status'
+                ? labelValue
+                : `${labelKey}: ${labelValue}`}
             </tspan>
           ))}
         </text>

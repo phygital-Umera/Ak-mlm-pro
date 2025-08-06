@@ -22,8 +22,16 @@ const UpdateProfile: React.FC = () => {
   });
 
   const {user} = useAuthContext();
-  const {mutateAsync: updateProfile} = useUpdateProfile();
+  const {mutateAsync: updateProfile, isSuccess} = useUpdateProfile();
   const {data: profileData} = useGetProfile();
+
+  console.log('profileData', profileData);
+
+  useEffect(() => {
+    if (isSuccess) {
+      localStorage.setItem('customer', JSON.stringify(profileData));
+    }
+  }, [isSuccess, profileData]);
 
   useEffect(() => {
     if (profileData) {
