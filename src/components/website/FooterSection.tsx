@@ -49,7 +49,7 @@ const FooterSection: React.FC = () => {
       {/* Visit Old Website Button */}
       <div className="fixed right-4 top-4 z-50">
         {/* <button className="rounded-md bg-green-600 px-4 py-2 text-sm text-white transition-colors hover:bg-green-700">
-            Visit Vestige
+            Visit TMS LIFE SOLUTION 
             <br />
             Old Website
           </button> */}
@@ -63,7 +63,9 @@ const FooterSection: React.FC = () => {
             <div className="mb-6 flex items-center">
               <img src={logo} alt="Logo" className="h-12 w-12" />
             </div>
-            <h2 className="text-sm font-bold">TMS LIFE SOLUTION (OPC) PVT LTD</h2>
+            <h2 className="text-sm font-bold">
+              TMS LIFE SOLUTION (OPC) PVT LTD
+            </h2>
           </div>
 
           {/* Company Links */}
@@ -74,7 +76,7 @@ const FooterSection: React.FC = () => {
             <ul className="text-gray-600 space-y-2">
               <li>
                 <a href="#" className="transition-colors hover:text-blue-600">
-                  About Vestige
+                  About TMS LIFE SOLUTION
                 </a>
               </li>
               <li>
@@ -99,14 +101,14 @@ const FooterSection: React.FC = () => {
               </li>
               <li>
                 <a href="#" className="transition-colors hover:text-blue-600">
-                  Vestige Branches
+                  TMS LIFE SOLUTION Branches
                 </a>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className="transition-colors hover:text-blue-600">
-                  Vestige Heart To Heart
+                  TMS LIFE SOLUTION Heart To Heart
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 
@@ -114,11 +116,11 @@ const FooterSection: React.FC = () => {
           <div>
             <h3 className="mb-4 text-lg font-semibold text-blue-600">Policy</h3>
             <ul className="text-gray-600 space-y-2">
-              <li>
+              {/* <li>
                 <a href="#" className="transition-colors hover:text-blue-600">
                   Cancellation & Refund Process
                 </a>
-              </li>
+              </li> */}
               <li>
                 <a href="#" className="transition-colors hover:text-blue-600">
                   Delivery Area
@@ -150,23 +152,31 @@ const FooterSection: React.FC = () => {
           {/* Corporate Office & Customer Care */}
           <div>
             <h3 className="mb-4 text-lg font-semibold text-blue-600">
-              Our Corporate Office
+              Our Company Office
             </h3>
             <div className="text-gray-600 mb-6">
-              <p>Vestige Marketing Pvt. Ltd. A-89,</p>
-              <p>Okhla Industrial Area Phase II New</p>
-              <p>Delhi 110020</p>
+              <p>
+                {' '}
+                <span className="font-bold">
+                  TMS LIFE SOLUTION (OPC) PVT LTD
+                  <br />
+                  At Post: pandare,nira-Baramati Road Near Pandare Bus Stop , Pandare, Maharashtra 413110
+                  <br />
+                  Phone Number : 9022414075
+                </span>
+              </p>
+              {/* <p>A-89, Okhla Industrial Area Phase II New Delhi 110020</p> */}
             </div>
 
             <h3 className="mb-4 text-lg font-semibold text-blue-600">
               Customer Care
             </h3>
             <div className="text-gray-600 mb-4">
-              <p className="mb-1 flex items-center">
+              {/* <p className="mb-1 flex items-center">
                 <Phone className="mr-2 h-4 w-4" />
                 Phone: 011- 43101234
-              </p>
-              <p>All India Toll Free No.: 18001024624</p>
+              </p> */}
+              {/* <p>All India Toll Free No.: 18001024624</p> */}
             </div>
 
             {/* Social Media Icons */}
@@ -260,8 +270,7 @@ const FooterSection: React.FC = () => {
       <div className="bg-gray-50 py-4">
         <div className="mx-auto max-w-6xl px-4 text-center">
           <p className="text-gray-600 text-sm">
-            Copyright © 2025 Vestige Marketing Private Limited | All rights
-            reserved.
+            Copyright © 2025 TMS LIFE SOLUTIONS | All rights reserved.
           </p>
         </div>
       </div>

@@ -2,62 +2,54 @@ import React, {useState} from 'react';
 import icon1 from '../../assets2/products/sanitary.png';
 import icon2 from '../../assets2/products/Barry.png';
 import icon3 from '../../assets2/products/Baldand.png';
-// import icon4 from '../../assets2/products/Baldand.png';
-// import icon5 from '../../assets2/products/Baldand.png';
-// import icon5 from '../../assets2/products/';
-// import icon6 from '../../assets2/products/';
-
-const partners = [icon1, icon2, icon3];
 
 const domesticPackages = [
   {
-    title: 'Stepwell',
+    category: 'Women Hygiene',
+    title: 'Stepwell (Sanitary Pad)',
     img: icon1,
-
-    description: '18 Box (144 pic)',
-    price: '₹3600',
-    discount: '₹3150',
+    netContent: '18 Box (144 pcs)',
+    mrp: '₹3600',
+    discountPrice: '₹3150',
     color: 'bg-green-50',
     accent: 'bg-green-500',
   },
   {
-    title: 'Super Berry Bottle',
+    category: 'Health & Wellness',
+    title: 'Super Berry (Berry Juice)',
     img: icon2,
-
-    description: '3 Bottles',
-    price: '₹5400',
-    discount: '₹3300',
+    netContent: '3 Bottles / 500 ml',
+    mrp: '₹5400',
+    discountPrice: '₹3300',
     color: 'bg-blue-50',
     accent: 'bg-blue-500',
   },
   {
-    title: 'Baldand 125',
+    category: 'Agriculture',
+    title: 'Baldand 125(Growth promoter)',
     img: icon3,
-    description: '4 Bottle / 4 Ltr',
-    price: '₹6000',
-    discount: '₹3600',
-    color: 'bg-green-50',
-    accent: 'bg-green-500',
+    netContent: '4 Bottles / 1000 ml',
+    mrp: '₹6000',
+    discountPrice: '₹3600',
+    color: 'bg-yellow-50',
+    accent: 'bg-yellow-500',
   },
 ];
 
 const ProductPage = () => {
-  const [activeTab, setActiveTab] = useState('domestic');
-
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-gray-100 min-h-screen">
       {/* Header */}
-      <div className="rounded-sm bg-black shadow-sm">
-        <div className="mx-auto max-w-7xl px-4 py-6 text-center">
-          <h1 className="text-3xl font-bold text-white md:text-4xl">
-            Products
-          </h1>
-        </div>
+      <div className="bg-black py-6 text-center shadow-md">
+        <h1 className="text-4xl font-bold text-white">Our Products</h1>
+        <p className="text-gray-300 mt-2">
+          Quality Products at the Best Prices
+        </p>
       </div>
 
-      {/* Packages */}
-      <div className="mx-auto max-w-7xl px-4 py-4">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Products Section */}
+      <div className="mx-auto max-w-7xl px-4 py-10">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {domesticPackages.map((pkg, index) => (
             <div
               key={index}
@@ -68,30 +60,30 @@ const ProductPage = () => {
                 alt={pkg.title}
                 className="w-full object-cover"
               />
-              <div className="p-4">
-                <h3 className="text-gray-900 text-lg font-semibold">
+              <div className="p-5">
+                <span className="text-gray-500 text-sm font-medium uppercase">
+                  {pkg.category}
+                </span>
+                <h3 className="text-gray-900 text-xl font-semibold">
                   {pkg.title}
                 </h3>
-                <p className="text-gray-600 mt-1 text-sm">{pkg.description}</p>
-
-                <div className="mt-4 flex items-center justify-between">
-                  <span className="text-gray-800 text-base font-semibold">
-                    {pkg.price}
-                  </span>
-                  <span className="text-gray-800 text-base font-semibold">
-                    {pkg.discount}
-                  </span>
+                <p className="text-gray-700 mt-1 text-sm">
+                  <strong>Net Content:</strong> {pkg.netContent}
+                </p>
+                <div className="mt-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-gray-600">MRP</span>
+                    <span className="text-gray-500">{pkg.mrp}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-base font-bold">
+                    <span className="text-gray-900">Distributor Price</span>
+                    <span className="text-green-600">{pkg.discountPrice}</span>
+                  </div>
                 </div>
-
-                {/* Action buttons - Optional */}
-                {/* <div className="mt-4 space-y-2">
-                  <button className={`${pkg.accent} w-full rounded-md py-2 text-white text-sm font-medium hover:opacity-90`}>
-                    Book Now
-                  </button>
-                  <button className="w-full rounded-md border border-gray-300 bg-white py-2 text-sm text-gray-700 hover:bg-gray-100">
-                    View Details
-                  </button>
-                </div> */}
+                {/* CTA buttons can be enabled here */}
+                {/* <button className={`${pkg.accent} mt-5 w-full py-2 rounded-md text-white text-sm font-semibold hover:opacity-90`}>
+                  Buy Now
+                </button> */}
               </div>
             </div>
           ))}

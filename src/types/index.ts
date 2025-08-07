@@ -46,6 +46,8 @@ export interface User {
   phone: string;
   crnNo?: string;
   id: string;
+  userId: string;
+  customerId: string;
 }
 
 export interface Customer {
@@ -427,6 +429,7 @@ export interface EditEmails {
 }
 
 export interface UpdateCustomerData {
+  id: string;
   user: {
     email: string;
     phoneNumber: string;

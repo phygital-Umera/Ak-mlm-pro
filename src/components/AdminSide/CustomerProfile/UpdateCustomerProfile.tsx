@@ -11,6 +11,8 @@ import {useLayoutEffect, useMatch} from '@tanstack/react-router';
 import {useUpdateCustomer} from '@/lib/react-query/updateCustomer';
 import toast from 'react-hot-toast';
 import GenericSearchDropdown from '@/components/Forms/SearchDropDown/GenericSearchDropdown';
+import {useAuthContext} from '@/context/AuthContext';
+import {useNavigate} from '@tanstack/react-router';
 
 type FormValues = z.infer<typeof updateCustomerSchema>;
 const UpdateCustomerProfile: React.FC = () => {
@@ -19,6 +21,7 @@ const UpdateCustomerProfile: React.FC = () => {
   });
   const {params} = useMatch('/_app/admin/_edit/UpdateCustomer/$id' as any);
   const {id = ''} = params as {id: string};
+  const navigate = useNavigate();
 
   const {data, isSuccess} = useGetCustomer(id);
 
@@ -37,7 +40,7 @@ const UpdateCustomerProfile: React.FC = () => {
   useEffect(() => {
     if (isSuccess && data) {
       setValue('firstName', data.fullname?.split(' ')[0] || '');
-      setValue('lastName', data.fullname?.split(' ').slice(1).join(' ') || '');
+      // setValue('lastName', data.fullname?.split(' ').slice(1).join(' ') || '');
       setValue(
         'dob',
         data.dob ? new Date(data.dob).toISOString().split('T')[0] : '',
@@ -64,10 +67,10 @@ const UpdateCustomerProfile: React.FC = () => {
 
   const onSubmit = (FormValues: FormValues) => {
     console.log('====================================');
-    console.log(FormValues);
+    console.log('FormValues', FormValues);
     console.log('====================================');
     updateCustomer({
-      id,
+      id: id || '',
       data: {
         user: {
           fullname: FormValues.firstName,
@@ -92,6 +95,7 @@ const UpdateCustomerProfile: React.FC = () => {
           city: FormValues.city || '',
           state: FormValues.state || '',
           pinCode: FormValues.pinCode || '',
+          crnNo: FormValues.sponsorId || '',
         },
       },
     });
@@ -100,6 +104,7 @@ const UpdateCustomerProfile: React.FC = () => {
   useEffect(() => {
     if (updateCustomerSuccess) {
       toast.success('Customer updated successfully');
+      navigate({to: '/admin/customerlist'});
     }
     if (isError) {
       toast.error('Error updating customer');

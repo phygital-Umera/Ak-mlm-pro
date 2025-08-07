@@ -222,7 +222,7 @@ const TreeNode = ({network}) => {
         style={containerStyles}
       >
         <div className="flex items-center gap-2 p-4">
-          <span>Total Members: {treeProps.totalNodeCount}</span>
+          {/* <span>Total Members: {treeProps.totalNodeCount}</span> */}
         </div>
 
         <Tree

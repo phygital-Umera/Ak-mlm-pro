@@ -20,7 +20,7 @@ export const registerCustomer = async (
 
 export const loginCustomer = async (credentials: {
   username?: string;
-  email?: string;
+  // email?: string;
   password: string;
 }) => {
   const response = await unAuthenticatedApi.post('/users/login', credentials);

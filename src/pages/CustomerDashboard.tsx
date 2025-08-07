@@ -154,6 +154,11 @@ const CustomerDashboard: React.FC = () => {
     if (isSuccess && dataa) {
       const todayStats = [
         {
+          title: 'Business Income',
+          amount: `${dataa?.totalCommission || 0}`,
+          icon: <IoWalletSharp className="text-2xl" />,
+        },
+        {
           title: 'Today Matching Income',
           amount: `${dataa?.todayBinary || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
@@ -187,7 +192,7 @@ const CustomerDashboard: React.FC = () => {
 
       const allStats = [
         {
-          title: 'Total Income',
+          title: 'Business Income',
           amount: `${dataa?.totalCommission || 0}`,
           icon: <IoWalletSharp className="text-2xl" />,
         },

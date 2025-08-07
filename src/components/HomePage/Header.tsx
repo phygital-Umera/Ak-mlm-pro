@@ -1,9 +1,9 @@
-import {Link} from '@tanstack/react-router';
 import {useState} from 'react';
 import {FiMenu, FiX} from 'react-icons/fi';
 import React from 'react';
-import sigma from '../../../public/sigmanew.pdf';
+import sigma from '../../../public/tms.pdf';
 import {Logo} from '@/assets';
+import {Link} from 'react-router-dom';
 
 const Header = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -30,10 +30,10 @@ const Header = () => {
           <nav className="hidden space-x-10 text-sm font-medium md:flex">
             {[
               {path: '/', label: 'Home'},
-              {path: '/aboutsection', label: 'About'},
-              {path: '/mycompanies', label: 'My Companies'},
-              {path: '/myproducts', label: 'My Products'},
-              {path: '/contactus', label: 'Contact'},
+              {path: '/connecting-section', label: 'About TMS'},
+              {path: '/mycompanies', label: 'Shop By Product'},
+              {path: '/myproducts', label: 'TMS Offers'},
+              {path: '/contactus', label: 'Contact Us'},
             ].map((item) => (
               <Link
                 key={item.path}
@@ -135,20 +135,30 @@ const Header = () => {
           {/* Menu Items */}
           <nav className="mt-3 space-y-4 py-4">
             {[
-              {path: '/', label: 'Home'},
-              {path: '/aboutsection', label: 'About'},
-              {path: '/mycompanies', label: 'My Companies'},
-              {path: '/myproducts', label: 'My Products'},
-              {path: '/contactus', label: 'Contact'},
+              {path: '/#hero-section', label: 'Home'},
+              {path: '/#connecting-section', label: 'About TMS'},
+              {path: '/#product-page', label: 'Shop By Product'},
+              {path: '/#offers', label: 'TMS Offers'},
+              {path: '/#contact-us', label: 'Contact Us'},
             ].map((item, index) => (
               <div key={item.path}>
                 <Link
-                  to={item.path}
+                  to="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMobileMenuOpen(false);
+
+                    const sectionId = item.path.split('#')[1];
+                    const section = document.getElementById(sectionId);
+                    if (section) {
+                      section.scrollIntoView({behavior: 'smooth'});
+                    }
+                  }}
                   className="block rounded px-4 py-2 text-lg font-bold text-black-2 transition hover:bg-blue-50 hover:text-blue-600"
-                  onClick={() => setMobileMenuOpen(false)}
                 >
                   {item.label}
                 </Link>
+
                 {/* Add a thin gray line after each item except the last one */}
                 {index < 4 && <div className="border-gray-300 my-2 border-t" />}
               </div>

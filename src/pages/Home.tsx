@@ -66,9 +66,13 @@ const Home: React.FC = () => {
           : data?.repurchaseAmount;
       const inActiveCustomer =
         selectedView === 'today' ? data?.inActive : data?.inActive;
+      const leftCount =
+        selectedView === 'today' ? data?.leftCount : data?.leftCount;
+      const rightCount =
+        selectedView === 'today' ? data?.rightCount : data?.rightCount;
       setStatsData([
         {
-          title: 'Total Income',
+          title: 'Total Business',
           amount: `${data?.totalIncome}`,
           icon: <FaWallet className="text-2xl text-blue-500" />,
           trend: 'up',
@@ -133,6 +137,13 @@ const Home: React.FC = () => {
         {
           title: 'In Active Customer',
           amount: `₹${inActiveCustomer}`,
+          icon: <FaShoppingCart className="text-2xl text-amber-500" />,
+          trend: 'up',
+          trendValue: '20%',
+        },
+        {
+          title: 'Total Customer',
+          amount: `₹${leftCount + rightCount}`,
           icon: <FaShoppingCart className="text-2xl text-amber-500" />,
           trend: 'up',
           trendValue: '20%',

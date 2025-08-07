@@ -3,7 +3,7 @@ import connectpeople from '../../assets2/products/conne.jpg';
 
 const ConnectingPeoplePage: React.FC = () => {
   return (
-    <div className="flex items-center justify-center bg-white px-8 py-30">
+    <div className="flex items-center justify-center bg-white px-8 py-10">
       <div className="grid w-full max-w-6xl grid-cols-1 items-center gap-4 lg:grid-cols-2 lg:gap-12">
         {/* Left side - Image mosaic */}
         <img src={connectpeople} alt="Image" className="rounded-xl" />

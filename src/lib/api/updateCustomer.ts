@@ -1,9 +1,12 @@
 import {EditEmails, UpdateCustomerData} from '@/types';
 import {api} from '@/utils/axios';
 
-export const updateCustomer = async (data: UpdateCustomerData) => {
+export const updateCustomer = async (data: UpdateCustomerData, id: string) => {
   try {
-    const response = await api.put(`/customers/profile`, data);
+    console.log('====================================');
+    console.log(data , id);
+    console.log('====================================');
+    const response = await api.put(`/customers/${id}`, data);
     return response.data;
   } catch (error) {
     console.error(error.response?.data.message || error.message);

@@ -4,20 +4,9 @@ import {ChevronLeft, ChevronRight} from 'lucide-react';
 import banner1 from '../../assets2/Images/slider1.png';
 import banner2 from '../../assets2/Images/slider2.png';
 import banner3 from '../../assets2/Images/slider3.png';
-
 import banner4 from '../../assets2/Images/slider.png';
-// import banner4 from '../../assets2/Images/banner4.jpeg';
-// import banner5 from '../../assets2/Images/banner5.jpeg';
 
-const images: string[] = [
-  banner1,
-  banner2,
-  banner3,
-  banner4,
-  // banner5,
-  // 'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Anniversary_Offer_Web_Banner_07b843ead1.jpg',
-  // 'https://prd-vestige-cms.s3.ap-southeast-1.amazonaws.com/Dew_Garden_Fly_Web_banners_Main_Web_c19d703cf9.jpg',
-];
+const images: string[] = [banner1, banner2, banner3, banner4];
 
 const HeroSection: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,42 +32,67 @@ const HeroSection: React.FC = () => {
   }, [currentIndex, isPaused]);
 
   return (
-    <section
-      className="relative h-[50vh] w-full overflow-hidden sm:h-[60vh] md:h-[70vh] lg:h-[80vh] xl:h-[90vh]"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      {/* Image */}
-      <img
-        src={images[currentIndex]}
-        alt={`Slide ${currentIndex + 1}`}
-        className="h-full w-full object-contain transition-all duration-500"
-      />
-      {/* Navigation Buttons */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white hover:bg-black/60 sm:left-4 sm:p-3"
+    <>
+      <section
+        id="hero-section"
+        className="relative h-[50vh] w-full overflow-hidden sm:h-[60vh] md:h-[70vh] lg:h-[80vh] xl:h-[90vh]"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
       >
-        <ChevronLeft size={20} className="sm:size-6" />
-      </button>
-      <button
-        onClick={nextSlide}
-        className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white hover:bg-black/60 sm:right-4 sm:p-3"
-      >
-        <ChevronRight size={20} className="sm:size-6" />
-      </button>
-      {/* Dot Indicators */}
-      <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-4">
-        {images.map((_, idx) => (
-          <div
-            key={idx}
-            className={`h-2 w-2 rounded-full transition duration-300 ${
-              idx === currentIndex ? 'bg-white' : 'bg-white/40'
-            }`}
-          />
-        ))}
+        {/* Image */}
+        <img
+          src={images[currentIndex]}
+          alt={`Slide ${currentIndex + 1}`}
+          className="h-full w-full object-contain transition-all duration-500"
+        />
+
+        {/* Navigation Buttons */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white hover:bg-black/60 sm:left-4 sm:p-3"
+        >
+          <ChevronLeft size={20} className="sm:size-6" />
+        </button>
+
+        <button
+          onClick={nextSlide}
+          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white hover:bg-black/60 sm:right-4 sm:p-3"
+        >
+          <ChevronRight size={20} className="sm:size-6" />
+        </button>
+
+        {/* Dot Indicators */}
+        <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-4">
+          {images.map((_, idx) => (
+            <div
+              key={idx}
+              className={`h-2 w-2 rounded-full transition duration-300 ${
+                idx === currentIndex ? 'bg-white' : 'bg-white/40'
+              }`}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Promotional Message */}
+      <div className="bg-white py-4 shadow-md">
+        <div className="mx-auto max-w-7xl px-4">
+          <h1 className="text-center text-2xl font-medium sm:text-3xl md:text-4xl lg:text-5xl">
+            <span className="font-bold text-amber-500">
+              100 Pair Matching By Flight and Train
+            </span>
+            <span className="mx-1 hidden sm:inline">•</span>
+            <br className="sm:hidden" />
+            <span>2 nights 3 days</span>
+            <span className="mx-1 hidden sm:inline">•</span>
+            <br className="sm:hidden" />
+            <span className="font-bold text-amber-500">
+              Ramoji Film City Tour
+            </span>
+          </h1>
+        </div>
       </div>
-    </section>
+    </>
   );
 };
 

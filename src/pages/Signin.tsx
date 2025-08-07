@@ -60,12 +60,12 @@ const SignIn: React.FC = () => {
   return (
     <>
       <div className="mb-6 flex justify-center">
-        <img src={logo} alt="Logo" className="h-26 w-auto" />
+        <img src={logo} alt="Logo" className="h-16 w-auto" />
       </div>
-      <p className="text-center text-base font-bold text-black dark:text-white">
+      <p className="text-center text-2xl font-bold text-black dark:text-white">
         TMS LIFE SOLUTIONS
       </p>
-      <h2 className="mb-9 text-center text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
+      <h2 className="mb-9 mt-20 text-center  text-2xl font-semibold text-black dark:text-white sm:text-title-xl2">
         Sign In
       </h2>
       <form onSubmit={handleSubmit(onSubmit)}>

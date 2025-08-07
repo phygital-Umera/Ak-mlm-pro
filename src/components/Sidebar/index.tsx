@@ -16,7 +16,7 @@ import {MdApproval} from 'react-icons/md';
 import {FaHistory, FaNetworkWired} from 'react-icons/fa';
 import {GiTargetPoster} from 'react-icons/gi';
 import {LuAlignVerticalDistributeEnd} from 'react-icons/lu';
-import Logo from '../../../public/logo.png';
+import Logo from '../../../public/tmslogo.png';
 import {TbBinaryTree2Filled} from 'react-icons/tb';
 const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
   const {user} = useAuthContext();
@@ -166,11 +166,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/customerregisterc',
               icon: <RegistrationIcon size={22} />,
             },
-            // {
-            //   label: 'Customer Profile',
-            //   path: '/customer/profile',
-            //   icon: <ProfileIcon size={22} />,
-            // },
+            {
+              label: 'Customer Profile',
+              path: '/customer/profile',
+              icon: <ProfileIcon size={22} />,
+            },
             {
               label: 'Network',
               path: '/customer/networkc',
@@ -308,7 +308,7 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
           </div>
           <div className="flex flex-col">
             <h1 className="text-base font-semibold text-gray">TMS LIFE</h1>
-            <p className="text-sm font-semibold text-gray">Solutions</p>
+            <p className="text-base font-semibold text-gray">SOLUTION</p>
           </div>
         </Link>
 

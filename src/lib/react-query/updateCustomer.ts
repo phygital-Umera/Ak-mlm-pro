@@ -21,7 +21,8 @@ import {getAllEPins} from '../api/Admin/Epin/epin';
 export const useUpdateCustomer = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: UpdateCustomerData) => updateCustomer(data),
+    mutationFn: ({data, id}: {data: UpdateCustomerData; id: string}) =>
+      updateCustomer(data, id),
     onSuccess: () => {
       // console.log('Customer updated successfully:', res);
       queryClient.invalidateQueries({

@@ -38,6 +38,7 @@ const DisplayCustomerList: React.FC = () => {
   const navigate = useNavigate();
   const {data: apiData, isLoading, error} = useFetchCustomerList();
   const [customerData, setCustomerData] = useState<CustomerData[]>([]);
+ 
 
   useEffect(() => {
     if (apiData) {
@@ -52,6 +53,7 @@ const DisplayCustomerList: React.FC = () => {
         password: customer.password,
         action: 'Edit/Delete',
       }));
+      console.log('mappedData', mappedData);
       // Sort customers by creation date to show new customers at the top
       const sortedData = mappedData.sort((a, b) =>
         b.crnNo.localeCompare(a.crnNo),
@@ -66,7 +68,7 @@ const DisplayCustomerList: React.FC = () => {
     console.log(item);
     try {
       const res = await signIn({
-        email: item.email,
+        email: item.crnNo,
       });
       console.log('res', res);
       //
@@ -92,7 +94,7 @@ const DisplayCustomerList: React.FC = () => {
 
   const handleEdit = (item) => {
     navigate({
-      to: `/admin/UpdateCustomer/${item.crnNo}`,
+      to: `/admin/UpdateCustomer/${item.id}`,
     });
   };
 

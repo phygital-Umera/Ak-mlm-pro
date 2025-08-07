@@ -6,9 +6,9 @@ import {
   Contact,
   Footer,
 } from '@/components/LandingComponents';
-const Banner = React.lazy(
-  () => import('@/components/LandingComponents/Banner'),
-);
+// const Banner = React.lazy(
+//   () => import('@/components/LandingComponents/Banner'),
+// );
 import '@/assets/css/loader.css';
 import HeroSection from '@/components/website/HeroSection';
 import Header from '@/components/HomePage/Header';
@@ -34,13 +34,31 @@ const LandingPage = () => {
   return (
     <>
       <Header />
-      <BannerPage />
-      <HeroSection />
-      <ConnectingPeoplePage />
-      {/* <AboutUs /> */}
-      <MissionVision />
-      <ProductPage />
-      <FooterSection />
+
+      <div id="hero-section">
+        <BannerPage />
+      </div>
+
+      <div id="about-us">
+        <HeroSection />
+      </div>
+
+      <div id="connecting-section">
+        <ConnectingPeoplePage />
+      </div>
+
+      <div id="mission-vision">
+        <MissionVision />
+      </div>
+
+      <div id="product-page">
+        <ProductPage />
+      </div>
+
+      <div id="contact-us">
+        <FooterSection />
+      </div>
+
       {/* <Bottombar /> */}
     </>
   );
