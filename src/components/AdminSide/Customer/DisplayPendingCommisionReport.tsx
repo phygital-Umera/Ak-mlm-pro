@@ -28,6 +28,9 @@ type PendingCommission = {
 const DisplayPendingCommisionReport: React.FC = () => {
   const queryClient = useQueryClient();
   const {data, isSuccess, isError, isPending} = useFetchAdminCommsion();
+  console.log('====================================');
+  console.log('data', data);
+  console.log('====================================');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
   const itemsPerPage = 10;
@@ -188,6 +191,9 @@ const DisplayPendingCommisionReport: React.FC = () => {
                 CRN No
               </th>
               <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
+                Total Amount
+              </th>
+              <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
                 Amount
               </th>
               <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
@@ -228,6 +234,7 @@ const DisplayPendingCommisionReport: React.FC = () => {
                 className="border-b border-stroke dark:border-strokedark"
               >
                 <td className="px-4 py-2 text-left">{row.crnNo}</td>
+                <td className="px-4 py-2 text-left">{row.amount}</td>
                 <td className="px-4 py-2 text-left">{row.payableAmount}</td>
                 <td className="px-4 py-2 text-left">{row.tdsAmount}</td>
                 <td className="px-4 py-2 text-left">{row.tdsAmount * 4}</td>

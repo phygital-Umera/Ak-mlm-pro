@@ -14,6 +14,7 @@ import Loader from '@/components/common/Loader';
 import Popup from '@/components/Popu/Popup';
 import {BsWalletFill} from 'react-icons/bs';
 import IncompleteProfilePopup from '@/components/Popu/IncompleteProfilePopup';
+import {useGetCustomerProfile} from '@/lib/react-query/Admin/profile/profile';
 
 interface StatCardProps {
   amount: string;
@@ -91,10 +92,19 @@ const CustomerDashboard: React.FC = () => {
   const [showEpinPopup, setShowEpinPopup] = useState(
     !isCustomerProfileIncomplete(customer) && !user?.isActive,
   );
+  const {data: profileData} = useGetCustomerProfile();
+  console.log('====================================');
+  console.log('profileData..................', profileData);
+  console.log('====================================');
+
+  useEffect(() => {
+    if (!profileData?.bankAccNo) {
+      setShowIncompletePopup(true);
+    }
+  }, [profileData]);
 
   useEffect(() => {
     if (!isCustomerProfileIncomplete(customer)) {
-      setShowIncompletePopup(false);
       if (!user?.isActive) {
         setShowEpinPopup(true);
       }
@@ -163,11 +173,11 @@ const CustomerDashboard: React.FC = () => {
           amount: `${dataa?.todayBinary || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
-        {
-          title: 'Today Pair Count',
-          amount: `${dataa?.todaysPairCount || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
-        },
+        // {
+        //   title: 'Today Pair Count',
+        //   amount: `${dataa?.todaysPairCount || 0}`,
+        //   icon: <IoTodaySharp className="text-2xl" />,
+        // },
         {
           title: 'Today Direct Sponsor Income',
           amount: `${dataa?.todayRoyalty || 0}`,
@@ -304,10 +314,11 @@ const CustomerDashboard: React.FC = () => {
 
   return (
     <>
-      {showEpinPopup && <Popup onClose={() => setShowEpinPopup(false)} />}
-      {showIncompletePopup && (
+      {showEpinPopup ? (
+        <Popup onClose={() => setShowEpinPopup(false)} />
+      ) : showIncompletePopup ? (
         <IncompleteProfilePopup onClose={() => setShowIncompletePopup(false)} />
-      )}
+      ) : null}
       <div>
         <div className="mb-6 flex items-center gap-4">
           <button
@@ -380,9 +391,9 @@ const CustomerDashboard: React.FC = () => {
               {nextTier ? (
                 <>
                   <h3 className="text-lg font-semibold">{nextTier.rank}</h3>
-                  <p className="text-gray-500 text-sm">
+                  {/* <p className="text-gray-500 text-sm">
                     Next: {nextTier.reward}
-                  </p>
+                  </p> */}
                 </>
               ) : (
                 <>

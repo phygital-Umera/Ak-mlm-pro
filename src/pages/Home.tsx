@@ -34,6 +34,9 @@ interface StatCardProps {
 
 const Home: React.FC = () => {
   const {data, isSuccess, isError, isPending} = useFetchAdminHome();
+  console.log('====================================');
+  console.log('data', data);
+  console.log('====================================');
   const {user} = useAuthContext();
   const id = user?.id;
 
@@ -70,56 +73,58 @@ const Home: React.FC = () => {
         selectedView === 'today' ? data?.leftCount : data?.leftCount;
       const rightCount =
         selectedView === 'today' ? data?.rightCount : data?.rightCount;
+      const customerCount =
+        selectedView === 'today' ? data?.customerCount : data?.customerCount;
       setStatsData([
         {
           title: 'Total Business',
-          amount: `${data?.totalIncome}`,
+          amount: `${data?.totalBuisness}`,
           icon: <FaWallet className="text-2xl text-blue-500" />,
           trend: 'up',
           trendValue: '12%',
         },
         {
           title: 'Total Commission',
-          amount: `${commission}`,
+          amount: `${data?.totalCommission}`,
           icon: <FaHandHoldingUsd className="text-2xl text-green-500" />,
           trend: 'up',
           trendValue: '8%',
         },
         {
           title: 'Epin Given',
-          amount: `₹${data?.givenEpin}`,
+          amount: `${data?.givenEpin}`,
           icon: <FaKey className="text-2xl text-purple-500" />,
           trend: 'up',
           trendValue: '24%',
         },
         {
           title: 'Epin Used',
-          amount: `₹${data?.usedEpin}`,
+          amount: `${data?.usedEpin}`,
           icon: <FaKey className="text-2xl text-yellow-500" />,
           trend: 'up',
           trendValue: '18%',
         },
         {
           title: 'Pair Matching Income  ',
-          amount: `₹${binaryCommission}`,
+          amount: `₹${data?.binary}`,
           icon: <FaSitemap className="text-2xl text-teal-500" />,
           trend: 'up',
           trendValue: '15%',
         },
         {
           title: 'Direct Sponsor Income',
-          amount: `₹${royalty}`,
+          amount: `₹${data?.directCommission}`,
           icon: <FaCrown className="text-2xl text-pink-500" />,
           trend: 'up',
           trendValue: '10%',
         },
-        {
-          title: 'Rewards Achiever Report',
-          amount: `₹${achiverReport}`,
-          icon: <FaAward className="text-2xl text-indigo-500" />,
-          trend: 'up',
-          trendValue: '5%',
-        },
+        // {
+        //   title: 'Rewards Achiever Report',
+        //   amount: `₹${achiverReport || 0}`,
+        //   icon: <FaAward className="text-2xl text-indigo-500" />,
+        //   trend: 'up',
+        //   trendValue: '5%',
+        // },
         {
           title: 'Repurchase Commission',
           amount: `₹${repurchaseCommission}`,
@@ -136,14 +141,21 @@ const Home: React.FC = () => {
         },
         {
           title: 'In Active Customer',
-          amount: `₹${inActiveCustomer}`,
+          amount: `${inActiveCustomer}`,
+          icon: <FaShoppingCart className="text-2xl text-amber-500" />,
+          trend: 'up',
+          trendValue: '20%',
+        },
+        {
+          title: ' Active Customer',
+          amount: `${customerCount - inActiveCustomer}`,
           icon: <FaShoppingCart className="text-2xl text-amber-500" />,
           trend: 'up',
           trendValue: '20%',
         },
         {
           title: 'Total Customer',
-          amount: `₹${leftCount + rightCount}`,
+          amount: `${customerCount}`,
           icon: <FaShoppingCart className="text-2xl text-amber-500" />,
           trend: 'up',
           trendValue: '20%',

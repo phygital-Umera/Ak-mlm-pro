@@ -5,9 +5,10 @@ export type adminData = {
     phoneNumber?: string;
     password?: string;
     fullname: string;
+    email?: string;
   };
   customer: {
-    dob?: string;
+    dob?: string | null;
     gender?: string;
     pinCode?: string;
     city?: string;

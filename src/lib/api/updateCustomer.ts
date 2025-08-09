@@ -4,7 +4,7 @@ import {api} from '@/utils/axios';
 export const updateCustomer = async (data: UpdateCustomerData, id: string) => {
   try {
     console.log('====================================');
-    console.log(data , id);
+    console.log('llllllolololololoolloll', data, id);
     console.log('====================================');
     const response = await api.put(`/customers/${id}`, data);
     return response.data;

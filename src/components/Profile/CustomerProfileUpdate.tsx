@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import {useEffect} from 'react';
+import {useEffect, useMemo} from 'react';
 import GenericInputField from '../Forms/Input/GenericInputField';
 import {FormProvider, useForm} from 'react-hook-form';
 import GenericButton from '../Forms/Buttons/GenericButton';
@@ -28,8 +28,19 @@ const CustomerUpdateProfile: React.FC = () => {
 
   const {user, customer} = useAuthContext();
   console.log('====================================');
-  console.log(customer);
+  console.log('............sdsdssd', user);
   console.log('====================================');
+
+  useMemo(() => {
+    if (user) {
+      methods.reset({
+        sponsorId: user?.sponsorId ?? '',
+        crn: user?.crnNo ?? '',
+      });
+    }
+  }, [user]);
+
+  const crn = user?.crnNo;
   const {mutateAsync: updateProfile, isSuccess} = useUpdateCustomerProfile();
   const {data: profileData} = useGetCustomerProfile();
 
@@ -38,6 +49,7 @@ const CustomerUpdateProfile: React.FC = () => {
     if (profileData) {
       methods.reset({
         phoneNumber: profileData?.phoneNumber ?? '',
+        email: profileData?.email ?? '',
         fullname: profileData?.fullname ?? '',
         gender: profileData?.gender ?? undefined,
         dob: profileData?.dob ? profileData.dob.split('T')[0] : '',
@@ -46,7 +58,7 @@ const CustomerUpdateProfile: React.FC = () => {
         state: profileData?.state ?? '',
         aadharNo: profileData?.aadharNo ?? '',
         panNo: profileData?.panNo ?? '',
-        upiId: profileData?.upiId ?? '',
+        // upiId: profileData?.upiId ?? '',
         landMark: profileData?.landMark ?? '',
         flatNo: profileData?.flatNo ?? '',
         areaName: profileData?.areaName ?? '',
@@ -63,6 +75,7 @@ const CustomerUpdateProfile: React.FC = () => {
       user: {
         fullname: data.fullname,
         phoneNumber: data.phoneNumber,
+        email: data.email,
         password: data.password,
       },
       customer: {
@@ -80,7 +93,7 @@ const CustomerUpdateProfile: React.FC = () => {
         landMark: data.landMark,
         pinCode: data.pinCode,
         state: data.state,
-        upiId: data.upiId,
+        // upiId: data.upiId,
       },
     });
   };
@@ -102,6 +115,22 @@ const CustomerUpdateProfile: React.FC = () => {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit, error)}>
           <div className="grid grid-cols-12 gap-4">
+            <div className="col-span-6">
+              <GenericInputField
+                name="sponsorId"
+                label="Sponsor ID"
+                placeholder="your sponsor ID"
+                disabled
+              />
+            </div>
+            <div className="col-span-6">
+              <GenericInputField
+                name="crn"
+                label="Your CRN No"
+                placeholder="your CRN No"
+                disabled
+              />
+            </div>
             {/* 🧍 Personal Info */}
             <h2 className="col-span-12 mt-6 border-b pb-2 text-lg font-semibold">
               Personal Info
@@ -146,9 +175,9 @@ const CustomerUpdateProfile: React.FC = () => {
             </div>
             <div className="col-span-6">
               <GenericInputField
-                name="upiId"
-                label="UPI ID"
-                placeholder="e.g. username@upi"
+                name="email"
+                label="Email"
+                placeholder="Enter your email"
               />
             </div>
 

@@ -176,6 +176,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/networkc',
               icon: <NetworkIcon size={22} />,
             },
+            {
+              label: 'Direct Customer',
+              path: '/customer/directcustomer',
+              icon: <NetworkIcon size={22} />,
+            },
             // {
             //   label: 'Report',
             //   path: '/customer/reportc',

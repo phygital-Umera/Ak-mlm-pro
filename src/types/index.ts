@@ -36,6 +36,7 @@ export interface decodedUser {
   crnNo: string;
 }
 export interface User {
+  sponsorId: string;
   isActive: boolean;
   role: string;
   user: decodedUser;
@@ -449,7 +450,7 @@ export interface UpdateCustomerData {
     flatNo: string;
     areaName: string;
     landMark: string;
-    upiId: string;
+    // upiId: string;
     pinCode: string;
     city: string;
     state: string;

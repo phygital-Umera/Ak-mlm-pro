@@ -13,3 +13,17 @@ export const registerAdmin = async (adminData) => {
     throw err.response?.data || err;
   }
 };
+
+export const getSponsorNameById = async (id: string) => {
+  try {
+    const response = await api.get(`/customerName/${id}`);
+    return response.data;
+  } catch (error) {
+    const err = error; // Type assertion to ApiError
+    console.error(
+      'Error getting sponsor name:',
+      err.response?.data.message || err.message,
+    );
+    throw err.response?.data || err;
+  }
+};

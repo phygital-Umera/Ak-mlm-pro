@@ -1,6 +1,7 @@
 import React from 'react';
 import {useNavigate} from '@tanstack/react-router';
 import {useAuthContext} from '@/context/AuthContext';
+import {useGetCustomerProfile} from '@/lib/react-query/Admin/profile/profile';
 
 interface IncompleteProfilePopupProps {
   onClose?: () => void;
@@ -10,14 +11,29 @@ const IncompleteProfilePopup: React.FC<IncompleteProfilePopupProps> = ({
   onClose,
 }) => {
   const navigate = useNavigate();
-
   const {customer} = useAuthContext();
+  const {data: profileData} = useGetCustomerProfile();
+  console.log('====================================');
+  console.log('profileData..................', profileData);
+  console.log('====================================');
 
-  console.log('customer', customer);
+  // Check if required fields are empty
+  const isProfileIncomplete = () => {
+    if (!profileData?.bankAccNo) return true;
+
+    const requiredFields = [profileData?.bankAccNo];
+
+    return requiredFields.some((field) => !field || field.trim() === '');
+  };
+
+  // Only show popup if profile is incomplete
+  if (!isProfileIncomplete()) {
+    return null;
+  }
 
   const handleNavigate = () => {
     if (onClose) onClose();
-    navigate({to: '/customer/customerprofilec'});
+    navigate({to: '/customer/profile'});
   };
 
   return (
@@ -34,7 +50,8 @@ const IncompleteProfilePopup: React.FC<IncompleteProfilePopupProps> = ({
             </h2>
             <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm leading-relaxed">
               To access all features, please complete your profile by providing
-              the missing details.
+              the missing details like PAN number, Aadhar number, Bank details,
+              etc.
             </p>
           </div>
 
@@ -46,16 +63,6 @@ const IncompleteProfilePopup: React.FC<IncompleteProfilePopupProps> = ({
               Complete Profile
             </button>
           </div>
-
-          {/* Optional Close Button */}
-          {/* {onClose && (
-            <button
-              className="text-gray-400 hover:text-gray-600 absolute right-3 top-3"
-              onClick={onClose}
-            >
-              ✕
-            </button>
-          )} */}
         </div>
       </div>
     </>

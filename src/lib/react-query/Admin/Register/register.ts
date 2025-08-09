@@ -1,10 +1,13 @@
-import {registerAdmin} from '@/lib/api/Admin/Register/register';
+import {
+  getSponsorNameById,
+  registerAdmin,
+} from '@/lib/api/Admin/Register/register';
 import {
   AdminRegistrationResponse,
   AdminRegistrationInput,
   ApiError,
 } from '@/types';
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 
 export const useRegisterAdmin = () => {
   return useMutation<
@@ -20,5 +23,12 @@ export const useRegisterAdmin = () => {
         error.response?.data.message || error.message,
       );
     },
+  });
+};
+
+export const useGetSponsorNameById = (id: string) => {
+  return useQuery({
+    queryKey: ['getSponsorNameById'],
+    queryFn: () => getSponsorNameById(id),
   });
 };

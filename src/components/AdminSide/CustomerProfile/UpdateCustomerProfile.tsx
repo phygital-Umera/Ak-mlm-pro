@@ -59,7 +59,7 @@ const UpdateCustomerProfile: React.FC = () => {
       setValue('bankAccNo', data.bankAccNo || '');
       setValue('bankBranch', data.bankBranch || '');
       setValue('bankIFSC', data.bankIFSC || '');
-      setValue('upiId', data.upiId || '');
+      // setValue('upiId', data.upiId || '');
       setValue('gender', data.gender || '');
       setValue('sponsorId', data.crnNo || '');
     }
@@ -86,7 +86,7 @@ const UpdateCustomerProfile: React.FC = () => {
           bankAccNo: FormValues.bankAccNo || '',
           bankBranch: FormValues.bankBranch || '',
           bankIFSC: FormValues.bankIFSC || '',
-          upiId: FormValues.upiId || '',
+          // upiId: FormValues.upiId || '',
           dob: FormValues.dob ? new Date(FormValues.dob).toISOString() : '',
           gender: FormValues.gender || '',
           flatNo: FormValues.flatNo || '',
@@ -169,7 +169,7 @@ const UpdateCustomerProfile: React.FC = () => {
               name="email"
               label="Email"
               placeholder="Enter Email"
-              disabled
+              // disabled
             />
           </div>
 
@@ -272,13 +272,13 @@ const UpdateCustomerProfile: React.FC = () => {
               placeholder="Enter Branch Name"
             />
           </div>
-          <div className="col-span-12 md:col-span-6">
+          {/* <div className="col-span-12 md:col-span-6">
             <GenericInputField
               name="upiId"
               label="UPI ID"
               placeholder="Enter UPI ID"
             />
-          </div>
+          </div> */}
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
           <h1 className="col-span-12 mb-4 text-lg font-semibold">Login Info</h1>

@@ -29,6 +29,8 @@ export const updateProfileSchema = z.object({
 
   gender: z.nativeEnum(Gender, {required_error: 'Gender is required'}),
 
+  email: z.string().email().optional(),
+
   pinCode: z
     .string({required_error: 'PIN Code is required'})
     .length(6, 'PIN Code must be exactly 6 digits'),
@@ -49,9 +51,9 @@ export const updateProfileSchema = z.object({
     .string({required_error: 'PAN number is required'})
     .length(10, 'PAN number must be exactly 10 characters'),
 
-  upiId: z
-    .string({required_error: 'UPI ID is required'})
-    .min(6, 'UPI ID must be at least 6 characters'),
+  // upiId: z
+  //   .string({required_error: 'UPI ID is required'})
+  //   .min(6, 'UPI ID must be at least 6 characters'),
 
   landMark: z
     .string({required_error: 'Landmark is required'})
@@ -80,4 +82,6 @@ export const updateProfileSchema = z.object({
   bankBranch: z
     .string({required_error: 'Bank branch is required'})
     .min(3, 'Bank branch must be at least 3 characters'),
+  sponsorId: z.string().optional(),
+  crn: z.string().optional(),
 });

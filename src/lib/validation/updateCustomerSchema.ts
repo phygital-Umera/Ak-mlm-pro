@@ -72,11 +72,11 @@ export const updateCustomerSchema = z
       .string({message: 'Bank Branch is required'})
       .min(3, {message: 'Bank Branch must be at least 3 characters'})
       .optional(),
-    upiId: z
-      .string({message: 'UPI Id is required'})
-      .min(1, 'UPI Id is required')
-      .regex(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/g)
-      .optional(),
+    // upiId: z
+    //   .string({message: 'UPI Id is required'})
+    //   .min(1, 'UPI Id is required')
+    //   .regex(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/g)
+    //   .optional(),
     password: z
       .string({required_error: 'Password is required'})
       .min(6, {message: 'Password must be at least 6 characters'}),

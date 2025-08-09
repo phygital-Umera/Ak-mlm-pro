@@ -29,3 +29,17 @@ export const getCommission = async (id) => {
     throw error;
   }
 };
+
+export const getDirectCustomer = async () => {
+  try {
+    const {data} = await api.get(`/customers/directCustomers`);
+    return data;
+  } catch (error) {
+    const {response} = error;
+    console.error(
+      'Error fetching direct customer:',
+      response?.data.message || error.message,
+    );
+    throw error;
+  }
+};
