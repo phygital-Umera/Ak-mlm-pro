@@ -65,6 +65,7 @@ const DisplayPendingCommisionReport: React.FC = () => {
         Details: item.details,
         Type: item.type,
         'Full name': item.fullname,
+
         Mobile: item.phoneNumber,
         Status: item.status,
       }));
@@ -236,8 +237,8 @@ const DisplayPendingCommisionReport: React.FC = () => {
                 <td className="px-4 py-2 text-left">{row.crnNo}</td>
                 <td className="px-4 py-2 text-left">{row.amount}</td>
                 <td className="px-4 py-2 text-left">{row.payableAmount}</td>
-                <td className="px-4 py-2 text-left">{row.tdsAmount}</td>
-                <td className="px-4 py-2 text-left">{row.tdsAmount * 4}</td>
+                <td className="px-4 py-2 text-left">{row.amount * 0.02}</td>
+                <td className="px-4 py-2 text-left">{row.amount * 0.08}</td>
                 <td className="px-4 py-2 text-left">{row.details}</td>
                 <td className="px-4 py-2 text-left">{row.type}</td>
                 <td className="px-4 py-2 text-left">

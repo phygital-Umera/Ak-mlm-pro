@@ -114,7 +114,7 @@ const DropdownUser = () => {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <svg
+                {/* <svg
                   className="text-gray-400 h-4 w-4"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -129,7 +129,7 @@ const DropdownUser = () => {
                 </svg>
                 <span className="text-gray-600 dark:text-gray-300">
                   {phone}
-                </span>
+                </span> */}
               </div>
               <div className="flex items-center gap-2">
                 <svg

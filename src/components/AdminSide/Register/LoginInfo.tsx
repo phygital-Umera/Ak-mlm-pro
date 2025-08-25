@@ -41,7 +41,7 @@ export const LoginInfo: React.FC = () => {
   } = useCustomerRegistration();
   console.log('data', responseData);
 
-  const epinType = methods.watch('epinType');
+  // const epinType = methods.watch('epinType');
 
   const onSubmit = async (formValues: FormValues) => {
     setUserLoginInfo({

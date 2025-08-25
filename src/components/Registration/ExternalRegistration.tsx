@@ -133,7 +133,7 @@ export const ExternalRegistration: React.FC = () => {
       confirmPassword: formValues.confirmPassword,
       side: formValues.side,
       epinNo: useWithoutEpin ? undefined : formValues.epinNo,
-      productId: useWithoutEpin ? null : selected[0]?.productId,
+      productId: useWithoutEpin ? '' : selected[0]?.productId,
     };
 
     if (!useWithoutEpin) {

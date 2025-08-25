@@ -180,7 +180,7 @@ const CustomerDashboard: React.FC = () => {
         // },
         {
           title: 'Today Direct Sponsor Income',
-          amount: `${dataa?.todayRoyalty || 0}`,
+          amount: `${dataa?.todayDirectCommission || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
         {
@@ -214,7 +214,7 @@ const CustomerDashboard: React.FC = () => {
 
         {
           title: 'Total Direct Sponsor Income',
-          amount: `${dataa?.royelty || 0}`,
+          amount: `${dataa?.directCommission || 0}`,
           icon: <IoWalletSharp className="text-2xl" />,
         },
         {

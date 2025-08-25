@@ -287,7 +287,7 @@ const Home: React.FC = () => {
         </div>
       )}
 
-      <motion.div
+      {/* <motion.div
         className="border-gray-100 mt-8 rounded-xl border p-6 shadow-sm"
         initial={{opacity: 0}}
         animate={{opacity: 1}}
@@ -334,7 +334,7 @@ const Home: React.FC = () => {
             </tbody>
           </table>
         </div>
-      </motion.div>
+      </motion.div> */}
     </motion.div>
   );
 };

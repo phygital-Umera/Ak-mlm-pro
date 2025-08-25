@@ -1,265 +1,90 @@
-import React, {useState} from 'react';
-import Modal from 'react-modal';
+import React from 'react';
+import {useFetchCustomerHome} from '@/lib/react-query/Customer/home';
 
-type CustomerData = {
-  id: string;
-  name: string;
-  crnNo: string;
-  phone: string;
+type RewardLevel = {
+  id: number;
   rank: string;
-  amount: number;
-  bankAccNo: string;
-  bankIFSC: string;
-  status: 'PENDING' | 'PAID';
+  pair: number;
+  reward: string;
 };
 
+const rewardLevels: RewardLevel[] = [
+  {id: 1, rank: 'Star', pair: 10, reward: 'Rank Recognition'},
+  {id: 2, rank: 'Bronze', pair: 25, reward: 'Training Programme'},
+  {id: 3, rank: 'Silver', pair: 50, reward: 'Food Processor'},
+  {
+    id: 4,
+    rank: 'Gold',
+    pair: 100,
+    reward: 'Ramoji Film City (2N/3D Flight & Train)',
+  },
+  {id: 5, rank: 'Platinum', pair: 250, reward: 'Mobile Tab'},
+  {id: 6, rank: 'Ruby', pair: 500, reward: 'LED TV'},
+  {id: 7, rank: 'Sapphire', pair: 1000, reward: 'Foreign Trip'},
+  {id: 8, rank: 'Blue Sapphire', pair: 2500, reward: 'Activa (Full Paid)'},
+  {id: 9, rank: 'Diamond', pair: 5000, reward: 'Exter Car (Downpayment)'},
+  {id: 10, rank: 'Double Diamond', pair: 10000, reward: '₹5,00,000 Cash'},
+  {id: 11, rank: 'Blue Diamond', pair: 25000, reward: '₹10,00,000 Cash'},
+  {id: 12, rank: 'Crown Diamond', pair: 50000, reward: 'Mercedes Benz Car'},
+  {
+    id: 13,
+    rank: 'Double Crown Diamond',
+    pair: 100000,
+    reward: '2BHK Flat (Metro City)',
+  },
+  {id: 14, rank: 'Triple Crown Diamond', pair: 250000, reward: '₹1 CR Cash'},
+];
+
 const AwardReward = () => {
-  // Static data with payment information
-  const staticData: CustomerData[] = [
-    {
-      id: '1',
-      name: 'John Doe',
-      crnNo: 'CRN123456',
-      phone: '9876543210',
-      rank: 'Gold',
-      amount: 5000,
-      bankAccNo: '123456789012',
-      bankIFSC: 'ABCD0123456',
-      status: 'PENDING',
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      crnNo: 'CRN654321',
-      phone: '8765432109',
-      rank: 'Silver',
-      amount: 3000,
-      bankAccNo: '987654321098',
-      bankIFSC: 'EFGH0123456',
-      status: 'PENDING',
-    },
-    {
-      id: '3',
-      name: 'Robert Johnson',
-      crnNo: 'CRN789012',
-      phone: '7654321098',
-      rank: 'Bronze',
-      amount: 1000,
-      bankAccNo: '567890123456',
-      bankIFSC: 'IJKL0123456',
-      status: 'PENDING',
-    },
-    {
-      id: '4',
-      name: 'Emily Davis',
-      crnNo: 'CRN345678',
-      phone: '6543210987',
-      rank: 'Platinum',
-      amount: 7000,
-      bankAccNo: '345678901234',
-      bankIFSC: 'MNOP0123456',
-      status: 'PENDING',
-    },
-    {
-      id: '5',
-      name: 'Michael Wilson',
-      crnNo: 'CRN901234',
-      phone: '5432109876',
-      rank: 'Gold',
-      amount: 5000,
-      bankAccNo: '901234567890',
-      bankIFSC: 'QRST0123456',
-      status: 'PENDING',
-    },
-  ];
+  const {data, isPending, isError} = useFetchCustomerHome();
 
-  const [customerData, setCustomerData] = useState<CustomerData[]>(staticData);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState('');
-  const itemsPerPage = 5;
+  if (isPending) return <p>Loading...</p>;
+  if (isError) return <p>Error fetching data</p>;
 
-  const handlePayClick = (id: string) => {
-    setCustomerData((prev) =>
-      prev.map((item) => (item.id === id ? {...item, status: 'PAID'} : item)),
-    );
-  };
-
-  const handlePayAll = () => {
-    setIsModalOpen(true);
-  };
-
-  const confirmPayAll = () => {
-    setCustomerData((prev) => prev.map((item) => ({...item, status: 'PAID'})));
-    setIsModalOpen(false);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // Filter data based on search term
-  const filteredData = customerData.filter((item) =>
-    Object.values(item).some((val) =>
-      String(val).toLowerCase().includes(searchTerm.toLowerCase()),
-    ),
-  );
-
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentItems = filteredData.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
-
-  const handlePageChange = (page: number) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page);
-    }
-  };
+  // ✅ API PairCount
+  const userPairCount = data?.pairCount || 0;
 
   return (
-    <div className="flex flex-col">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold">Award Rewards</h1>
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value);
-              setCurrentPage(1);
-            }}
-            className="rounded border border-stroke px-4 py-2 dark:border-strokedark dark:bg-boxdark"
-          />
-          <button
-            onClick={handlePayAll}
-            disabled={customerData.every((item) => item.status === 'PAID')}
-            className={`rounded px-4 py-2 text-white ${
-              customerData.every((item) => item.status === 'PAID')
-                ? 'bg-gray-400 cursor-not-allowed'
-                : 'bg-green-500 hover:bg-green-600'
-            }`}
-          >
-            Pay All
-          </button>
-        </div>
-      </div>
+    <div className="p-6">
+      <h1 className="mb-6 text-2xl font-bold">Reward Levels</h1>
 
-      <div className="rounded-sm border border-stroke bg-white px-6 py-4 shadow-default dark:border-strokedark dark:bg-boxdark">
-        <div className="max-w-full overflow-x-auto">
-          <table className="w-full table-auto border-collapse">
-            <thead>
-              <tr className="bg-gray-2 dark:bg-meta-4">
-                <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
-                  Name
-                </th>
-                <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
-                  Customer ID
-                </th>
-                <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
-                  Mobile No
-                </th>
-                <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
-                  Rank
-                </th>
-                <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
-                  Amount
-                </th>
-                <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
-                  Bank Account
-                </th>
-                <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
-                  IFSC
-                </th>
-                <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
-                  Status
-                </th>
-                <th className="px-4 py-4 text-left font-medium text-black dark:border-strokedark dark:text-white">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentItems.map((item, index) => (
+      <div className="border-gray-300 overflow-x-auto rounded border shadow">
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-form-strokedark">
+              <th className="border px-4 py-2 text-left">S.N</th>
+              <th className="border px-4 py-2 text-left">Rank</th>
+              <th className="border px-4 py-2 text-left">Required Pair</th>
+              <th className="border px-4 py-2 text-left">Reward</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rewardLevels.map((level) => {
+              const achieved = userPairCount >= level.pair;
+              return (
                 <tr
-                  key={index}
-                  className="border-b border-stroke dark:border-strokedark"
+                  key={level.id}
+                  className={`${
+                    achieved ? 'bg-green-900 font-semibold' : 'bg-gray-200'
+                  }`}
                 >
-                  <td className="px-4 py-2 text-left">{item.name}</td>
-                  <td className="px-4 py-2 text-left">{item.crnNo}</td>
-                  <td className="px-4 py-2 text-left">{item.phone}</td>
-                  <td className="px-4 py-2 text-left">{item.rank}</td>
-                  <td className="px-4 py-2 text-left">₹{item.amount}</td>
-                  <td className="px-4 py-2 text-left">{item.bankAccNo}</td>
-                  <td className="px-4 py-2 text-left">{item.bankIFSC}</td>
-                  <td className="px-4 py-2 text-left">{item.status}</td>
-                  <td className="px-4 py-2 text-left">
-                    <button
-                      onClick={() => handlePayClick(item.id)}
-                      disabled={item.status === 'PAID'}
-                      className={`rounded px-3 py-1 text-white ${
-                        item.status === 'PAID'
-                          ? 'bg-gray-400 cursor-not-allowed'
-                          : 'bg-green-500 hover:bg-green-600'
-                      }`}
-                    >
-                      {item.status === 'PAID' ? 'Paid' : 'Pay'}
-                    </button>
-                  </td>
+                  <td className="border px-4 py-2">{level.id}</td>
+                  <td className="border px-4 py-2">{level.rank}</td>
+                  <td className="border px-4 py-2">{level.pair}</td>
+                  <td className="border px-4 py-2">{level.reward}</td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="mt-4 flex items-center justify-between">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 rounded px-4 py-2 text-black transition disabled:cursor-not-allowed"
-          >
-            Previous
-          </button>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="bg-gray-500 hover:bg-gray-600 disabled:bg-gray-300 rounded px-4 py-2 text-black transition disabled:cursor-not-allowed"
-          >
-            Next
-          </button>
-        </div>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        className="mx-auto mt-10 max-w-sm rounded bg-white p-6 shadow-lg"
-        overlayClassName="fixed inset-0 bg-black bg-opacity-50"
-      >
-        <h2 className="text-lg font-semibold">Confirm Payment</h2>
-        <p className="mt-2 text-sm">
-          Are you sure you want to pay all pending rewards?
+      <div className="mt-6">
+        <p className="text-lg">
+          <strong>Your Current Pairs:</strong>{' '}
+          <span className="font-bold text-blue-600">{userPairCount}</span>
         </p>
-        <div className="mt-4 flex justify-end">
-          <button
-            onClick={confirmPayAll}
-            className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600"
-          >
-            Confirm
-          </button>
-          <button
-            onClick={closeModal}
-            className="bg-gray-500 hover:bg-gray-600 ml-2 rounded px-4 py-2 text-black"
-          >
-            Cancel
-          </button>
-        </div>
-      </Modal>
+      </div>
     </div>
   );
 };

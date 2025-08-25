@@ -181,6 +181,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/directcustomer',
               icon: <NetworkIcon size={22} />,
             },
+            {
+              label: 'Award Reward',
+              path: '/customer/awardreward',
+              icon: <BiAward size={22} />,
+            },
             // {
             //   label: 'Report',
             //   path: '/customer/reportc',

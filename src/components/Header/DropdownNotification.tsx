@@ -1,120 +1,137 @@
-import React, {useState} from 'react';
+/* eslint-disable */
+import {useState} from 'react';
 import {Link} from '@tanstack/react-router';
 import ClickOutside from '../ClickOutside';
+import {useAuthContext} from '@/context/AuthContext';
+import {FaEdit} from 'react-icons/fa';
+import {CheckmarkIcon} from 'react-hot-toast';
+import {useGetNotification} from '@/lib/react-query/Customer/notification';
 
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifying, setNotifying] = useState(true);
+  const {user} = useAuthContext();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+
+  // ✅ New API
+  const {data: notificationData} = useGetNotification();
+  console.log('notificationData', notificationData);
+
+  const formatIndianDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
-      <li>
+      <li className="relative">
         <Link
           onClick={() => {
             setNotifying(false);
             setDropdownOpen(!dropdownOpen);
           }}
-          to="/"
-          className="relative flex h-8.5 w-8.5 items-center justify-center rounded-full border-[0.5px] border-stroke bg-gray hover:text-primary dark:border-strokedark dark:bg-meta-4 dark:text-white"
+          className="relative flex h-8.5 w-8.5 items-center justify-center rounded-full border border-stroke bg-gray hover:text-primary dark:border-strokedark dark:bg-meta-4 dark:text-white"
         >
+          {/* Red dot when new */}
           <span
-            className={`absolute -top-0.5 right-0 z-1 h-2 w-2 rounded-full bg-meta-1 ${
+            className={`absolute -top-0.5 right-0 h-2 w-2 rounded-full bg-meta-1 ${
               notifying === false ? 'hidden' : 'inline'
             }`}
           >
-            <span className="absolute -z-1 inline-flex h-full w-full animate-ping rounded-full bg-meta-1 opacity-75"></span>
+            <span className="absolute h-full w-full animate-ping rounded-full bg-meta-1 opacity-75"></span>
           </span>
 
+          {/* Bell Icon */}
           <svg
-            className="fill-current duration-300 ease-in-out"
+            className="fill-current"
             width="18"
             height="18"
             viewBox="0 0 18 18"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
           >
-            <path
-              d="M16.1999 14.9343L15.6374 14.0624C15.5249 13.8937 15.4687 13.7249 15.4687 13.528V7.67803C15.4687 6.01865 14.7655 4.47178 13.4718 3.31865C12.4312 2.39053 11.0812 1.7999 9.64678 1.6874V1.1249C9.64678 0.787402 9.36553 0.478027 8.9999 0.478027C8.6624 0.478027 8.35303 0.759277 8.35303 1.1249V1.65928C8.29678 1.65928 8.24053 1.65928 8.18428 1.6874C4.92178 2.05303 2.4749 4.66865 2.4749 7.79053V13.528C2.44678 13.8093 2.39053 13.9499 2.33428 14.0343L1.7999 14.9343C1.63115 15.2155 1.63115 15.553 1.7999 15.8343C1.96865 16.0874 2.2499 16.2562 2.55928 16.2562H8.38115V16.8749C8.38115 17.2124 8.6624 17.5218 9.02803 17.5218C9.36553 17.5218 9.6749 17.2405 9.6749 16.8749V16.2562H15.4687C15.778 16.2562 16.0593 16.0874 16.228 15.8343C16.3968 15.553 16.3968 15.2155 16.1999 14.9343ZM3.23428 14.9905L3.43115 14.653C3.5999 14.3718 3.68428 14.0343 3.74053 13.6405V7.79053C3.74053 5.31553 5.70928 3.23428 8.3249 2.95303C9.92803 2.78428 11.503 3.2624 12.6562 4.2749C13.6687 5.1749 14.2312 6.38428 14.2312 7.67803V13.528C14.2312 13.9499 14.3437 14.3437 14.5968 14.7374L14.7655 14.9905H3.23428Z"
-              fill=""
-            />
+            <path d="M16.2 14.93L15.64 14.06c-.11-.17-.17-.34-.17-.53V7.68c0-1.66-.7-3.21-2-4.36-1.04-.93-2.39-1.52-3.83-1.64V1.12c0-.34-.28-.64-.64-.64s-.65.28-.65.64v.54C5.28 2.05 2.83 4.67 2.83 7.79v5.74c-.03.28-.09.42-.16.52l-.54.9c-.17.28-.17.62 0 .9.17.25.45.42.75.42h13.1c.3 0 .58-.17.75-.42.17-.28.17-.62 0-.9z" />
           </svg>
         </Link>
 
         {dropdownOpen && (
-          <div
-            className={`absolute -right-27 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80`}
-          >
-            <div className="px-4.5 py-3">
-              <h5 className="text-sm font-medium text-bodydark2">
-                Notification
-              </h5>
+          <div className="absolute -right-27 mt-2.5 w-80 rounded-lg border border-stroke bg-white shadow-xl dark:border-strokedark dark:bg-boxdark sm:right-0">
+            {/* Header */}
+            <div className="sticky top-0 z-10 border-b border-stroke bg-white px-4 py-3 dark:border-strokedark dark:bg-boxdark">
+              <div className="flex items-center justify-between">
+                <h5 className="text-sm font-semibold text-bodydark2">
+                  Notifications
+                </h5>
+                <span className="text-gray-500 text-xs">
+                  {notificationData?.length || 0} new
+                </span>
+              </div>
             </div>
 
-            <ul className="flex h-auto flex-col overflow-y-auto">
-              <li>
-                <Link
-                  className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                  to="/"
-                >
-                  <p className="text-sm">
-                    <span className="text-black dark:text-white">
-                      Edit your information in a swipe
-                    </span>{' '}
-                    Sint occaecat cupidatat non proident, sunt in culpa qui
-                    officia deserunt mollit anim.
-                  </p>
+            {/* Notifications List */}
+            <div className="max-h-96 overflow-y-auto">
+              {notificationData?.length ? (
+                notificationData
+                  .filter((item: any) => item.status === 'PAID') // ✅ Only PAID
+                  .map((item: any) => (
+                    <div
+                      key={item.id}
+                      className="hover:bg-gray-50 border-b border-stroke px-4 py-3 dark:border-strokedark dark:hover:bg-meta-4"
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="mt-1 flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-sm">
+                          💰
+                        </span>
 
-                  <p className="text-xs">12 May, 2025</p>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                  to="/"
-                >
-                  <p className="text-sm">
-                    <span className="text-black dark:text-white">
-                      It is a long established fact
-                    </span>{' '}
-                    that a reader will be distracted by the readable.
-                  </p>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <h4 className="text-sm font-medium text-black dark:text-white">
+                              Payment Update ({item.status})
+                            </h4>
+                            <span className="text-gray-500 text-xs">
+                              {formatIndianDate(item.createdAt)}
+                            </span>
+                          </div>
 
-                  <p className="text-xs">24 Feb, 2025</p>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                  to="/"
-                >
-                  <p className="text-sm">
-                    <span className="text-black dark:text-white">
-                      There are many variations
-                    </span>{' '}
-                    of passages of Lorem Ipsum available, but the majority have
-                    suffered
+                          <div className="text-gray-600 dark:text-gray-300 mt-1 text-sm">
+                            <p>Customer: {item.customerId}</p>
+                            <p>
+                              Amount: ₹{item.amount.toLocaleString('en-IN')}
+                            </p>
+                            <p>Payable: ₹{item.payableAmount}</p>
+                            <p>TDS: ₹{item.tdsAmount}</p>
+                            <p>Details: {item.details}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <div className="flex flex-col items-center justify-center p-6 text-center">
+                  <svg
+                    className="text-gray-400 h-12 w-12"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1}
+                      d="M15 17h5l-1.4-1.4A2 2 0 0118 14.16V11a6 6 0 00-4-5.66V5a2 2 0 10-4 0v.34C7.67 6.16 6 8.39 6 11v3.16c0 .54-.21 1.05-.6 1.44L4 17h5m6 0v1a3 3 0 11-6 0v-1"
+                    />
+                  </svg>
+                  <p className="text-gray-500 mt-2 text-sm">
+                    No new notifications
                   </p>
-
-                  <p className="text-xs">04 Jan, 2025</p>
-                </Link>
-              </li>
-              <li>
-                <Link
-                  className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                  to="/"
-                >
-                  <p className="text-sm">
-                    <span className="text-black dark:text-white">
-                      There are many variations
-                    </span>{' '}
-                    of passages of Lorem Ipsum available, but the majority have
-                    suffered
-                  </p>
-
-                  <p className="text-xs">01 Dec, 2024</p>
-                </Link>
-              </li>
-            </ul>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </li>
