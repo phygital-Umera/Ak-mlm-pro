@@ -3,6 +3,7 @@ import {useAuthContext} from '@/context/AuthContext';
 import {useCustomerLogin} from '@/lib/react-query/Auth/auth';
 import {signInSchema} from '@/lib/validation/signInSchema';
 import {zodResolver} from '@hookform/resolvers/zod';
+import { Link } from '@tanstack/react-router';
 import {jwtDecode, JwtPayload} from 'jwt-decode';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
@@ -59,13 +60,13 @@ const SignIn: React.FC = () => {
 
   return (
     <>
-      <div className="mb-6 flex justify-center">
+      {/* <div className="mb-6 flex justify-center">
         <img src={logo} alt="Logo" className="h-16 w-auto" />
-      </div>
-      <p className="text-center text-2xl font-bold text-black dark:text-white">
-        TMS LIFE SOLUTIONS
-      </p>
-      <h2 className="mb-9 mt-20 text-center  text-2xl font-semibold text-black dark:text-white sm:text-title-xl2">
+      </div> */}
+      {/* <p className="text-center text-2xl font-bold text-black dark:text-white">
+       SJC Group
+      </p> */}
+      <h2 className="mb-9 mt-20 text-center text-2xl font-semibold text-black dark:text-white sm:text-title-xl2">
         Sign In
       </h2>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -128,15 +129,15 @@ const SignIn: React.FC = () => {
             {isPending ? 'Loading...' : 'Sign In'}
           </button>
         </div>
-        {/* 
+        
         <div className="mt-6 text-center">
-          <p>
+          <p className="text-center text-black dark:text-white font-semibold">
             Don’t have any account?{' '}
-            <Link className="text-primary" to="/signup">
+            <Link className="text-primary" to="/signup"> 
               Sign Up
             </Link>
           </p>
-        </div> */}
+        </div>
       </form>
     </>
   );

@@ -173,21 +173,26 @@ const CustomerDashboard: React.FC = () => {
           amount: `${dataa?.todayBinary || 0}`,
           icon: <IoTodaySharp className="text-2xl" />,
         },
+        {
+          title: 'Wallet Amount',
+          amount: `${dataa?.wallet?.amount || 0}`,
+          icon: <BsWalletFill className="text-2xl" />,
+        },
         // {
         //   title: 'Today Pair Count',
         //   amount: `${dataa?.todaysPairCount || 0}`,
         //   icon: <IoTodaySharp className="text-2xl" />,
         // },
-        {
-          title: 'Today Direct Sponsor Income',
-          amount: `${dataa?.todayDirectCommission || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
-        },
-        {
-          title: 'Today Repurchase Balance',
-          amount: `${dataa?.todayRepurchase || 0}`,
-          icon: <IoTodaySharp className="text-2xl" />,
-        },
+        // {
+        //   title: 'Today Direct Sponsor Income',
+        //   amount: `${dataa?.todayDirectCommission || 0}`,
+        //   icon: <IoTodaySharp className="text-2xl" />,
+        // },
+        // {
+        //   title: 'Today Repurchase Balance',
+        //   amount: `${dataa?.todayRepurchase || 0}`,
+        //   icon: <IoTodaySharp className="text-2xl" />,
+        // },
         {
           title: 'Carry Forward Count',
           amount: `${dataa?.carry_forward_count || 0}`,
@@ -211,7 +216,6 @@ const CustomerDashboard: React.FC = () => {
           amount: `${dataa?.binary || 0}`,
           icon: <IoWalletSharp className="text-2xl" />,
         },
-
         {
           title: 'Total Direct Sponsor Income',
           amount: `${dataa?.directCommission || 0}`,
@@ -321,7 +325,7 @@ const CustomerDashboard: React.FC = () => {
       ) : null}
       <div>
         <div className="mb-6 flex items-center gap-4">
-          <button
+          {/* <button
             onClick={() => setSelectedView('today')}
             className={`rounded-lg px-4 py-2 text-sm font-medium ${
               selectedView === 'today'
@@ -330,13 +334,13 @@ const CustomerDashboard: React.FC = () => {
             }`}
           >
             Today's Data
-          </button>
+          </button> */}
           <button
             onClick={() => setSelectedView('all')}
             className={`rounded-lg px-4 py-2 text-sm font-medium ${
               selectedView === 'all'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-800'
+                ? 'border border-blue-600 bg-blue-600 text-white'
+                : 'bg-gray-200 text-gray-800 border-gray-200 border'
             }`}
           >
             All Data
@@ -344,7 +348,7 @@ const CustomerDashboard: React.FC = () => {
         </div>
 
         {/* Reward Progress Section */}
-        <div className="mb-6 rounded-lg border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
+        {/* <div className="mb-6 rounded-lg border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               {currentTier ? (
@@ -390,11 +394,11 @@ const CustomerDashboard: React.FC = () => {
             <div className="text-right">
               {nextTier ? (
                 <>
-                  <h3 className="text-lg font-semibold">{nextTier.rank}</h3>
-                  {/* <p className="text-gray-500 text-sm">
+                  <h3 className="text-lg font-semibold">{nextTier.rank}</h3> */}
+        {/* <p className="text-gray-500 text-sm">
                     Next: {nextTier.reward}
                   </p> */}
-                </>
+        {/* </>
               ) : (
                 <>
                   <h3 className="text-lg font-semibold">Max Rank Achieved</h3>
@@ -405,7 +409,7 @@ const CustomerDashboard: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Stats Section */}
         <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">

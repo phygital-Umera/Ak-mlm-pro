@@ -162,7 +162,7 @@ const EpinUser: React.FC = () => {
                     />
                     <div className="flex-1">
                       <h3 className="font-medium">{product.name}</h3>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-gray-600 text-sm">
                         {product.description}
                       </p>
                       <div className="mt-2 flex items-center justify-between">
@@ -171,7 +171,7 @@ const EpinUser: React.FC = () => {
                             ₹{product.discountedPrice}
                           </span>
                           {product.actualPrice > product.discountedPrice && (
-                            <span className="ml-2 text-sm text-gray-500 line-through">
+                            <span className="text-gray-500 ml-2 text-sm line-through">
                               ₹{product.actualPrice}
                             </span>
                           )}
@@ -194,7 +194,7 @@ const EpinUser: React.FC = () => {
         {fields.length > 0 && (
           <div className="space-y-2">
             <h3 className="font-medium">Selected Products</h3>
-            <div className="divide-y divide-gray-200 rounded-lg border">
+            <div className="divide-gray-200 divide-y rounded-lg border">
               {fields.map((field, index) => {
                 const product = products?.find(
                   (p) => p.discountedPrice === Number(field.price),
@@ -212,7 +212,7 @@ const EpinUser: React.FC = () => {
                       />
                       <div>
                         <p className="font-medium">{product?.name}</p>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-gray-600 text-sm">
                           ₹{field.price} × {field.count}
                         </p>
                       </div>
@@ -239,7 +239,7 @@ const EpinUser: React.FC = () => {
           <input
             type="file"
             {...methods.register('imageFile')}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
+            className="text-gray-500 block w-full text-sm file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
             accept="image/*"
           />
           {methods.formState.errors.imageFile && (
@@ -251,7 +251,10 @@ const EpinUser: React.FC = () => {
 
         {/* Submit Button */}
         <div className="mt-6 flex justify-end space-x-4">
-          <GenericButton type="submit" disabled={isPending || fields.length === 0}>
+          <GenericButton
+            type="submit"
+            disabled={isPending || fields.length === 0}
+          >
             {isPending ? 'Processing...' : 'Request E-Pin'}
           </GenericButton>
         </div>

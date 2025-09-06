@@ -17,6 +17,30 @@ export const createEPin = async (epincount: number, price: number) => {
     throw error;
   }
 };
+export const createCustomerEPin = async (
+  Count: number,
+  price: number,
+  crnNo: string,
+  customerId: string,
+  pkg: string
+) => {
+  try {
+    const response = await api.post(`admin/epin/customers`, {
+      Count,
+      price,
+      crnNo,
+      customerId,
+      package: pkg,
+    });    
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      'Error in createEPin:',
+      error.response?.data?.message || error.message
+    );
+    throw error;
+  }
+};
 
 export const getOtp = async (epincount: string, type: string) => {
   try {

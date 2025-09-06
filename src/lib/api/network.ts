@@ -3,8 +3,20 @@ import {api} from '@/utils/axios';
 export const getnetwork = async () => {
   try {
     console.log('Fetching network data...');
-    const response = await api.get('/tree');
+    const response = await api.get('/tree/gen');
 
+    console.log('Network data fetched', response.data);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getbinarynetwork = async () => {
+  try {
+    console.log('Fetching network data...');
+    const response = await api.get('/tree');
     console.log('Network data fetched', response.data);
     return response.data;
   } catch (error) {

@@ -38,7 +38,6 @@ const DisplayCustomerList: React.FC = () => {
   const navigate = useNavigate();
   const {data: apiData, isLoading, error} = useFetchCustomerList();
   const [customerData, setCustomerData] = useState<CustomerData[]>([]);
- 
 
   useEffect(() => {
     if (apiData) {

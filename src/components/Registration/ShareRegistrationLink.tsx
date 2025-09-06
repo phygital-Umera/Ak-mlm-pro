@@ -165,7 +165,7 @@ export const ShareRegistrationLink: React.FC<SponsorInfoProps> = ({onNext}) => {
     ? user.fullname.replace(/\s/g, '_')
     : 'unknown_user';
   const crnNo = user?.crnNo || 'CRN0000000';
-  const registrationLink = `https://tmslife.biz/register/${fullname}/${crnNo}/${side}`;
+  const registrationLink = `https://sjcgroup.biz/register/${fullname}/${crnNo}/${side}`;
   // const registrationLink = `http://localhost:5173/register/${fullname}/${crnNo}/${side}`;
 
   useEffect(() => {

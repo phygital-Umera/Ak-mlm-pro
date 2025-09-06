@@ -2,6 +2,7 @@ import React from 'react';
 import GenericTable, {Column} from '@/components/Forms/Table/GenericTable';
 import {useGetCustomerEpins} from '@/lib/react-query/Admin/Epin/epin';
 import toast from 'react-hot-toast';
+import EpinForm from './EpinForm';
 
 type CustomerEpinData = {
   id: string;
@@ -19,7 +20,7 @@ type CustomerEpinData = {
   };
 };
 const CustomerEpinColumn: Column<CustomerEpinData>[] = [
-  {header: 'Created At', accessor: 'createdAt'},
+  {header: 'Date', accessor: 'createdAt'},
   {header: 'E-Pin No', accessor: 'epinNo'},
   {header: 'Used', accessor: 'isUsed', sortable: true},
   {header: 'Used By', accessor: 'usedBy'},
@@ -37,7 +38,7 @@ const CustomerEpins: React.FC = () => {
     isSuccess: customerEpinSuccess,
     isLoading,
   } = useGetCustomerEpins();
-  // console.log('customer Eping data : ', CustomerepinData);
+  console.log('customer Eping data : ', CustomerepinData);
 
   const CustomerFormattedData = customerEpinSuccess
     ? Array.isArray(CustomerepinData) &&
@@ -65,11 +66,12 @@ const CustomerEpins: React.FC = () => {
       }))
     : [];
   return (
-    <div>
-      {isLoading ? (
-        <p className="text-center">Loading...</p>
-      ) : (
-        <GenericTable
+    <>
+      <div>
+        {isLoading ? (
+          <p className="text-center">Loading...</p>
+        ) : (
+          <GenericTable
           data={CustomerFormattedData || []}
           columns={CustomerEpinColumn}
           itemsPerPage={15}
@@ -83,6 +85,7 @@ const CustomerEpins: React.FC = () => {
         />
       )}
     </div>
+    </>
   );
 };
 

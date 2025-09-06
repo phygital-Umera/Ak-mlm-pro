@@ -6,6 +6,7 @@ export const darkMode = 'class';
 export const theme = {
   fontFamily: {
     satoshi: ['Satoshi', 'sans-serif'],
+    lato: ['Lato', 'sans-serif'],
   },
   screens: {
     '2xsm': '375px',

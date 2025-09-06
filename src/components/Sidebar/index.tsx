@@ -3,6 +3,8 @@ import {Link, useLocation} from '@tanstack/react-router';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import {SidebarProps} from '@/types';
 import {
+  PiEnvelopeSimpleLight,
+  PiFileTextLight,
   PiNavigationArrowFill,
   PiShareLight,
   PiSquaresFourLight,
@@ -37,7 +39,12 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
           //   icon: <NetworkIcon size={22} />,
           // },
           {
-            label: 'Network Tree',
+            label: 'Binary Tree',
+            path: '/admin/binarytree',
+            icon: <NetworkIcon size={22} />,
+          },
+          {
+            label: 'Generation Tree',
             path: '/admin/network',
             icon: <FaNetworkWired size={22} />,
           },
@@ -66,6 +73,21 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             label: 'Product Report',
             path: '/admin/productreport',
             icon: <PiShareLight size={22} />,
+          },
+          {
+            label: 'Level Income',
+            path: '/admin/roi',
+            icon: <PiShareLight size={22} />,
+          },
+          {
+            label: 'My Invoice',
+            path: '/admin/invoice',
+            icon: <PiFileTextLight size={22} />,
+          },
+          {
+            label: 'Welcome Letter',
+            path: '/admin/wlcmletter',
+            icon: <PiEnvelopeSimpleLight size={22} />,
           },
           // {
           //   label: 'Wallet Report',
@@ -172,20 +194,25 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               icon: <ProfileIcon size={22} />,
             },
             {
-              label: 'Network',
-              path: '/customer/networkc',
+              label: 'Binary Tree',
+              path: '/admin/binarytree',
               icon: <NetworkIcon size={22} />,
             },
+            // {
+            //   label: 'Direct Customer',
+            //   path: '/customer/directcustomer',
+            //   icon: <NetworkIcon size={22} />,
+            // },
             {
-              label: 'Direct Customer',
-              path: '/customer/directcustomer',
-              icon: <NetworkIcon size={22} />,
+              label: 'Generation Tree',
+              path: '/customer/gentree',
+              icon: <FaNetworkWired size={22} />,
             },
-            {
-              label: 'Award Reward',
-              path: '/customer/awardreward',
-              icon: <BiAward size={22} />,
-            },
+            // {
+            //   label: 'Award Reward',
+            //   path: '/customer/awardreward',
+            //   icon: <BiAward size={22} />,
+            // },
             // {
             //   label: 'Report',
             //   path: '/customer/reportc',
@@ -206,17 +233,16 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/customersidesharelink',
               icon: <PiSquaresFourLight size={22} />,
             },
-            // {
-            //   label: 'Wallet',
-            //   path: '/customer/walletc',
-            //   icon: <PiSquaresFourLight size={22} />,
-            // },
+            {
+              label: 'Wallet',
+              path: '/customer/walletc',
+              icon: <PiSquaresFourLight size={22} />,
+            },
             {
               label: ' Payout History',
               path: '/customer/historypayout',
               icon: <PiSquaresFourLight size={22} />,
             },
-
             // {
             //   label: 'Withdraw Amount',
             //   path: '/customer/withdraw',
@@ -309,16 +335,16 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
           to="/"
           className="bg-gray-300 hover:bg-gray-400 flex h-16 w-auto items-center justify-start space-x-4 rounded-full px-2 py-2 transition-all"
         >
-          <div className="flex h-15 w-20 items-center justify-center overflow-hidden rounded-full">
-            <img
+          {/* <div className="flex h-15 w-20 items-center justify-center overflow-hidden rounded-full">
+             <img
               src={Logo}
               alt="Logo"
               className="h-full w-full object-contain"
             />
-          </div>
-          <div className="flex flex-col">
-            <h1 className="text-base font-semibold text-gray">TMS LIFE</h1>
-            <p className="text-base font-semibold text-gray">SOLUTION</p>
+          </div> */}
+          <div className="flex flex-col text-center">
+            <h1 className="text-2xl font-semibold text-blue-500">SJC</h1>
+            <p className="text-2xl font-semibold text-blue-500">GROUP</p>
           </div>
         </Link>
 

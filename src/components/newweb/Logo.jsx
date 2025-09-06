@@ -50,7 +50,7 @@ const Logo = () => {
   return (
     <Container>
       {/* <Link to="/"> */}
-        <img src={logo} alt="logo" />
+      <img src={logo} alt="logo" />
       {/* </Link> */}
     </Container>
   );

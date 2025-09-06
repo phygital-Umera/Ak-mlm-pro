@@ -12,7 +12,7 @@ export const createEpinRequest = async (formData: FormData) => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      }
+      },
     );
     return response.data;
   } catch (error: unknown) {

@@ -5,11 +5,12 @@ import React from 'react';
 type RoiList = {
   id: string;
   fullname: string;
-  day: string;
   pairCount: string;
+  amount: string;
   crnNo: string;
-  createdAt: string; // ISO date format
+  createdAt: string;
   isUsed: boolean;
+  days_remaining: string;
   usedAt: string | null;
   usedBy: string | null;
 };
@@ -21,14 +22,14 @@ const DisplayRoiList = () => {
   console.log('====================================');
   const RoiColumn: Column<RoiList>[] = [
     {
-      header: 'Created At',
+      header: 'Date',
       accessor: 'createdAt',
       render: (item) => new Date(item.createdAt).toLocaleString('en-IN'),
     },
     {header: 'CRN No', accessor: 'crnNo', sortable: true},
     {header: 'Name', accessor: 'fullname'},
-    {header: 'Pair Count', accessor: 'pairCount'},
-    {header: 'Days', accessor: 'day'},
+    {header: 'Amount', accessor: 'pairCount'},
+    {header: 'Days', accessor: 'days_remaining'},
   ];
 
   return (

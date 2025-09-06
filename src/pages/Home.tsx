@@ -112,12 +112,33 @@ const Home: React.FC = () => {
           trendValue: '15%',
         },
         {
-          title: 'Direct Sponsor Income',
-          amount: `₹${data?.directCommission}`,
-          icon: <FaCrown className="text-2xl text-pink-500" />,
+          title: 'Total Level Income  ',
+          amount: `₹${data?.totalRoi}`,
+          icon: <FaSitemap className="text-2xl text-teal-500" />,
           trend: 'up',
-          trendValue: '10%',
+          trendValue: '15%',
         },
+        {
+          title: 'Left Count ',
+          amount: `₹${data?.leftCount}`,
+          icon: <FaSitemap className="text-2xl text-teal-500" />,
+          trend: 'up',
+          trendValue: '15%',
+        },
+        {
+          title: 'Right Count ',
+          amount: `₹${data?.rightCount}`,
+          icon: <FaSitemap className="text-2xl text-teal-500" />,
+          trend: 'up',
+          trendValue: '15%',
+        },
+        // {
+        //   title: 'Direct Sponsor Income',
+        //   amount: `₹${data?.directCommission}`,
+        //   icon: <FaCrown className="text-2xl text-pink-500" />,
+        //   trend: 'up',
+        //   trendValue: '10%',
+        // },
         // {
         //   title: 'Rewards Achiever Report',
         //   amount: `₹${achiverReport || 0}`,
@@ -125,20 +146,20 @@ const Home: React.FC = () => {
         //   trend: 'up',
         //   trendValue: '5%',
         // },
-        {
-          title: 'Repurchase Commission',
-          amount: `₹${repurchaseCommission}`,
-          icon: <FaRedoAlt className="text-2xl text-amber-500" />,
-          trend: 'up',
-          trendValue: '20%',
-        },
-        {
-          title: 'Repurchase Amount',
-          amount: `₹${repurchaseAmount}`,
-          icon: <FaShoppingCart className="text-2xl text-amber-500" />,
-          trend: 'up',
-          trendValue: '20%',
-        },
+        // {
+        //   title: 'Repurchase Commission',
+        //   amount: `₹${repurchaseCommission}`,
+        //   icon: <FaRedoAlt className="text-2xl text-amber-500" />,
+        //   trend: 'up',
+        //   trendValue: '20%',
+        // },
+        // {
+        //   title: 'Repurchase Amount',
+        //   amount: `₹${repurchaseAmount}`,
+        //   icon: <FaShoppingCart className="text-2xl text-amber-500" />,
+        //   trend: 'up',
+        //   trendValue: '20%',
+        // },
         {
           title: 'In Active Customer',
           amount: `${inActiveCustomer}`,
@@ -220,7 +241,7 @@ const Home: React.FC = () => {
       className="p-4 md:p-6"
     >
       <div className="mb-6 flex items-center gap-4">
-        <button
+        {/* <button
           onClick={() => setSelectedView('today')}
           className={`rounded-lg px-4 py-2 text-sm font-medium ${
             selectedView === 'today'
@@ -229,13 +250,13 @@ const Home: React.FC = () => {
           }`}
         >
           Today
-        </button>
+        </button> */}
         <button
           onClick={() => setSelectedView('month')}
           className={`rounded-lg px-4 py-2 text-sm font-medium ${
             selectedView === 'month'
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-200 text-gray-800'
+              ? 'border border-blue-600 bg-blue-600 text-white'
+              : 'bg-gray-200 text-gray-800 border-gray-200 border'
           }`}
         >
           All

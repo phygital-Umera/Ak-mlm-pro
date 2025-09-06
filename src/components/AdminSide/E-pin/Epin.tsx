@@ -84,9 +84,10 @@ export const Epin: React.FC = () => {
               label="Price"
               name="price"
               options={[
-                {label: 'Product 1 (3150)', value: '3150'},
-                {label: 'Product 2 (3300)', value: '3300'},
-                {label: 'Product 3 (3600)', value: '3600'},
+                {label: 'Product 1 (1250)', value: '1250'},
+                {label: 'Product 2 (2000)', value: '2000'},
+                {label: 'Product 3 (2500)', value: '2500'},
+                {label: 'Product 4 (3500)', value: '3500'},
               ]}
               onChange={handleTypeChange}
             />
@@ -99,7 +100,7 @@ export const Epin: React.FC = () => {
                 label="Otp"
                 placeholder="Enter OTP"
               />
-            </div>
+            </div>0
           )} */}
         </div>
 

@@ -6,13 +6,18 @@ export const externalRegistrationSchema = z
       .string()
       .refine((value) => ['online', 'later', 'e-pin'].includes(value), {
         message: 'Invalid E-Pin Type',
-      }).optional(),
-    sponsorId: z
-      .string({required_error: 'Sponsor ID is required'})
-      .min(5, {message: 'Sponsor ID must be at least 5 characters'}).optional(),
-    side: z.enum(['LEFT', 'RIGHT'], {
-      errorMap: () => ({message: "Please select either 'LEFT' or 'RIGHT'."}),
-    }).optional(),
+      })
+      .optional(),
+      sponsorId: z
+      .string()
+      .min(9, 'Sponsor ID must be at least 8 characters')
+      .refine((val) => val.trim() !== '', 'Sponsor ID is required'),
+    
+    side: z
+      .enum(['LEFT', 'RIGHT'], {
+        errorMap: () => ({message: "Please select either 'LEFT' or 'RIGHT'."}),
+      })
+      .optional(),
     directSponsorId: z.string().optional(),
     products: z.array(
       z
@@ -77,3 +82,4 @@ export const externalRegistrationSchema = z
 //   .min(1, 'UPI Id is required')
 //   .regex(/^[a-zA-Z0-9.\-_]{2,}@[a-zA-Z]{3,}$/g)
 //   .optional(),
+

@@ -19,7 +19,10 @@ import ConnectingPeoplePage from '@/components/website/ConnectingPeoplePage';
 import AboutUs from '@/components/website/AboutUs';
 import MissionVision from '@/components/website/MissionVision';
 import Bottombar from '@/components/website/Bottombar';
-
+import ServicesSection from '@/components/website/ServicePage';
+import GetCallBack from '@/components/website/GetCallBack';
+import VisionMission from '@/components/website/VisionMission';
+import TopBar from '@/components/HomePage/Topbar';
 const LandingPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -33,7 +36,10 @@ const LandingPage = () => {
 
   return (
     <>
-      <Header />
+      <div className="fixed left-0 top-0 z-50 w-full">
+        <TopBar />
+        <Header />
+      </div>
 
       <div id="hero-section">
         <BannerPage />
@@ -44,15 +50,18 @@ const LandingPage = () => {
       </div>
 
       <div id="connecting-section">
-        <ConnectingPeoplePage />
+        {/* <ConnectingPeoplePage /> */}
+        <ServicesSection />
       </div>
 
       <div id="mission-vision">
-        <MissionVision />
+        {/* <MissionVision /> */}
+        <GetCallBack />
       </div>
 
       <div id="product-page">
-        <ProductPage />
+        {/* <ProductPage /> */}
+        <VisionMission />
       </div>
 
       <div id="contact-us">

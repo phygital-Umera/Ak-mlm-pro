@@ -4,7 +4,7 @@ import {api} from '@/utils/axios';
 export const createWalletData = async (payload: {id: string}) => {
   console.log('payload', payload);
   try {
-    const response = await api.post('/customer/wallet', payload);
+    const response = await api.post('/customers/wallet', payload);
     return response.data;
   } catch (error: unknown) {
     const apiError = error as ApiError;

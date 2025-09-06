@@ -1,4 +1,4 @@
-import {api} from '@/utils/axios';
+import {api, unAuthenticatedApi} from '@/utils/axios';
 
 export const registerAdmin = async (adminData) => {
   try {
@@ -16,7 +16,7 @@ export const registerAdmin = async (adminData) => {
 
 export const getSponsorNameById = async (id: string) => {
   try {
-    const response = await api.get(`/customerName/${id}`);
+    const response = await unAuthenticatedApi.get(`/customerName/${id}`);
     return response.data;
   } catch (error) {
     const err = error; // Type assertion to ApiError

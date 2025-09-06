@@ -10,6 +10,7 @@ const images: string[] = [banner1, banner2, banner3, banner4];
 
 const HeroSection: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   const prevSlide = () => {
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -19,79 +20,53 @@ const HeroSection: React.FC = () => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
-  const [isPaused, setIsPaused] = useState(false);
-
   useEffect(() => {
     const interval = setInterval(() => {
       if (!isPaused) {
         nextSlide();
       }
     }, 3000);
-
     return () => clearInterval(interval);
   }, [currentIndex, isPaused]);
 
   return (
     <>
-      <section
-        id="hero-section"
-        className="relative h-[50vh] w-full overflow-hidden sm:h-[60vh] md:h-[70vh] lg:h-[80vh] xl:h-[90vh]"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        {/* Image */}
-        <img
-          src={images[currentIndex]}
-          alt={`Slide ${currentIndex + 1}`}
-          className="h-full w-full object-contain transition-all duration-500"
-        />
-
-        {/* Navigation Buttons */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white hover:bg-black/60 sm:left-4 sm:p-3"
-        >
-          <ChevronLeft size={20} className="sm:size-6" />
-        </button>
-
-        <button
-          onClick={nextSlide}
-          className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/40 p-2 text-white hover:bg-black/60 sm:right-4 sm:p-3"
-        >
-          <ChevronRight size={20} className="sm:size-6" />
-        </button>
-
-        {/* Dot Indicators */}
-        <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 gap-2 sm:bottom-4">
-          {images.map((_, idx) => (
-            <div
-              key={idx}
-              className={`h-2 w-2 rounded-full transition duration-300 ${
-                idx === currentIndex ? 'bg-white' : 'bg-white/40'
-              }`}
+      {/* About Section (Welcome to NPS Pension) */}
+      <section className="bg-white py-12">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 px-4 md:grid-cols-2">
+          {/* Left Image */}
+          <div>
+            <img
+              src="https://npspension.co.in/about.jpg"
+              alt="About NPS"
+              className="w-full rounded-lg object-cover shadow-md"
             />
-          ))}
+          </div>
+
+          {/* Right Content */}
+          <div>
+            <h2 className="mb-4 text-2xl font-bold text-[#2E363A]">
+              Welcome to NPS Pension
+            </h2>
+            <p className="text-gray-600 mb-3">
+              Our Company is the PIONEER organization working in RETIREMENT
+              PLANNING for the old age income security for the public by the
+              best and EFFECTIVE FINANCIAL TOOLS. Working more than seven years,
+              we provided more than 500 HNI Clients RETIREMENT and TAX EFFICIENT
+              solution through NATIONAL PENSION SYSTEM (NPS).
+            </p>
+            <p className="text-gray-600">
+              We have been open more than 10000 NPS accounts on individual
+              basis. Now, we provide CORPORATE services for RETIREMENT and TAX
+              saving schemes through NATIONAL PENSION SYSTEM (NPS). We are the
+              authorized service provider for NPS. Now, we look to grow in
+              DIVERSE financial services like Mutual funds, General Insurance,
+              Health Insurance, Life Insurance, Postal Services, and Home and
+              Mortgage Loan.
+            </p>
+          </div>
         </div>
       </section>
-
-      {/* Promotional Message */}
-      <div className="bg-white py-4 shadow-md">
-        <div className="mx-auto max-w-7xl px-4">
-          <h1 className="text-center text-2xl font-medium sm:text-3xl md:text-4xl lg:text-5xl">
-            <span className="font-bold text-amber-500">
-              100 Pair Matching By Flight and Train
-            </span>
-            <span className="mx-1 hidden sm:inline">•</span>
-            <br className="sm:hidden" />
-            <span>2 nights 3 days</span>
-            <span className="mx-1 hidden sm:inline">•</span>
-            <br className="sm:hidden" />
-            <span className="font-bold text-amber-500">
-              Ramoji Film City Tour
-            </span>
-          </h1>
-        </div>
-      </div>
     </>
   );
 };

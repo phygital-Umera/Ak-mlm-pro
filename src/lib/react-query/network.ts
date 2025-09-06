@@ -1,5 +1,11 @@
 import {useQuery} from '@tanstack/react-query';
-import {getnetwork, getNewnetwork, getNewnetworkCustomer} from '../api/network';
+import {
+  getnetwork,
+  getNewnetwork,
+  getNewnetworkCustomer,
+  getbinarynetwork,
+  getBinaryNetworkById,
+} from '../api/network';
 import {NETWORK_QUERY_KEYS, NEW_NETWORK_QUERY_KEYS} from './QueryKeys';
 
 export const useGetNetwotkTree = () => {
@@ -9,6 +15,12 @@ export const useGetNetwotkTree = () => {
   });
 };
 
+export const useGetNetwotkBinaryTree = () => {
+  return useQuery({
+    queryKey: [NETWORK_QUERY_KEYS.NETWORK],
+    queryFn: () => getbinarynetwork(),
+  });
+};
 export const useGetNewNetwotkTree = (id: string) => {
   return useQuery({
     queryKey: [NEW_NETWORK_QUERY_KEYS.NewNETWORK],

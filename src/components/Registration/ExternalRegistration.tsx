@@ -20,6 +20,8 @@ import {
   UserIcon,
   UsersIcon,
 } from 'lucide-react';
+import GenericDropdown from '../Forms/DropDown/GenericDropDown';
+import { unAuthenticatedApi } from '@/utils/axios';
 
 type FormValues = z.infer<typeof externalRegistrationSchema>;
 
@@ -45,8 +47,10 @@ export const ExternalRegistration: React.FC = () => {
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(externalRegistrationSchema),
+    mode: 'onChange',
     defaultValues: {
       sponsorId: params.crnno || '',
+      side: params.id || '',
       firstName: '',
       lastName: '',
       email: '',
@@ -58,16 +62,18 @@ export const ExternalRegistration: React.FC = () => {
       products: [],
     },
   });
+  const [sponsorError, setSponsorError] = useState('');
 
   const [selectedProducts, setSelectedProducts] = useState<
     Record<string, number>
   >({});
-  const [useWithoutEpin, setUseWithoutEpin] = useState(false);
+  const [sponcerIDName, setSponcerIDName] = useState<string>('ENTER NAME');
+    const [useWithoutEpin, setUseWithoutEpin] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const {setSelectProduct} = useRegistration();
   const {data: products} = useGetAllProducts();
   const epinType = methods.watch('epinType');
-  methods.setValue('side', params?.id);
+  // methods.setValue('side', params?.id);
 
   const {user} = useAuthContext();
   const role = user?.role;
@@ -81,8 +87,7 @@ export const ExternalRegistration: React.FC = () => {
     isError,
     error,
   } = useCustomerRegistration();
-  console.log('data', data);
-
+ 
   const {
     mutateAsync: checkEpin,
     data: checkEpinData,
@@ -108,6 +113,20 @@ export const ExternalRegistration: React.FC = () => {
       setSelectedProducts((prev) => ({...prev, [productId]: count + 1}));
     }
   };
+  const sponcerValidate=async(CRN:string)=>{
+    console.log('CRN', CRN);
+    if(CRN.length>8){
+
+        try {
+          const response = await unAuthenticatedApi.get(`/customerName/${CRN}`);
+          setSponcerIDName(response.data.data);
+          // console.log(response)
+        } catch (error) {
+          setSponcerIDName('Invalid ID');
+        }
+    }
+    
+  }
 
   const onSubmit = (formValues: FormValues) => {
     console.log('formValues', formValues);
@@ -144,6 +163,11 @@ export const ExternalRegistration: React.FC = () => {
     registerAdmin(payload);
     console.log('payload', payload);
   };
+  const sponsorId = methods.watch('sponsorId');
+
+  useEffect(() => {
+    methods.trigger('sponsorId');
+  }, [sponsorId]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -160,15 +184,20 @@ export const ExternalRegistration: React.FC = () => {
     <FormProvider {...methods}>
       <form
         onSubmit={methods.handleSubmit(onSubmit)}
-        className="space-y-8 bg-white p-8 dark:bg-black"
+        className="bg-gray-100 flex min-h-screen items-center justify-center bg-cover bg-no-repeat"
+        style={{
+          backgroundImage:
+            'url(https://d18x2uyjeekruj.cloudfront.net/wp-content/uploads/2023/06/nps.jpg)',
+        }}
       >
-        {/* Sponsor Info */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
-          <h1 className="col-span-12 mb-4 text-lg font-semibold">
-            Sponsor Info
-          </h1>
-          <p className="col-span-12 text-lg font-semibold">
-            Name: &nbsp;{params.name.replace('_', ' ')}
+        <div className="m-4 w-full max-w-2xl rounded-lg bg-[#F6F8FA] p-6 shadow-lg">
+          {/* Sponsor Info */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
+            <h1 className="col-span-12 mb-4 text-lg font-semibold">
+              Sponsor Info
+            </h1>
+            <p className="col-span-12 text-lg font-semibold">
+            Name: &nbsp;{params.name}
           </p>
           <div className="col-span-12 md:col-span-6">
             <GenericInputField name="sponsorId" label="Sponsor ID" disabled />
@@ -176,149 +205,150 @@ export const ExternalRegistration: React.FC = () => {
           <div className="col-span-12 md:col-span-6">
             <GenericInputField name="side" label="Side" disabled />
           </div>
-          {!useWithoutEpin && (
-            <>
+            {!useWithoutEpin && (
               <div className="col-span-12 md:col-span-6">
                 <GenericInputField name="epinNo" label="E-Pin" />
               </div>
-            </>
-          )}
-        </div>
-
-        {/* Verify and Without Epin Buttons */}
-        {!useWithoutEpin && (
-          <div className="flex items-center gap-4">
-            <GenericButton type="button" onClick={verifyEpin}>
-              Verify Epin
-            </GenericButton>
-
-            <GenericButton
-              type="button"
-              onClick={() => {
-                setUseWithoutEpin(true);
-                setSelectedProducts({});
-                methods.setValue('epinNo', '');
-              }}
-            >
-              Without Epin
-            </GenericButton>
+            )}
           </div>
-        )}
 
-        {/* Product Selection */}
-        {!useWithoutEpin && (
-          <>
-            <h1 className="text-gray-800 mb-6 text-xl font-bold dark:text-white">
-              Select up to 3 Products{' '}
-              <span className="text-sm font-normal">(Tap to add/remove)</span>
-            </h1>
+          {/* Verify and Without Epin Buttons */}
+          {!useWithoutEpin && (
+            <div className="mt-2 flex items-center gap-4">
+              <GenericButton type="button" onClick={verifyEpin}>
+                Verify Epin
+              </GenericButton>
 
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {Array.isArray(filteredProducts) &&
-                filteredProducts?.map((product: Product) => {
-                  const count = selectedProducts[product.id] || 0;
+              <GenericButton
+                type="button"
+                onClick={() => {
+                  setUseWithoutEpin(true);
+                  setSelectedProducts({});
+                  methods.setValue('epinNo', '');
+                }}
+              >
+                Without Epin
+              </GenericButton>
+            </div>
+          )}
 
-                  return (
-                    <div
-                      key={product.id}
-                      onClick={() => handleCardClick(product.id)}
-                      className={`relative cursor-pointer overflow-hidden rounded-2xl border bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-lg transition-all duration-300 hover:shadow-xl ${
-                        count > 0
-                          ? 'border-blue-500 ring-1 ring-blue-300 dark:ring-blue-500'
-                          : 'border-gray-200 hover:border-blue-300'
-                      } dark:bg-gray-800`}
-                    >
-                      {count > 0 && (
-                        <div className="absolute right-3 top-3 rounded-full bg-blue-500 px-2 py-1 text-xs font-bold text-white">
-                          {count} selected
-                        </div>
-                      )}
-                      <div className="space-y-4">
-                        <h2 className="text-gray-900 text-xl font-bold dark:text-white">
-                          {product.name}
-                        </h2>
-                        <p className="text-gray-600 dark:text-gray-300 text-sm">
-                          {product.description}
-                        </p>
-                        <div className="mt-3 flex items-center gap-2">
-                          <span className="text-2xl font-bold text-green-400">
-                            ₹{product.discountedPrice}
-                          </span>
-                          <span className="text-gray-400 text-base line-through">
-                            ₹{product.actualPrice}
-                          </span>
-                          <span className="ml-auto rounded-full bg-green-100 px-2 py-1 text-xs text-green-800">
-                            Save ₹
-                            {product.actualPrice - product.discountedPrice}
-                          </span>
+          {/* Product Selection */}
+          {!useWithoutEpin && (
+            <>
+              <h1 className="text-gray-800 mb-6 mt-2 text-xl font-bold dark:text-white">
+                Select up to 3 Products{' '}
+                <span className="text-sm font-normal">(Tap to add/remove)</span>
+              </h1>
+
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {Array.isArray(filteredProducts) &&
+                  filteredProducts?.map((product: Product) => {
+                    const count = selectedProducts[product.id] || 0;
+
+                    return (
+                      <div
+                        key={product.id}
+                        onClick={() => handleCardClick(product.id)}
+                        className={`relative cursor-pointer overflow-hidden rounded-2xl border bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-lg transition-all duration-300 hover:shadow-xl ${
+                          count > 0
+                            ? 'border-blue-500 ring-1 ring-blue-300 dark:ring-blue-500'
+                            : 'border-gray-200 hover:border-blue-300'
+                        } dark:bg-gray-800`}
+                      >
+                        {count > 0 && (
+                          <div className="absolute right-3 top-3 rounded-full bg-blue-500 px-2 py-1 text-xs font-bold text-white">
+                            {count} selected
+                          </div>
+                        )}
+                        <div className="space-y-4">
+                          <h2 className="text-gray-900 text-xl font-bold dark:text-white">
+                            {product.name}
+                          </h2>
+                          <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            {product.description}
+                          </p>
+                          <div className="mt-3 flex items-center gap-2">
+                            <span className="text-2xl font-bold text-green-400">
+                              ₹{product.discountedPrice}
+                            </span>
+                            <span className="text-gray-400 text-base line-through">
+                              ₹{product.actualPrice}
+                            </span>
+                            <span className="ml-auto rounded-full bg-green-100 px-2 py-1 text-xs text-green-800">
+                              Save ₹
+                              {product.actualPrice - product.discountedPrice}
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+              </div>
+            </>
+          )}
+
+          {/* Contact Info */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
+            <h1 className="col-span-12 mb-4 text-lg font-semibold">
+              Contact Info
+            </h1>
+            <div className="col-span-12 md:col-span-6">
+              <GenericInputField
+                name="firstName"
+                label="First Name"
+                placeholder="Enter First Name"
+              />
             </div>
-          </>
-        )}
+            <div className="col-span-12 md:col-span-6">
+              <GenericInputField
+                name="lastName"
+                label="Last Name"
+                placeholder="Enter Last Name"
+              />
+            </div>
+            <div className="col-span-12 md:col-span-6">
+              <GenericInputField
+                name="email"
+                label="Email"
+                placeholder="Enter Email"
+              />
+            </div>
+            <div className="col-span-12 md:col-span-6">
+              <GenericInputField
+                name="phone"
+                label="Mobile"
+                placeholder="Enter Phone No"
+              />
+            </div>
+          </div>
 
-        {/* Contact Info */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
-          <h1 className="col-span-12 mb-4 text-lg font-semibold">
-            Contact Info
-          </h1>
-          <div className="col-span-12 md:col-span-6">
-            <GenericInputField
-              name="firstName"
-              label="First Name"
-              placeholder="Enter First Name"
-            />
+          {/* Login Info */}
+          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
+            <h1 className="col-span-12 mb-4 text-lg font-semibold">
+              Login Info
+            </h1>
+            <div className="col-span-12 md:col-span-6">
+              <GenericInputField
+                name="password"
+                label="Password"
+                placeholder="Enter Password"
+              />
+            </div>
+            <div className="col-span-12 md:col-span-6">
+              <GenericInputField
+                name="confirmPassword"
+                label="Confirm Password"
+                placeholder="Enter Confirm Password"
+              />
+            </div>
           </div>
-          <div className="col-span-12 md:col-span-6">
-            <GenericInputField
-              name="lastName"
-              label="Last Name"
-              placeholder="Enter Last Name"
-            />
-          </div>
-          <div className="col-span-12 md:col-span-6">
-            <GenericInputField
-              name="email"
-              label="Email"
-              placeholder="Enter Email"
-            />
-          </div>
-          <div className="col-span-12 md:col-span-6">
-            <GenericInputField
-              name="phone"
-              label="Mobile"
-              placeholder="Enter Phone No"
-            />
-          </div>
-        </div>
 
-        {/* Login Info */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
-          <h1 className="col-span-12 mb-4 text-lg font-semibold">Login Info</h1>
-          <div className="col-span-12 md:col-span-6">
-            <GenericInputField
-              name="password"
-              label="Password"
-              placeholder="Enter Password"
-            />
+          {/* Submit */}
+          <div className="mt-2 flex justify-end space-x-4">
+            <GenericButton type="submit" disabled={isPending}>
+              {isPending ? 'Submitting...' : 'Submit'}
+            </GenericButton>
           </div>
-          <div className="col-span-12 md:col-span-6">
-            <GenericInputField
-              name="confirmPassword"
-              label="Confirm Password"
-              placeholder="Enter Confirm Password"
-            />
-          </div>
-        </div>
-
-        {/* Submit */}
-        <div className="flex justify-end space-x-4">
-          <GenericButton type="submit" disabled={isPending}>
-            {isPending ? 'Submitting...' : 'Submit'}
-          </GenericButton>
         </div>
       </form>
 

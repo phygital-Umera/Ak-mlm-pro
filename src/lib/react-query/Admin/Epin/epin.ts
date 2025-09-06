@@ -2,6 +2,7 @@
 import {
   ApproveEpinRequest,
   checkEpin,
+  createCustomerEPin,
   createEPin,
   EpinHistory,
   getAdminEpins,
@@ -46,6 +47,38 @@ export const useCreateEPin = () => {
   });
 };
 
+type CreateEPinInput = {
+  Count: number;
+  price: number;
+  crnNo: string;
+  customerId: string;
+  package: string;
+};
+
+export const useCreateCustomerEPin = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation<
+    CreateEPinResponse,
+    ApiError,
+    CreateEPinInput
+  >({
+    mutationFn: ({ Count, price, crnNo, customerId, package: pkg }) =>
+      createCustomerEPin(Count, price, crnNo, customerId, pkg),
+    onSuccess: () => {
+      toast.success('Customer E-Pin created successfully!');
+    },
+    onError: (error) => {
+      console.error('Failed to create E-Pin:', error);
+      toast.error(error.response?.data?.message || 'Failed to create E-Pin');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ADMIN_EPIN_QUERY_KEYS.GET_ALL_EPINS],
+      });
+    },
+  });
+};
 // Hook to fetch all E-Pins
 export const useGetAllEPins = () => {
   return useQuery<GetAllEPinsResponse>({
@@ -65,6 +98,11 @@ export const useCheckEpin = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: checkEpin,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ADMIN_EPIN_QUERY_KEYS.GET_ALL_EPINS],
+      });
+    },
   });
 };
 

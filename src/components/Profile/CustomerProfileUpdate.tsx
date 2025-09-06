@@ -27,9 +27,9 @@ const CustomerUpdateProfile: React.FC = () => {
   const navigate = useNavigate();
 
   const {user, customer} = useAuthContext();
-  console.log('====================================');
+  // console.log('====================================');
   console.log('............sdsdssd', user);
-  console.log('====================================');
+  // console.log('====================================');
 
   useMemo(() => {
     if (user) {
@@ -44,7 +44,7 @@ const CustomerUpdateProfile: React.FC = () => {
   const {mutateAsync: updateProfile, isSuccess} = useUpdateCustomerProfile();
   const {data: profileData} = useGetCustomerProfile();
 
-  console.log('profileee', profileData);
+  // console.log('profileee', profileData);
   useEffect(() => {
     if (profileData) {
       methods.reset({
@@ -80,7 +80,7 @@ const CustomerUpdateProfile: React.FC = () => {
       },
       customer: {
         aadharNo: data.aadharNo,
-        bankAccNo: data.areaName,
+        bankAccNo: data.bankAccNo,
         bankBranch: data.bankBranch,
         bankIFSC: data.bankIFSC,
         bankName: data.bankName,
@@ -89,11 +89,10 @@ const CustomerUpdateProfile: React.FC = () => {
         dob: data.dob ? new Date(data.dob).toISOString() : null,
         flatNo: data.flatNo,
         gender: data.gender,
-        panNo: data.panNo,
+        panNo: data.panNo?.toUpperCase().trim(),
         landMark: data.landMark,
         pinCode: data.pinCode,
         state: data.state,
-        // upiId: data.upiId,
       },
     });
   };

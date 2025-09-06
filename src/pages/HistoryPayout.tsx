@@ -39,8 +39,8 @@ const HistoryPayout: React.FC = () => {
     {header: 'Sr. No.', accessor: 'srNo'},
     {header: 'Date', accessor: 'date'},
     {header: 'Matching Income', accessor: 'binary'},
-    {header: 'Direct Sponsor Income', accessor: 'generation'},
-    {header: 'Repurchase Income', accessor: 'direct'},
+    // {header: 'Direct Sponsor Income', accessor: 'generation'},
+    {header: 'Level Income', accessor: 'direct'},
     {header: 'Total', accessor: 'total'},
   ];
 

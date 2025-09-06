@@ -24,18 +24,20 @@ const Wallet = () => {
 
   const handleWalletClick = async () => {
     try {
+      if (!user || !user.id) {
+        setError('User not logged in');
+        return;
+      }
+
       if (!withdrawAmount || isNaN(Number(withdrawAmount))) {
         setError('Please enter a valid amount');
         return;
       }
 
       const numericAmount = Number(withdrawAmount);
-      const walletAmount =
-        typeof Datafecth?.wallet === 'object' && Datafecth?.wallet !== null
-          ? (Datafecth.wallet.amount ?? 0)
-          : (Datafecth?.wallet ?? 0);
+      const walletBalance = Datafecth?.amount ?? 0;
 
-      if (numericAmount > walletAmount) {
+      if (numericAmount > walletBalance) {
         setError('Withdrawal amount exceeds wallet balance');
         return;
       }
@@ -43,9 +45,11 @@ const Wallet = () => {
       setError('');
 
       const walletData = {
-        id: user?.user.id ?? '',
+        id: user.id,
         amount: numericAmount,
+        type: 'WITHDRAW',
       };
+
       await addWallet(walletData);
       setWithdrawAmount('');
     } catch (error) {
@@ -79,7 +83,7 @@ const Wallet = () => {
 
   const columns = [
     {
-      header: 'Created At',
+      header: 'Date',
       accessor: 'createdAt',
     },
     {

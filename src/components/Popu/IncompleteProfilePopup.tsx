@@ -55,12 +55,18 @@ const IncompleteProfilePopup: React.FC<IncompleteProfilePopupProps> = ({
             </p>
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-4">
             <button
               onClick={handleNavigate}
-              className="w-full justify-center rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-colors duration-200 hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700"
+              className="w-full justify-center rounded-lg bg-blue-600 px-4 py-2 text-white shadow-md hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700"
             >
               Complete Profile
+            </button>
+            <button
+              onClick={handleNavigate}
+              className="w-full justify-center rounded-lg bg-blue-600 px-4 py-2 text-white shadow-md hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-700"
+            >
+              Close
             </button>
           </div>
         </div>
