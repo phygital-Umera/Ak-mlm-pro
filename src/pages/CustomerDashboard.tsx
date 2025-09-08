@@ -1,4 +1,3 @@
-/* eslint-disable */
 import React, {useEffect, useState} from 'react';
 import {IoTodaySharp, IoWalletSharp} from 'react-icons/io5';
 import {
@@ -30,14 +29,29 @@ interface Customer {
   createdAt?: string;
 }
 
-// Reward tier data structure
 interface RewardTier {
   rank: string;
   pairsRequired: number;
   reward: string;
   icon: string;
 }
-
+type CustomerProfile = {
+  dob: string|undefined;
+  gender: string|undefined;
+  flatNo: string|undefined;
+  areaName: string|undefined;
+  landMark: string|undefined;
+  pinCode: string|undefined;
+  city: string|undefined;
+  state: string|undefined;
+  aadharNo: string|undefined;
+  panNo: string|undefined;
+  bankName: string|undefined;
+  bankAccNo: string|undefined;
+  bankIFSC: string|undefined;
+  bankBranch: string|undefined;
+  upiId: string|undefined;
+}
 const CustomerDashboard: React.FC = () => {
   const {user, customer} = useAuthContext();
   const {
@@ -48,21 +62,27 @@ const CustomerDashboard: React.FC = () => {
     isSuccess,
   } = useFetchCustomerHome();
 
-  console.log('====================================');
-  console.log('FFFFFFFFFFFFFFFFFFF', dataa);
-  console.log('====================================');
-
   const [statsData, setStatsData] = useState<StatCardProps[]>([]);
   const [lastCustomers, setLastCustomers] = useState<Customer[]>([]);
   const [topCustomers, setTopCustomers] = useState<Customer[]>([]);
   const [showExtraBoxes, setShowExtraBoxes] = useState(false);
-  const [isPopup, setIsPopup] = useState(!user?.isActive);
+
+  // Popup states
+  const [showIncompletePopup, setShowIncompletePopup] = useState(false);
+  const [showEpinPopup, setShowEpinPopup] = useState(false);
+
   const [currentTier, setCurrentTier] = useState<RewardTier | null>(null);
   const [nextTier, setNextTier] = useState<RewardTier | null>(null);
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [selectedView, setSelectedView] = useState<'today' | 'all'>('today');
 
-  const isCustomerProfileIncomplete = (customer: any) => {
+  const {data: profileData} = useGetCustomerProfile();
+
+  console.log('====================================');
+  console.log('profileData..................', profileData);
+  console.log('====================================');
+
+  const isCustomerProfileIncomplete = (customer:CustomerProfile) => {
     if (!customer) return true;
 
     const requiredFields = [
@@ -86,32 +106,23 @@ const CustomerDashboard: React.FC = () => {
     return requiredFields.some((field) => customer[field] == null);
   };
 
-  const [showIncompletePopup, setShowIncompletePopup] = useState(
-    isCustomerProfileIncomplete(customer),
-  );
-  const [showEpinPopup, setShowEpinPopup] = useState(
-    !isCustomerProfileIncomplete(customer) && !user?.isActive,
-  );
-  const {data: profileData} = useGetCustomerProfile();
-  console.log('====================================');
-  console.log('profileData..................', profileData);
-  console.log('====================================');
-
+  // Control which popup to show
   useEffect(() => {
-    if (!profileData?.bankAccNo) {
+    if (!customer) return;
+    if (isCustomerProfileIncomplete(customer as CustomerProfile)) {
       setShowIncompletePopup(true);
-    }
-  }, [profileData]);
-
-  useEffect(() => {
-    if (!isCustomerProfileIncomplete(customer)) {
-      if (!user?.isActive) {
-        setShowEpinPopup(true);
-      }
+      setShowEpinPopup(false);
+    } 
+     if (!user?.isActive) {
+      setShowIncompletePopup(false);
+      setShowEpinPopup(true);
+    } else {
+      setShowIncompletePopup(false);
+      setShowEpinPopup(false);
     }
   }, [customer, user?.isActive]);
 
-  // Define all reward tiers
+  // Reward tiers
   const rewardTiers: RewardTier[] = [
     {rank: 'Star', pairsRequired: 10, reward: 'Blazer', icon: '⭐'},
     {rank: 'Gold Star', pairsRequired: 30, reward: 'Mobile Tab', icon: '🌟'},
@@ -156,11 +167,6 @@ const CustomerDashboard: React.FC = () => {
   ];
 
   useEffect(() => {
-    // Show popup if user is inactive
-    setIsPopup(!user?.isActive);
-  }, [user?.isActive]);
-
-  useEffect(() => {
     if (isSuccess && dataa) {
       const todayStats = [
         {
@@ -178,21 +184,6 @@ const CustomerDashboard: React.FC = () => {
           amount: `${dataa?.wallet?.amount || 0}`,
           icon: <BsWalletFill className="text-2xl" />,
         },
-        // {
-        //   title: 'Today Pair Count',
-        //   amount: `${dataa?.todaysPairCount || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'Today Direct Sponsor Income',
-        //   amount: `${dataa?.todayDirectCommission || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
-        // {
-        //   title: 'Today Repurchase Balance',
-        //   amount: `${dataa?.todayRepurchase || 0}`,
-        //   icon: <IoTodaySharp className="text-2xl" />,
-        // },
         {
           title: 'Carry Forward Count',
           amount: `${dataa?.carry_forward_count || 0}`,
@@ -252,17 +243,15 @@ const CustomerDashboard: React.FC = () => {
       setLastCustomers(dataa.lastCustomers || []);
       setTopCustomers(dataa.topCustomers || []);
 
-      // Calculate current tier and progress
       const totalPairs = dataa.pairCount || 0;
       calculateTierProgress(totalPairs);
     }
   }, [isSuccess, dataa, selectedView]);
 
   const calculateTierProgress = (totalPairs: number) => {
-    let current = null;
-    let next = null;
+    let current: RewardTier | null = null;
+    let next: RewardTier | null = null;
 
-    // Find the highest tier the user has achieved
     for (let i = rewardTiers.length - 1; i >= 0; i--) {
       if (totalPairs >= rewardTiers[i].pairsRequired) {
         current = rewardTiers[i];
@@ -273,7 +262,6 @@ const CustomerDashboard: React.FC = () => {
       }
     }
 
-    // If user hasn't reached any tier yet
     if (!current && rewardTiers.length > 0) {
       next = rewardTiers[0];
     }
@@ -281,7 +269,6 @@ const CustomerDashboard: React.FC = () => {
     setCurrentTier(current);
     setNextTier(next);
 
-    // Calculate progress percentage
     if (next) {
       const basePairs = current ? current.pairsRequired : 0;
       const progress =
@@ -290,10 +277,6 @@ const CustomerDashboard: React.FC = () => {
     } else {
       setProgressPercentage(100);
     }
-  };
-
-  const handlePopupClose = () => {
-    setIsPopup(false);
   };
 
   const handleToggle = () => {
@@ -318,99 +301,15 @@ const CustomerDashboard: React.FC = () => {
 
   return (
     <>
-      {showEpinPopup ? (
-        <Popup onClose={() => setShowEpinPopup(false)} />
-      ) : showIncompletePopup ? (
+      {showIncompletePopup && (
         <IncompleteProfilePopup onClose={() => setShowIncompletePopup(false)} />
-      ) : null}
+      )}
+
+      {showEpinPopup && !showIncompletePopup && (
+        <Popup onClose={() => setShowEpinPopup(false)} />
+      )}
+
       <div>
-        <div className="mb-6 flex items-center gap-4">
-          {/* <button
-            onClick={() => setSelectedView('today')}
-            className={`rounded-lg px-4 py-2 text-sm font-medium ${
-              selectedView === 'today'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-800'
-            }`}
-          >
-            Today's Data
-          </button> */}
-          <button
-            onClick={() => setSelectedView('all')}
-            className={`rounded-lg px-4 py-2 text-sm font-medium ${
-              selectedView === 'all'
-                ? 'border border-blue-600 bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-800 border-gray-200 border'
-            }`}
-          >
-            All Data
-          </button>
-        </div>
-
-        {/* Reward Progress Section */}
-        {/* <div className="mb-6 rounded-lg border border-stroke bg-white p-4 shadow-default dark:border-strokedark dark:bg-boxdark">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              {currentTier ? (
-                <>
-                  <span className="mr-2 text-3xl">{currentTier.icon}</span>
-                  <div>
-                    <h3 className="text-lg font-semibold">
-                      {currentTier.rank}
-                    </h3>
-                    <p className="text-gray-500 text-sm">Current Rank</p>
-                  </div>
-                </>
-              ) : (
-                <div>
-                  <h3 className="text-lg font-semibold">No Rank Yet</h3>
-                  <p className="text-gray-500 text-sm">
-                    Start pairing to earn rewards
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="flex-1 px-4">
-              <div className="mb-1 flex justify-between">
-                <span className="text-sm font-medium">
-                  {currentTier ? currentTier.pairsRequired : 0} pairs
-                </span>
-                <span className="text-sm font-medium">
-                  {nextTier
-                    ? nextTier.pairsRequired
-                    : currentTier?.pairsRequired || 0}{' '}
-                  pairs
-                </span>
-              </div>
-              <div className="bg-gray-200 dark:bg-gray-700 h-2.5 w-full rounded-full">
-                <div
-                  className="h-2.5 rounded-full bg-blue-600"
-                  style={{width: `${progressPercentage}%`}}
-                ></div>
-              </div>
-            </div>
-
-            <div className="text-right">
-              {nextTier ? (
-                <>
-                  <h3 className="text-lg font-semibold">{nextTier.rank}</h3> */}
-        {/* <p className="text-gray-500 text-sm">
-                    Next: {nextTier.reward}
-                  </p> */}
-        {/* </>
-              ) : (
-                <>
-                  <h3 className="text-lg font-semibold">Max Rank Achieved</h3>
-                  <p className="text-gray-500 text-sm">
-                    {currentTier?.reward || ''}
-                  </p>
-                </>
-              )}
-            </div>
-          </div>
-        </div> */}
-
         {/* Stats Section */}
         <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
           {statsData

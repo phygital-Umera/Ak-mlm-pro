@@ -144,7 +144,7 @@ type Product = {
     }
 
     const payload: any = {
-      sponsorId: params.crnno,
+      sponsorId: formValues.sponsorId,
       firstName: formValues.firstName,
       lastName: formValues.lastName,
       email: formValues.email || undefined,
@@ -164,11 +164,7 @@ type Product = {
     registerAdmin(payload);
     console.log('payload', payload);
   };
-  const sponsorId = methods.watch('sponsorId');
 
-  useEffect(() => {
-    methods.trigger('sponsorId');
-  }, [sponsorId]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -202,7 +198,7 @@ type Product = {
             </p>
             <div className="col-span-12 md:col-span-6">
               <GenericInputField
-                {...methods.register('sponsorId')}
+                name="sponsorId"
                 label="Sponsor Code"
                 placeholder="Enter Sponsor ID"
                 onChange={(e) => {
@@ -255,7 +251,7 @@ type Product = {
           {!useWithoutEpin && (
             <>
               <h1 className="text-gray-800 mb-6 mt-2 text-xl font-bold dark:text-white">
-                Select up to 3 Products{' '}
+                Select 1 Product{' '}
                 <span className="text-sm font-normal">(Tap to add/remove)</span>
               </h1>
 

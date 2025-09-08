@@ -1,4 +1,5 @@
 import {api} from '@/utils/axios';
+import {AxiosError} from 'axios';
 
 // Create E-Pins
 export const createEPin = async (epincount: number, price: number) => {
@@ -21,22 +22,18 @@ export const createCustomerEPin = async (
   Count: number,
   price: number,
   crnNo: string,
-  customerId: string,
-  pkg: string
 ) => {
   try {
     const response = await api.post(`admin/epin/customers`, {
       Count,
       price,
       crnNo,
-      customerId,
-      package: pkg,
-    });    
+    });
     return response.data;
-  } catch (error: any) {
+  } catch (error) {
     console.error(
       'Error in createEPin:',
-      error.response?.data?.message || error.message
+      error.response?.data?.message || error.message,
     );
     throw error;
   }

@@ -51,8 +51,6 @@ type CreateEPinInput = {
   Count: number;
   price: number;
   crnNo: string;
-  customerId: string;
-  package: string;
 };
 
 export const useCreateCustomerEPin = () => {
@@ -63,8 +61,8 @@ export const useCreateCustomerEPin = () => {
     ApiError,
     CreateEPinInput
   >({
-    mutationFn: ({ Count, price, crnNo, customerId, package: pkg }) =>
-      createCustomerEPin(Count, price, crnNo, customerId, pkg),
+    mutationFn: ({ Count, price, crnNo }) =>
+      createCustomerEPin(Count, price, crnNo),
     onSuccess: () => {
       toast.success('Customer E-Pin created successfully!');
     },
