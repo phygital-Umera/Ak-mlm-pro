@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 import React, {useState, useEffect, useRef} from 'react';
 import Tree from 'react-d3-tree';
 import MixedNodeInputElement from './MixedNodeInputElement';

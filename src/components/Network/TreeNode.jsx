@@ -380,14 +380,14 @@ const TreeNode = ({network}) => {
     renderCustomNodeElement: customNodeFnMapping['svg'].fn,
     styles: {
       links: {
-        stroke: '#9CA3AF', 
+        stroke: '#9CA3AF',
         strokeWidth: 2,
       },
       nodes: {
         node: {
           circle: {
             fill: 'transparent',
-            stroke: '#000', 
+            stroke: '#000',
             strokeWidth: 2,
           },
           attributes: {
@@ -395,7 +395,7 @@ const TreeNode = ({network}) => {
             fontSize: 14,
           },
           name: {
-            fill: '#000', 
+            fill: '#000',
             fontWeight: 'bold',
           },
         },
@@ -406,11 +406,11 @@ const TreeNode = ({network}) => {
             strokeWidth: 2,
           },
           attributes: {
-            fill: '#000', 
+            fill: '#000',
             fontSize: 14,
           },
           name: {
-            fill: '#000', 
+            fill: '#000',
             fontWeight: 'bold',
           },
         },

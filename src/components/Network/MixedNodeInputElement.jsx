@@ -17,7 +17,7 @@ const MixedNodeElement = ({
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'space-between',  
+            justifyContent: 'space-between',
             border: '1px solid black',
             paddingBottom: '1rem',
             backgroundColor: 'rgb(248, 248, 255)', // ghostwhite

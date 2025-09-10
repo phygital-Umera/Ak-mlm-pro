@@ -58,3 +58,16 @@ export const getAllProductsReport = async () => {
     throw err;
   }
 };
+
+export const ApproveDeliveredRequest = async (id: string) => {
+  try {
+    const response = await api.put(`admin/order/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Error in ApproveShopkeeperRequest:',
+      error.response?.data.message || error.message,
+    );
+    throw error;
+  }
+};

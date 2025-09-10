@@ -36,22 +36,22 @@ interface RewardTier {
   icon: string;
 }
 type CustomerProfile = {
-  dob: string|undefined;
-  gender: string|undefined;
-  flatNo: string|undefined;
-  areaName: string|undefined;
-  landMark: string|undefined;
-  pinCode: string|undefined;
-  city: string|undefined;
-  state: string|undefined;
-  aadharNo: string|undefined;
-  panNo: string|undefined;
-  bankName: string|undefined;
-  bankAccNo: string|undefined;
-  bankIFSC: string|undefined;
-  bankBranch: string|undefined;
-  upiId: string|undefined;
-}
+  dob: string | undefined;
+  gender: string | undefined;
+  flatNo: string | undefined;
+  areaName: string | undefined;
+  landMark: string | undefined;
+  pinCode: string | undefined;
+  city: string | undefined;
+  state: string | undefined;
+  aadharNo: string | undefined;
+  panNo: string | undefined;
+  bankName: string | undefined;
+  bankAccNo: string | undefined;
+  bankIFSC: string | undefined;
+  bankBranch: string | undefined;
+  upiId: string | undefined;
+};
 const CustomerDashboard: React.FC = () => {
   const {user, customer} = useAuthContext();
   const {
@@ -69,7 +69,7 @@ const CustomerDashboard: React.FC = () => {
 
   // Popup states
   const [showIncompletePopup, setShowIncompletePopup] = useState(false);
-  const [showEpinPopup, setShowEpinPopup] = useState(false);
+  // const [showEpinPopup, setShowEpinPopup] = useState(false);
 
   const [currentTier, setCurrentTier] = useState<RewardTier | null>(null);
   const [nextTier, setNextTier] = useState<RewardTier | null>(null);
@@ -82,7 +82,7 @@ const CustomerDashboard: React.FC = () => {
   console.log('profileData..................', profileData);
   console.log('====================================');
 
-  const isCustomerProfileIncomplete = (customer:CustomerProfile) => {
+  const isCustomerProfileIncomplete = (customer: CustomerProfile) => {
     if (!customer) return true;
 
     const requiredFields = [
@@ -109,18 +109,14 @@ const CustomerDashboard: React.FC = () => {
   // Control which popup to show
   useEffect(() => {
     if (!customer) return;
+
+    // Only check profile completeness
     if (isCustomerProfileIncomplete(customer as CustomerProfile)) {
       setShowIncompletePopup(true);
-      setShowEpinPopup(false);
-    } 
-     if (!user?.isActive) {
-      setShowIncompletePopup(false);
-      setShowEpinPopup(true);
     } else {
       setShowIncompletePopup(false);
-      setShowEpinPopup(false);
     }
-  }, [customer, user?.isActive]);
+  }, [customer]); // Remove user?.isActive dependency
 
   // Reward tiers
   const rewardTiers: RewardTier[] = [
@@ -305,9 +301,9 @@ const CustomerDashboard: React.FC = () => {
         <IncompleteProfilePopup onClose={() => setShowIncompletePopup(false)} />
       )}
 
-      {showEpinPopup && !showIncompletePopup && (
+      {/* {showEpinPopup && (
         <Popup onClose={() => setShowEpinPopup(false)} />
-      )}
+      )} */}
 
       <div>
         {/* Stats Section */}

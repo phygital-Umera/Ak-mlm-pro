@@ -21,7 +21,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import GenericDropdown from '../Forms/DropDown/GenericDropDown';
-import { unAuthenticatedApi } from '@/utils/axios';
+import {unAuthenticatedApi} from '@/utils/axios';
 
 type FormValues = z.infer<typeof externalRegistrationSchema>;
 
@@ -68,7 +68,7 @@ export const ExternalRegistration: React.FC = () => {
     Record<string, number>
   >({});
   const [sponcerIDName, setSponcerIDName] = useState<string>('ENTER NAME');
-    const [useWithoutEpin, setUseWithoutEpin] = useState(false);
+  const [useWithoutEpin, setUseWithoutEpin] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const {setSelectProduct} = useRegistration();
   const {data: products} = useGetAllProducts();
@@ -87,7 +87,7 @@ export const ExternalRegistration: React.FC = () => {
     isError,
     error,
   } = useCustomerRegistration();
- 
+
   const {
     mutateAsync: checkEpin,
     data: checkEpinData,
@@ -113,20 +113,18 @@ export const ExternalRegistration: React.FC = () => {
       setSelectedProducts((prev) => ({...prev, [productId]: count + 1}));
     }
   };
-  const sponcerValidate=async(CRN:string)=>{
+  const sponcerValidate = async (CRN: string) => {
     console.log('CRN', CRN);
-    if(CRN.length>8){
-
-        try {
-          const response = await unAuthenticatedApi.get(`/customerName/${CRN}`);
-          setSponcerIDName(response.data.data);
-          // console.log(response)
-        } catch (error) {
-          setSponcerIDName('Invalid ID');
-        }
+    if (CRN.length > 8) {
+      try {
+        const response = await unAuthenticatedApi.get(`/customerName/${CRN}`);
+        setSponcerIDName(response.data.data);
+        // console.log(response)
+      } catch (error) {
+        setSponcerIDName('Invalid ID');
+      }
     }
-    
-  }
+  };
 
   const onSubmit = (formValues: FormValues) => {
     console.log('formValues', formValues);
@@ -197,23 +195,23 @@ export const ExternalRegistration: React.FC = () => {
               Sponsor Info
             </h1>
             <p className="col-span-12 text-lg font-semibold">
-            Name: &nbsp;{params.name}
-          </p>
-          <div className="col-span-12 md:col-span-6">
-            <GenericInputField name="sponsorId" label="Sponsor ID" disabled />
-          </div>
-          <div className="col-span-12 md:col-span-6">
-            <GenericInputField name="side" label="Side" disabled />
-          </div>
-            {!useWithoutEpin && (
+              Name: &nbsp;{params.name}
+            </p>
+            <div className="col-span-12 md:col-span-6">
+              <GenericInputField name="sponsorId" label="Sponsor ID" disabled />
+            </div>
+            <div className="col-span-12 md:col-span-6">
+              <GenericInputField name="side" label="Side" disabled />
+            </div>
+            {/* {!useWithoutEpin && (
               <div className="col-span-12 md:col-span-6">
                 <GenericInputField name="epinNo" label="E-Pin" />
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Verify and Without Epin Buttons */}
-          {!useWithoutEpin && (
+          {/* {!useWithoutEpin && (
             <div className="mt-2 flex items-center gap-4">
               <GenericButton type="button" onClick={verifyEpin}>
                 Verify Epin
@@ -230,10 +228,10 @@ export const ExternalRegistration: React.FC = () => {
                 Without Epin
               </GenericButton>
             </div>
-          )}
+          )} */}
 
           {/* Product Selection */}
-          {!useWithoutEpin && (
+          {/* {!useWithoutEpin && (
             <>
               <h1 className="text-gray-800 mb-6 mt-2 text-xl font-bold dark:text-white">
                 Select up to 3 Products{' '}
@@ -285,7 +283,7 @@ export const ExternalRegistration: React.FC = () => {
                   })}
               </div>
             </>
-          )}
+          )} */}
 
           {/* Contact Info */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">

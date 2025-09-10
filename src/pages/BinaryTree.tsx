@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useGetNetwotkBinaryTree } from '@/lib/react-query/network';
+/*eslint-disable */
+
+import React, {useState, useEffect} from 'react';
+import {useGetNetwotkBinaryTree} from '@/lib/react-query/network';
 import Loader from '@/components/common/Loader';
 import BinaryTreeNode from '@/components/Network/BinaryTreeNode';
 
@@ -19,7 +21,7 @@ const BinaryTree = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredTree, setFilteredTree] = useState<any>(null);
 
-  const { data, isSuccess, isPending, isError } = useGetNetwotkBinaryTree();
+  const {data, isSuccess, isPending, isError} = useGetNetwotkBinaryTree();
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
@@ -47,14 +49,14 @@ const BinaryTree = () => {
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Enter CRN ID, e.g. CRN0000000"
-          className="border px-3 py-2 rounded-md w-full md:w-1/3"
+          className="w-full rounded-md border px-3 py-2 md:w-1/3"
         />
       </div>
 
       {/* Tree Section */}
       {isSuccess && (
         <div className="dottedBackground mx-8">
-          <BinaryTreeNode network={filteredTree || data} /> 
+          <BinaryTreeNode network={filteredTree || data} />
         </div>
       )}
     </>

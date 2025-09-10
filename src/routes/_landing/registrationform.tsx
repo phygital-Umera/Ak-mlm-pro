@@ -1,4 +1,3 @@
-
 import RegistrationForm from '@/components/Registration/Registrationlanding';
 import {createFileRoute} from '@tanstack/react-router';
 

@@ -1,3 +1,5 @@
+/*eslint-disable */
+
 import {Column} from '@/components/Forms/GenericImageTable';
 import GenericTable from '@/components/Forms/Table/GenericTable';
 import {useGetAdminWalletHistory} from '@/lib/react-query/Admin/WalletHistory/wallethistory';

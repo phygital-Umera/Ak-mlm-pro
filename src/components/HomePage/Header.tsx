@@ -1,20 +1,20 @@
 /* eslint-disable */
-import { useState } from 'react';
-import { FiMenu, FiX } from 'react-icons/fi';
+import {useState} from 'react';
+import {FiMenu, FiX} from 'react-icons/fi';
 import React from 'react';
-import { Link } from '@tanstack/react-router';
+import {Link} from '@tanstack/react-router';
 
 const Header: React.FC = () => {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const toggleMenu = () => setMobileMenuOpen(!isMobileMenuOpen);
 
   const menuItems = [
-    { path: '/', label: 'Home' },
-    { path: '/about', label: 'About Us' },
-    { path: '/contact', label: 'Contact Us' },
-    { path: '/gallery', label: 'Gallery' },
-    { path: '/signin', label: 'Login' },
-    { path:'/registrationform', label: 'Registration' }, 
+    {path: '/', label: 'Home'},
+    {path: '/about', label: 'About Us'},
+    {path: '/contact', label: 'Contact Us'},
+    {path: '/gallery', label: 'Gallery'},
+    {path: '/signin', label: 'Login'},
+    {path: '/registrationform', label: 'Registration'},
   ];
 
   return (
@@ -42,7 +42,7 @@ const Header: React.FC = () => {
               >
                 {item.label}
               </a>
-            )
+            ),
           )}
         </nav>
 
@@ -53,8 +53,15 @@ const Header: React.FC = () => {
           >
             Login
           </Link>
-          <button onClick={toggleMenu} className="hover:bg-gray-100 rounded-lg p-2 text-blue-500">
-            {isMobileMenuOpen ? <FiX className="text-2xl" /> : <FiMenu className="text-2xl" />}
+          <button
+            onClick={toggleMenu}
+            className="hover:bg-gray-100 rounded-lg p-2 text-blue-500"
+          >
+            {isMobileMenuOpen ? (
+              <FiX className="text-2xl" />
+            ) : (
+              <FiMenu className="text-2xl" />
+            )}
           </button>
         </div>
       </div>
@@ -90,7 +97,7 @@ const Header: React.FC = () => {
               >
                 {item.label}
               </a>
-            )
+            ),
           )}
         </nav>
       </div>

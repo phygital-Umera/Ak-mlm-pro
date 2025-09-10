@@ -3,7 +3,7 @@ import {useAuthContext} from '@/context/AuthContext';
 import {useCustomerLogin} from '@/lib/react-query/Auth/auth';
 import {signInSchema} from '@/lib/validation/signInSchema';
 import {zodResolver} from '@hookform/resolvers/zod';
-import { Link } from '@tanstack/react-router';
+import {Link} from '@tanstack/react-router';
 import {jwtDecode, JwtPayload} from 'jwt-decode';
 import React, {useState} from 'react';
 import {useForm} from 'react-hook-form';
@@ -129,11 +129,11 @@ const SignIn: React.FC = () => {
             {isPending ? 'Loading...' : 'Sign In'}
           </button>
         </div>
-        
+
         <div className="mt-6 text-center">
-          <p className="text-center text-black dark:text-white font-semibold">
+          <p className="text-center font-semibold text-black dark:text-white">
             Don’t have any account?{' '}
-            <Link className="text-primary" to="/signup"> 
+            <Link className="text-primary" to="/registrationform">
               Sign Up
             </Link>
           </p>

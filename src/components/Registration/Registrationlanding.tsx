@@ -21,7 +21,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import GenericDropdown from '../Forms/DropDown/GenericDropDown';
-import { unAuthenticatedApi } from '@/utils/axios';
+import {unAuthenticatedApi} from '@/utils/axios';
 import {Route} from '@/routes/_registration/register/$name/$crnno/$id';
 
 type FormValues = z.infer<typeof externalRegistrationSchema>;
@@ -35,7 +35,7 @@ type Product = {
   actualPrice: number;
 };
 
- const RegistrationForm: React.FC = () => {
+const RegistrationForm: React.FC = () => {
   const {params} = useMatch(
     '/_registration/register/$name/$crnno/$id' as any,
   ) as {
@@ -69,7 +69,7 @@ type Product = {
     Record<string, number>
   >({});
   const [sponcerIDName, setSponcerIDName] = useState<string>('ENTER NAME');
-    const [useWithoutEpin, setUseWithoutEpin] = useState(false);
+  const [useWithoutEpin, setUseWithoutEpin] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const {setSelectProduct} = useRegistration();
   const {data: products} = useGetAllProducts();
@@ -88,7 +88,7 @@ type Product = {
     isError,
     error,
   } = useCustomerRegistration();
- 
+
   const {
     mutateAsync: checkEpin,
     data: checkEpinData,
@@ -114,20 +114,18 @@ type Product = {
       setSelectedProducts((prev) => ({...prev, [productId]: count + 1}));
     }
   };
-  const sponcerValidate=async(CRN:string)=>{
+  const sponcerValidate = async (CRN: string) => {
     console.log('CRN', CRN);
-    if(CRN.length>8){
-
-        try {
-          const response = await unAuthenticatedApi.get(`/customerName/${CRN}`);
-          setSponcerIDName(response.data.data);
-          // console.log(response)
-        } catch (error) {
-          setSponcerIDName('Invalid ID');
-        }
+    if (CRN.length > 8) {
+      try {
+        const response = await unAuthenticatedApi.get(`/customerName/${CRN}`);
+        setSponcerIDName(response.data.data);
+        // console.log(response)
+      } catch (error) {
+        setSponcerIDName('Invalid ID');
+      }
     }
-    
-  }
+  };
 
   const onSubmit = (formValues: FormValues) => {
     console.log('formValues', formValues);
@@ -164,7 +162,6 @@ type Product = {
     registerAdmin(payload);
     console.log('payload', payload);
   };
-
 
   useEffect(() => {
     if (isSuccess) {
@@ -212,23 +209,23 @@ type Product = {
 
             <div className="col-span-12 md:col-span-6">
               <GenericDropdown
-               name="side"
-               label="Side"
-               options={[
-                 {value: 'LEFT', label: 'LEFT'},
-                 {value: 'RIGHT', label: 'RIGHT'},
-               ]}
+                name="side"
+                label="Side"
+                options={[
+                  {value: 'LEFT', label: 'LEFT'},
+                  {value: 'RIGHT', label: 'RIGHT'},
+                ]}
               />
             </div>
-            {!useWithoutEpin && (
+            {/* {!useWithoutEpin && (
               <div className="col-span-12 md:col-span-6">
                 <GenericInputField name="epinNo" label="E-Pin" />
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Verify and Without Epin Buttons */}
-          {!useWithoutEpin && (
+          {/* {!useWithoutEpin && (
             <div className="mt-2 flex items-center gap-4">
               <GenericButton type="button" onClick={verifyEpin}>
                 Verify Epin
@@ -245,10 +242,10 @@ type Product = {
                 Without Epin
               </GenericButton>
             </div>
-          )}
+          )} */}
 
           {/* Product Selection */}
-          {!useWithoutEpin && (
+          {/* {!useWithoutEpin && (
             <>
               <h1 className="text-gray-800 mb-6 mt-2 text-xl font-bold dark:text-white">
                 Select 1 Product{' '}
@@ -300,7 +297,7 @@ type Product = {
                   })}
               </div>
             </>
-          )}
+          )} */}
 
           {/* Contact Info */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">

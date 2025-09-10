@@ -56,12 +56,8 @@ type CreateEPinInput = {
 export const useCreateCustomerEPin = () => {
   const queryClient = useQueryClient();
 
-  return useMutation<
-    CreateEPinResponse,
-    ApiError,
-    CreateEPinInput
-  >({
-    mutationFn: ({ Count, price, crnNo }) =>
+  return useMutation<CreateEPinResponse, ApiError, CreateEPinInput>({
+    mutationFn: ({Count, price, crnNo}) =>
       createCustomerEPin(Count, price, crnNo),
     onSuccess: () => {
       toast.success('Customer E-Pin created successfully!');

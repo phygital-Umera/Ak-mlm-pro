@@ -72,19 +72,19 @@ const CustomerEpins: React.FC = () => {
           <p className="text-center">Loading...</p>
         ) : (
           <GenericTable
-          data={CustomerFormattedData || []}
-          columns={CustomerEpinColumn}
-          itemsPerPage={15}
-          searchAble
-          title="Customers E-Pin"
-          key="epin"
-          onCopy={(item: CustomerEpinData) => {
-            navigator.clipboard.writeText(item.epinNo);
-            toast.success('Copied to clipboard');
-          }}
-        />
-      )}
-    </div>
+            data={CustomerFormattedData || []}
+            columns={CustomerEpinColumn}
+            itemsPerPage={15}
+            searchAble
+            title="Customers E-Pin"
+            key="epin"
+            onCopy={(item: CustomerEpinData) => {
+              navigator.clipboard.writeText(item.epinNo);
+              toast.success('Copied to clipboard');
+            }}
+          />
+        )}
+      </div>
     </>
   );
 };

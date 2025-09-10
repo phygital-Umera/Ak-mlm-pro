@@ -4,6 +4,7 @@ import {
   updateProduct,
   deleteProduct,
   getAllProductsReport,
+  ApproveDeliveredRequest,
 } from '@/lib/api/Admin/Product/product';
 import {ProductResponse, Product, ApiError} from '@/types';
 import {useQuery, useQueryClient, useMutation} from '@tanstack/react-query';
@@ -81,5 +82,23 @@ export const useGetAllProductsReport = () => {
   return useQuery<ProductResponse>({
     queryKey: ['products-report'],
     queryFn: getAllProductsReport,
+  });
+};
+
+export const useDeliveredReport = () => {
+  const queryClient = useQueryClient();
+  return useMutation<string, unknown, string>({
+    mutationFn: (id) => {
+      console.log(',,,,,,,,,id', id);
+      return ApproveDeliveredRequest(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['products-report'],
+      });
+    },
+    onError: (error) => {
+      console.error('Failed to approve Shopkeeper request:', error);
+    },
   });
 };

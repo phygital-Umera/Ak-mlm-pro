@@ -48,11 +48,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             path: '/admin/network',
             icon: <FaNetworkWired size={22} />,
           },
-          {
-            label: 'Registeration',
-            path: '/admin/customerregister',
-            icon: <RegistrationIcon size={22} />,
-          },
+          // {
+          //   label: 'Registeration',
+          //   path: '/admin/customerregister',
+          //   icon: <RegistrationIcon size={22} />,
+          // },
 
           {
             label: 'Customer List',
@@ -65,6 +65,16 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             icon: <MdApproval size={22} />,
           },
           {
+            label: 'Topup',
+            path: '/admin/topup',
+            icon: <MdApproval size={22} />,
+          },
+          {
+            label: 'Recall E-pin',
+            path: '/admin/recallepin',
+            icon: <MdApproval size={22} />,
+          },
+          {
             label: 'Share Link',
             path: '/admin/sharelink',
             icon: <PiShareLight size={22} />,
@@ -72,6 +82,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
           {
             label: 'Product Report',
             path: '/admin/productreport',
+            icon: <PiShareLight size={22} />,
+          },
+          {
+            label: 'Delivered Products',
+            path: '/admin/deliverdproducts',
             icon: <PiShareLight size={22} />,
           },
           {
@@ -207,6 +222,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               label: 'Generation Tree',
               path: '/customer/gentree',
               icon: <FaNetworkWired size={22} />,
+            },
+            {
+              label: 'Topup',
+              path: '/customer/topup',
+              icon: <PiSquaresFourLight size={22} />,
             },
             // {
             //   label: 'Award Reward',

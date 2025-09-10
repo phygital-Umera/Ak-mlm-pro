@@ -127,7 +127,12 @@ const WlcmLetter: React.FC = () => {
         <div style={{marginTop: '30px', textAlign: 'right'}}>
           <h4 style={{margin: '0', fontSize: '16px'}}>Regards</h4>
           <h3
-            style={{color: '#e6860a', fontWeight: 'bold', margin: '5px 0 0 0', fontSize: '16px'}}
+            style={{
+              color: '#e6860a',
+              fontWeight: 'bold',
+              margin: '5px 0 0 0',
+              fontSize: '16px',
+            }}
           >
             SCJ Group Consultant
           </h3>
