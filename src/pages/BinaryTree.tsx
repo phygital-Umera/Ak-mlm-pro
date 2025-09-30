@@ -49,7 +49,7 @@ const BinaryTree = () => {
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Enter CRN ID, e.g. CRN0000000"
-          className="w-full rounded-md border px-3 py-2 md:w-1/3"
+          className="w-full rounded-md border px-3 py-2 md:w-1/3 "
         />
       </div>
 

@@ -65,7 +65,7 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             icon: <MdApproval size={22} />,
           },
           {
-            label: 'Topup',
+            label: 'Activate ID',
             path: '/admin/topup',
             icon: <MdApproval size={22} />,
           },
@@ -224,7 +224,7 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               icon: <FaNetworkWired size={22} />,
             },
             {
-              label: 'Topup',
+              label: 'Activate ID',
               path: '/customer/topup',
               icon: <PiSquaresFourLight size={22} />,
             },

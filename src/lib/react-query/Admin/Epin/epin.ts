@@ -34,9 +34,11 @@ export const useCreateEPin = () => {
     mutationFn: ({epincount, price}) => createEPin(epincount, price), // Pass the epincount here
     onSuccess: () => {
       // Additional logic on success if needed
+      toast.success('E-Pin created successfully!');
     },
     onError: (error) => {
       console.error('Failed to create E-Pin:', error);
+      toast.error(error.response?.data?.message || 'Failed to create E-Pin');
       // Handle errors (e.g., display a toast notification)
     },
     onSettled: () => {

@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useForm, FormProvider} from 'react-hook-form';
 import {z} from 'zod';
 import {zodResolver} from '@hookform/resolvers/zod';
@@ -7,12 +7,13 @@ import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import GenericInputField from '@/components/Forms/Input/GenericInputField';
 import {updateCustomerSchema} from '@/lib/validation/updateCustomerSchema';
 import {useGetCustomer} from '@/lib/react-query/Customer/home';
-import {useLayoutEffect, useMatch} from '@tanstack/react-router';
+import {useMatch} from '@tanstack/react-router';
 import {useUpdateCustomer} from '@/lib/react-query/updateCustomer';
 import toast from 'react-hot-toast';
 import GenericSearchDropdown from '@/components/Forms/SearchDropDown/GenericSearchDropdown';
-import {useAuthContext} from '@/context/AuthContext';
 import {useNavigate} from '@tanstack/react-router';
+import {LockIcon} from 'lucide-react';
+import {updateCustomer} from '@/lib/api/updateCustomer';
 
 type FormValues = z.infer<typeof updateCustomerSchema>;
 const UpdateCustomerProfile: React.FC = () => {
@@ -22,12 +23,10 @@ const UpdateCustomerProfile: React.FC = () => {
   const {params} = useMatch('/_app/admin/_edit/UpdateCustomer/$id' as any);
   const {id = ''} = params as {id: string};
   const navigate = useNavigate();
+  const [isBankAccNoDisabled, setIsBankAccNoDisabled] = useState(false);
+  const [initialData, setInitialData] = useState<any>(null);
 
   const {data, isSuccess} = useGetCustomer(id);
-
-  console.log('====================================');
-  console.log('........................', data);
-  console.log('====================================');
   const {
     mutate: updateCustomer,
     isSuccess: updateCustomerSuccess,
@@ -39,8 +38,8 @@ const UpdateCustomerProfile: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess && data) {
+      setInitialData(data);
       setValue('firstName', data.fullname?.split(' ')[0] || '');
-      // setValue('lastName', data.fullname?.split(' ').slice(1).join(' ') || '');
       setValue(
         'dob',
         data.dob ? new Date(data.dob).toISOString().split('T')[0] : '',
@@ -59,46 +58,119 @@ const UpdateCustomerProfile: React.FC = () => {
       setValue('bankAccNo', data.bankAccNo || '');
       setValue('bankBranch', data.bankBranch || '');
       setValue('bankIFSC', data.bankIFSC || '');
-      // setValue('upiId', data.upiId || '');
       setValue('gender', data.gender || '');
       setValue('sponsorId', data.crnNo || '');
+      setValue('password', data.password || '');
+      setValue('confirmPassword', data.password || '');
+
+      // Disable bank account field if it already has a value
+      if (data.bankAccNo) {
+        setIsBankAccNoDisabled(true);
+      }
     }
   }, [isSuccess, data, setValue]);
 
-  const onSubmit = (FormValues: FormValues) => {
-    console.log('====================================');
-    console.log('FormValues', FormValues);
-    console.log('====================================');
-    updateCustomer({
-      id: id || '',
-      data: {
-        user: {
-          fullname: FormValues.firstName,
-          // lastName: FormValues.lastName,
-          phoneNumber: FormValues.phone,
-          email: FormValues.email,
-          password: FormValues.password,
+  const onSubmit = (formData: FormValues) => {
+    const userData: Record<string, any> = {};
+    const customerData: Record<string, any> = {};
+
+    // ---------- User Data ----------
+    if (formData.firstName || initialData?.fullname) {
+      userData.fullname = formData.firstName || initialData?.fullname;
+    }
+
+    if (formData.phone || initialData?.phoneNumber) {
+      userData.phoneNumber = formData.phone || initialData?.phoneNumber;
+    }
+
+    if (formData.email || initialData?.email) {
+      userData.email = formData.email || initialData?.email;
+    }
+
+    if (formData.password) {
+      userData.password = formData.password;
+    }
+
+    // ---------- Customer Data ----------
+    if (formData.aadharNo || initialData?.aadharNo) {
+      customerData.aadharNo = formData.aadharNo || initialData?.aadharNo;
+    }
+
+    if (formData.panNo || initialData?.panNo) {
+      customerData.panNo = (formData.panNo || initialData?.panNo)
+        .toUpperCase()
+        .trim();
+    }
+
+    if (formData.bankName || initialData?.bankName) {
+      customerData.bankName = formData.bankName || initialData?.bankName;
+    }
+
+    if (formData.bankAccNo || initialData?.bankAccNo) {
+      customerData.bankAccNo = formData.bankAccNo || initialData?.bankAccNo;
+    }
+
+    if (formData.bankBranch || initialData?.bankBranch) {
+      customerData.bankBranch = formData.bankBranch || initialData?.bankBranch;
+    }
+
+    if (formData.bankIFSC || initialData?.bankIFSC) {
+      customerData.bankIFSC = formData.bankIFSC || initialData?.bankIFSC;
+    }
+
+    if (formData.dob || initialData?.dob) {
+      customerData.dob = formData.dob
+        ? new Date(formData.dob).toISOString()
+        : initialData?.dob;
+    }
+
+    if (formData.gender || initialData?.gender) {
+      customerData.gender = formData.gender || initialData?.gender;
+    }
+
+    if (formData.flatNo || initialData?.flatNo) {
+      customerData.flatNo = formData.flatNo || initialData?.flatNo;
+    }
+
+    if (formData.areaName || initialData?.areaName) {
+      customerData.areaName = formData.areaName || initialData?.areaName;
+    }
+
+    if (formData.landMark || initialData?.landMark) {
+      customerData.landMark = formData.landMark || initialData?.landMark;
+    }
+
+    if (formData.city || initialData?.city) {
+      customerData.city = formData.city || initialData?.city;
+    }
+
+    if (formData.state || initialData?.state) {
+      customerData.state = formData.state || initialData?.state;
+    }
+
+    if (formData.pinCode || initialData?.pinCode) {
+      customerData.pinCode = formData.pinCode || initialData?.pinCode;
+    }
+
+    if (formData.sponsorId || initialData?.crnNo) {
+      customerData.crnNo = formData.sponsorId || initialData?.crnNo;
+    }
+
+    // ---------- Final Submit ----------
+    if (
+      Object.keys(userData).length > 0 ||
+      Object.keys(customerData).length > 0
+    ) {
+      updateCustomer({
+        id,
+        data: {
+          ...(Object.keys(userData).length > 0 && {user: userData}),
+          ...(Object.keys(customerData).length > 0 && {customer: customerData}),
         },
-        customer: {
-          aadharNo: FormValues.aadharNo || '',
-          panNo: FormValues.panNo || '',
-          bankName: FormValues.bankName || '',
-          bankAccNo: FormValues.bankAccNo || '',
-          bankBranch: FormValues.bankBranch || '',
-          bankIFSC: FormValues.bankIFSC || '',
-          // upiId: FormValues.upiId || '',
-          dob: FormValues.dob ? new Date(FormValues.dob).toISOString() : '',
-          gender: FormValues.gender || '',
-          flatNo: FormValues.flatNo || '',
-          areaName: FormValues.areaName || '',
-          landMark: FormValues.landMark || '',
-          city: FormValues.city || '',
-          state: FormValues.state || '',
-          pinCode: FormValues.pinCode || '',
-          crnNo: FormValues.sponsorId || '',
-        },
-      },
-    });
+      });
+    } else {
+      toast.error('Please fill at least one field');
+    }
   };
 
   useEffect(() => {
@@ -109,7 +181,7 @@ const UpdateCustomerProfile: React.FC = () => {
     if (isError) {
       toast.error('Error updating customer');
     }
-  }, [updateCustomerSuccess, methods]);
+  }, [updateCustomerSuccess, isError, navigate]);
 
   return (
     <FormProvider {...methods}>
@@ -139,17 +211,10 @@ const UpdateCustomerProfile: React.FC = () => {
           <div className="col-span-12 md:col-span-6">
             <GenericInputField
               name="firstName"
-              label="Fist Name"
+              label="First Name"
               placeholder="Enter Client Name"
             />
           </div>
-          {/* <div className="col-span-12 md:col-span-6">
-            <GenericInputField
-              name="lastName"
-              label="Last Name"
-              placeholder="Enter Caste"
-            />
-          </div> */}
           <div className="col-span-12 md:col-span-6">
             <GenericInputField type="date" name="dob" label="Date of Birth" />
           </div>
@@ -169,7 +234,6 @@ const UpdateCustomerProfile: React.FC = () => {
               name="email"
               label="Email"
               placeholder="Enter Email"
-              // disabled
             />
           </div>
 
@@ -191,35 +255,35 @@ const UpdateCustomerProfile: React.FC = () => {
             <GenericInputField
               name="areaName"
               label="Area, Street, Sector, Village"
-              placeholder="Enter Secondary Phone No"
+              placeholder="Enter Area Name"
             />
           </div>
           <div className="col-span-12 md:col-span-6">
             <GenericInputField
               name="landMark"
               label="Landmark"
-              placeholder="Enter Secondary Phone No"
+              placeholder="Enter Landmark"
             />
           </div>
           <div className="col-span-12 md:col-span-6">
             <GenericInputField
               name="pinCode"
               label="Pincode"
-              placeholder="Enter Secondary Phone No"
+              placeholder="Enter Pincode"
             />
           </div>
           <div className="col-span-12 md:col-span-6">
             <GenericInputField
               name="city"
               label="City/Town"
-              placeholder="Enter Secondary Phone No"
+              placeholder="Enter City"
             />
           </div>
           <div className="col-span-12 md:col-span-6">
             <GenericInputField
               name="state"
               label="State"
-              placeholder="Enter Secondary Phone No"
+              placeholder="Enter State"
             />
           </div>
         </div>
@@ -250,7 +314,7 @@ const UpdateCustomerProfile: React.FC = () => {
               placeholder="Enter Bank Name"
             />
           </div>
-          <div className="col-span-12 md:col-span-6">
+          <div className="relative col-span-12 md:col-span-6">
             <GenericInputField
               name="bankAccNo"
               label="Account Number"
@@ -272,13 +336,6 @@ const UpdateCustomerProfile: React.FC = () => {
               placeholder="Enter Branch Name"
             />
           </div>
-          {/* <div className="col-span-12 md:col-span-6">
-            <GenericInputField
-              name="upiId"
-              label="UPI ID"
-              placeholder="Enter UPI ID"
-            />
-          </div> */}
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
           <h1 className="col-span-12 mb-4 text-lg font-semibold">Login Info</h1>
@@ -288,6 +345,7 @@ const UpdateCustomerProfile: React.FC = () => {
               name="password"
               label="Password"
               placeholder="Enter Password"
+              type="password"
             />
           </div>
           <div className="col-span-12 md:col-span-6">
@@ -295,6 +353,7 @@ const UpdateCustomerProfile: React.FC = () => {
               name="confirmPassword"
               label="Confirm Password"
               placeholder="Enter Confirm Password"
+              type="password"
             />
           </div>
         </div>

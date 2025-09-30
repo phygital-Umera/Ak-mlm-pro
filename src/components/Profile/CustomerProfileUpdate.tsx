@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import {useEffect, useMemo} from 'react';
+import {useEffect, useMemo, useState} from 'react';
 import GenericInputField from '../Forms/Input/GenericInputField';
 import {FormProvider, useForm} from 'react-hook-form';
 import GenericButton from '../Forms/Buttons/GenericButton';
@@ -18,6 +18,7 @@ import {
 } from '@/lib/react-query/Admin/profile/profile';
 import {useUpdateCustomer} from '@/lib/react-query/updateCustomer';
 import toast from 'react-hot-toast';
+import {InfoIcon, LockIcon} from 'lucide-react';
 
 type formValues = z.infer<typeof updateProfileSchema>;
 const CustomerUpdateProfile: React.FC = () => {
@@ -25,11 +26,18 @@ const CustomerUpdateProfile: React.FC = () => {
     resolver: zodResolver(updateProfileSchema),
   });
   const navigate = useNavigate();
-
   const {user, customer} = useAuthContext();
-  // console.log('====================================');
-  console.log('............sdsdssd', user);
-  // console.log('====================================');
+  const [isBankAccNoDisabled, setIsBankAccNoDisabled] = useState(true);
+  const {data: profileData} = useGetCustomerProfile();
+
+  // Check if bank account number exists and disable field if it does
+  useEffect(() => {
+    if (profileData?.bankAccNo) {
+      setIsBankAccNoDisabled(true);
+    } else {
+      setIsBankAccNoDisabled(false);
+    }
+  }, [profileData]);
 
   useMemo(() => {
     if (user) {
@@ -42,9 +50,7 @@ const CustomerUpdateProfile: React.FC = () => {
 
   const crn = user?.crnNo;
   const {mutateAsync: updateProfile, isSuccess} = useUpdateCustomerProfile();
-  const {data: profileData} = useGetCustomerProfile();
 
-  // console.log('profileee', profileData);
   useEffect(() => {
     if (profileData) {
       methods.reset({
@@ -58,7 +64,6 @@ const CustomerUpdateProfile: React.FC = () => {
         state: profileData?.state ?? '',
         aadharNo: profileData?.aadharNo ?? '',
         panNo: profileData?.panNo ?? '',
-        // upiId: profileData?.upiId ?? '',
         landMark: profileData?.landMark ?? '',
         flatNo: profileData?.flatNo ?? '',
         areaName: profileData?.areaName ?? '',
@@ -66,40 +71,64 @@ const CustomerUpdateProfile: React.FC = () => {
         bankAccNo: profileData?.bankAccNo ?? '',
         bankIFSC: profileData?.bankIFSC ?? '',
         bankBranch: profileData?.bankBranch ?? '',
+        password: profileData?.password ?? '',
       });
     }
   }, [profileData]);
 
   const onSubmit = (data: formValues) => {
-    updateProfile({
-      user: {
-        fullname: data.fullname,
-        phoneNumber: data.phoneNumber,
-        email: data.email,
-        password: data.password,
-      },
-      customer: {
-        aadharNo: data.aadharNo,
-        bankAccNo: data.bankAccNo,
-        bankBranch: data.bankBranch,
-        bankIFSC: data.bankIFSC,
-        bankName: data.bankName,
-        areaName: data.areaName,
-        city: data.city,
-        dob: data.dob ? new Date(data.dob).toISOString() : null,
-        flatNo: data.flatNo,
-        gender: data.gender,
-        panNo: data.panNo?.toUpperCase().trim(),
-        landMark: data.landMark,
-        pinCode: data.pinCode,
-        state: data.state,
-      },
-    });
+    // Filter out empty values
+    const filteredData = Object.fromEntries(
+      Object.entries(data).filter(
+        ([_, value]) => value !== '' && value !== undefined,
+      ),
+    );
+
+    // Prepare user data
+    const userData: Record<string, any> = {};
+    if (filteredData.fullname) userData.fullname = filteredData.fullname;
+    if (filteredData.phoneNumber)
+      userData.phoneNumber = filteredData.phoneNumber;
+    if (filteredData.email) userData.email = filteredData.email;
+    if (filteredData.password) userData.password = filteredData.password;
+
+    // Prepare customer data
+    const customerData: Record<string, any> = {};
+    if (filteredData.aadharNo) customerData.aadharNo = filteredData.aadharNo;
+    if (filteredData.bankAccNo) customerData.bankAccNo = filteredData.bankAccNo;
+    if (filteredData.bankBranch)
+      customerData.bankBranch = filteredData.bankBranch;
+    if (filteredData.bankIFSC) customerData.bankIFSC = filteredData.bankIFSC;
+    if (filteredData.bankName) customerData.bankName = filteredData.bankName;
+    if (filteredData.areaName) customerData.areaName = filteredData.areaName;
+    if (filteredData.city) customerData.city = filteredData.city;
+    if (filteredData.dob)
+      customerData.dob = new Date(filteredData.dob).toISOString();
+    if (filteredData.flatNo) customerData.flatNo = filteredData.flatNo;
+    if (filteredData.gender) customerData.gender = filteredData.gender;
+    if (filteredData.panNo)
+      customerData.panNo = filteredData.panNo.toUpperCase().trim();
+    if (filteredData.landMark) customerData.landMark = filteredData.landMark;
+    if (filteredData.pinCode) customerData.pinCode = filteredData.pinCode;
+    if (filteredData.state) customerData.state = filteredData.state;
+
+    // Only send request if there's data to update
+    if (
+      Object.keys(userData).length > 0 ||
+      Object.keys(customerData).length > 0
+    ) {
+      updateProfile({
+        ...(Object.keys(userData).length > 0 && {user: userData}),
+        ...(Object.keys(customerData).length > 0 && {customer: customerData}),
+      });
+    } else {
+      toast.error('Please fill at least one field to update');
+    }
   };
 
   useEffect(() => {
     if (isSuccess) {
-      // toast.success('Profile updated successfully');
+      toast.success('Profile updated successfully');
       navigate({to: '/customer/dashboard'});
     }
   }, [isSuccess, navigate]);
@@ -130,6 +159,7 @@ const CustomerUpdateProfile: React.FC = () => {
                 disabled
               />
             </div>
+
             {/* 🧍 Personal Info */}
             <h2 className="col-span-12 mt-6 border-b pb-2 text-lg font-semibold">
               Personal Info
@@ -257,12 +287,19 @@ const CustomerUpdateProfile: React.FC = () => {
                 placeholder="e.g. HDFC Bank"
               />
             </div>
-            <div className="col-span-6">
+            <div className="relative col-span-6">
               <GenericInputField
                 name="bankAccNo"
                 label="Account Number"
                 placeholder="Enter your bank account number"
+                disabled={isBankAccNoDisabled}
               />
+              {isBankAccNoDisabled && (
+                <div className="mt-1 flex items-center text-xs text-amber-600 dark:text-amber-400">
+                  <LockIcon size={12} className="mr-1" />
+                  <span>Account number cannot be changed once set</span>
+                </div>
+              )}
             </div>
             <div className="col-span-6">
               <GenericInputField
@@ -303,13 +340,3 @@ const CustomerUpdateProfile: React.FC = () => {
 };
 
 export default CustomerUpdateProfile;
-
-// import React from 'react'
-
-// const CustomerProfileUpdate = () => {
-//   return (
-//     <div>CustomerProfileUpdate</div>
-//   )
-// }
-
-// export default CustomerProfileUpdate

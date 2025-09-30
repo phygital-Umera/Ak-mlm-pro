@@ -27,6 +27,9 @@ const BinaryTreeNode = ({network}) => {
       directSponsorId = '',
       isGolden = false,
       isActive = false,
+      leftCount = 0,
+      rightCount = 0,
+      orderStatus = '',
     } = node.data;
 
     let children = [];
@@ -104,6 +107,9 @@ const BinaryTreeNode = ({network}) => {
         Side: side,
         IsGolden: isGolden,
         IsActive: isActive,
+        LeftCount: leftCount,
+        RightCount: rightCount,
+        OrderStatus: orderStatus,
       },
       ...(children.length > 0 ? {children} : {}),
     };
@@ -131,6 +137,8 @@ const BinaryTreeNode = ({network}) => {
           nodeDatum={rd3tProps.nodeDatum}
           toggleNode={rd3tProps.toggleNode}
           orientation={appState.orientation}
+          onNodeClick={undefined}
+          matchedNode={undefined}
         />
       ),
     },

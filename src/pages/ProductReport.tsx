@@ -95,11 +95,11 @@ const ProductReport = () => {
                     {label: 'Customer Name', key: 'fullname'},
                     {label: 'Phone Number', key: 'phoneNumber'},
                     {label: 'Product Name', key: 'name'},
-                    {label: 'Description', key: 'description'},
-                    {label: 'Actual Price', key: 'actualPrice'},
+                    // {label: 'Description', key: 'description'},
+                    // {label: 'Actual Price', key: 'actualPrice'},
                     {label: 'Discounted Price', key: 'discountedPrice'},
-                    {label: 'Total Amount', key: 'totalAmount'},
-                    {label: 'Delivery Charges', key: 'deliveryCharges'},
+                    // {label: 'Total Amount', key: 'totalAmount'},
+                    // {label: 'Delivery Charges', key: 'deliveryCharges'},
                     {label: 'Action', key: 'action'},
                   ].map((column) => (
                     <th
@@ -130,12 +130,12 @@ const ProductReport = () => {
                     phoneNumber:
                       item.phoneNumber || item.customer?.user?.phoneNumber,
                     name: item.name || item.product?.name,
-                    description: item.description || item.product?.description,
-                    actualPrice: item.actualPrice || item.product?.actualPrice,
+                    // description: item.description || item.product?.description,
+                    // actualPrice: item.actualPrice || item.product?.actualPrice,
                     discountedPrice:
                       item.discountedPrice || item.product?.discountedPrice,
-                    totalAmount: item.totalAmount,
-                    deliveryCharges: item.deliveryCharges,
+                    // totalAmount: item.totalAmount,
+                    // deliveryCharges: item.deliveryCharges,
                     createdAt: new Date(item.createdAt).toLocaleString(
                       'en-IN',
                       {
@@ -170,21 +170,21 @@ const ProductReport = () => {
                       <td className="px-4 py-4 dark:text-white">
                         {rowData.name}
                       </td>
-                      <td className="max-w-xs truncate px-4 py-4 dark:text-white">
+                      {/* <td className="max-w-xs truncate px-4 py-4 dark:text-white">
                         {rowData.description}
-                      </td>
-                      <td className="px-4 py-4 dark:text-white">
+                      </td> */}
+                      {/* <td className="px-4 py-4 dark:text-white">
                         {formatCurrency(rowData.actualPrice)}
-                      </td>
+                      </td> */}
                       <td className="px-4 py-4 dark:text-white">
                         {formatCurrency(rowData.discountedPrice)}
                       </td>
-                      <td className="px-4 py-4 font-medium dark:text-white">
+                      {/* <td className="px-4 py-4 font-medium dark:text-white">
                         {formatCurrency(rowData.totalAmount)}
-                      </td>
-                      <td className="px-4 py-4 dark:text-white">
+                      </td> */}
+                      {/* <td className="px-4 py-4 dark:text-white">
                         {formatCurrency(rowData.deliveryCharges)}
-                      </td>
+                      </td> */}
                       <td className="px-4 py-4 dark:text-white">
                         <button
                           onClick={() => handleDelivery(item.id)}

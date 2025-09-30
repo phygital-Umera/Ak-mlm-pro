@@ -15,49 +15,56 @@ const DisplayEpinUser: React.FC = () => {
 
   useEffect(() => {
     if (epinsData) {
-      // Map and format available epins
-      const formattedAvailableEpins = epinsData?.map((epin: any) => ({
-        epinNo: epin.epinNo,
-        createdAt: epin.createdAt
-          ? new Date(epin.createdAt).toLocaleString('en-IN', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: true,
-            })
-          : 'null',
-      }));
+      // Filter available epins (isUsed = false)
+      const formattedAvailableEpins = epinsData
+        .filter((epin: any) => !epin.isUsed)
+        .map((epin: any) => ({
+          epinNo: epin.epinNo,
+          price: epin.price,
+          createdAt: epin.createdAt
+            ? new Date(epin.createdAt).toLocaleString('en-IN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+              })
+            : 'null',
+        }));
       setAvailableEpins(formattedAvailableEpins);
 
-      // Map and format used epins
-      const formattedUsedEpins = epinsData?.map((epin: any) => ({
-        epinNo: epin.epinNo,
-        assignedToId: epin.assignedToId,
-        createdAt: epin.createdAt
-          ? new Date(epin.createdAt).toLocaleString('en-IN', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: true,
-            })
-          : 'null',
-        requestId: epin.requestId,
-        usedAt: epin.usedAt
-          ? new Date(epin.usedAt).toLocaleString('en-IN', {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: true,
-            })
-          : 'null',
-        usedBy: epin.usedBy,
-      }));
+      // Filter used epins (isUsed = true)
+      const formattedUsedEpins = epinsData
+        .filter((epin: any) => epin.isUsed)
+        .map((epin: any) => ({
+          epinNo: epin.epinNo,
+          price: epin.price,
+          requestId: epin.requestId,
+          assignedToId: epin.assignedToId,
+          createdAt: epin.createdAt
+            ? new Date(epin.createdAt).toLocaleString('en-IN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+              })
+            : 'null',
+          // requestId: epin.requestId,
+          usedAt: epin.usedAt
+            ? new Date(epin.usedAt).toLocaleString('en-IN', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true,
+              })
+            : 'null',
+          usedBy: epin.usedBy,
+        }));
       setUsedEpins(formattedUsedEpins);
     }
   }, [epinsData]);
@@ -73,13 +80,16 @@ const DisplayEpinUser: React.FC = () => {
   const availableEpinsColumns = [
     {header: 'Created At', accessor: 'createdAt'},
     {header: 'Epin Number', accessor: 'epinNo'},
-  ];
 
+    {header: 'Price', accessor: 'price'},
+  ];
   const usedEpinsColumns = [
     {header: 'Created At', accessor: 'createdAt'},
     {header: 'Epin Number', accessor: 'epinNo'},
     {header: 'Used At', accessor: 'usedAt'},
-    {header: 'Used By', accessor: 'usedBy'},
+    // {header: 'Used By', accessor: 'usedBy'},
+    {header: 'Price', accessor: 'price'},
+    {header: 'Assigned To Id', accessor: 'assignedToId'},
   ];
 
   return (

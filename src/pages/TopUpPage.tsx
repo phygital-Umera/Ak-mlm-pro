@@ -1,11 +1,12 @@
 /*eslint-disable */
 import GenericButton from '@/components/Forms/Buttons/GenericButton';
+import GenericDropdown from '@/components/Forms/DropDown/GenericDropDown';
 import GenericInputField from '@/components/Forms/Input/GenericInputField';
-import {useCheckEpin} from '@/lib/react-query/Admin/Epin/epin';
+import {useCheckEpin, useGetAdminPins} from '@/lib/react-query/Admin/Epin/epin';
 import {useGetAllProducts} from '@/lib/react-query/Admin/Product/products';
 import {useAddTopUp} from '@/lib/react-query/Admin/TopUp/topup';
 import {unAuthenticatedApi} from '@/utils/axios';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import toast from 'react-hot-toast';
 
@@ -16,41 +17,85 @@ const TopUpPage = () => {
   >({});
   const [customerName, setCustomerName] = useState<string>('');
   const [verifiedEpin, setVerifiedEpin] = useState<any>(null);
+  const [isCheckingCustomer, setIsCheckingCustomer] = useState<boolean>(false);
+  const [isCheckingEpin, setIsCheckingEpin] = useState<boolean>(false);
+  const [selectedPrice, setSelectedPrice] = useState('');
+  const [filteredEpins, setFilteredEpins] = useState([]);
+
+  const {data: epinData, isSuccess, isLoading} = useGetAdminPins();
 
   const methods = useForm();
-  const {mutateAsync: checkEpin, isPending: isCheckingEpin} = useCheckEpin();
+  const {mutateAsync: checkEpin} = useCheckEpin();
   const {mutateAsync: topUpMutation, isPending: isSubmitting} = useAddTopUp();
 
-  // Get customer name based on CRN
-  const verifyCustomer = async () => {
-    const CRN = methods.getValues('customerCRN');
-    console.log('CRN', CRN);
+  // Watch the CRN and ePIN fields for changes
+  const customerCRN = methods.watch('customerCRN');
+  const epinValue = methods.watch('epin');
 
-    if (CRN && CRN.length > 8) {
-      try {
-        const response = await unAuthenticatedApi.get(`/customerName/${CRN}`);
-        setCustomerName(response.data.data);
-      } catch (error) {
-        setCustomerName('Invalid ID');
-        toast.error('Invalid Customer CRN');
-      }
+  // Effect to filter ePINs by selected price
+  // Effect to filter ePINs by selected price and only show unused ones
+  // Effect to filter ePINs by selected price and only show unused ones
+  useEffect(() => {
+    if (epinData && selectedPrice) {
+      const filtered = epinData.filter(
+        (epin) => epin.price === parseInt(selectedPrice) && !epin.isUsed, // Only include unused ePINs
+      );
+      setFilteredEpins(filtered);
+    } else {
+      setFilteredEpins([]);
     }
-  };
+  }, [selectedPrice, epinData]);
 
-  // Verify ePIN
-  const verifyEpin = async () => {
-    const epinValue = methods.getValues('epin');
-    if (epinValue) {
-      try {
-        const response = await checkEpin(epinValue);
-        setVerifiedEpin(response);
-        toast.success('ePIN verified successfully');
-      } catch (error) {
-        console.error('ePIN verification failed:', error);
-        toast.error('ePIN verification failed');
+  // Effect to check CRN and get customer name
+  useEffect(() => {
+    const checkCRN = async () => {
+      if (customerCRN && customerCRN.length > 8) {
+        setIsCheckingCustomer(true);
+        try {
+          const response = await unAuthenticatedApi.get(
+            `/customerName/${customerCRN}`,
+          );
+          setCustomerName(response.data.data);
+        } catch (error) {
+          setCustomerName('Invalid ID');
+        } finally {
+          setIsCheckingCustomer(false);
+        }
+      } else {
+        setCustomerName('');
       }
-    }
-  };
+    };
+
+    // Add a delay to avoid making too many API calls
+    const timeoutId = setTimeout(checkCRN, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [customerCRN]);
+
+  // Effect to verify ePIN automatically
+  useEffect(() => {
+    const verifyEpin = async () => {
+      if (epinValue && epinValue.length > 0) {
+        setIsCheckingEpin(true);
+        try {
+          const response = await checkEpin(epinValue);
+          setVerifiedEpin(response);
+        } catch (error) {
+          console.error('ePIN verification failed:', error);
+          setVerifiedEpin(null);
+        } finally {
+          setIsCheckingEpin(false);
+        }
+      } else {
+        setVerifiedEpin(null);
+      }
+    };
+
+    // Add a delay to avoid making too many API calls
+    const timeoutId = setTimeout(verifyEpin, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [epinValue, checkEpin]);
 
   // Filter products based on verified ePIN value
   const filteredProducts = verifiedEpin
@@ -65,6 +110,14 @@ const TopUpPage = () => {
     if (count < 1 && getTotalSelectedCount() < 1) {
       setSelectedProducts((prev) => ({...prev, [productId]: count + 1}));
     }
+  };
+
+  const handlePriceChange = (value: string) => {
+    setSelectedPrice(value);
+    // Reset ePIN and verified ePIN when price changes
+    methods.setValue('epin', '');
+    setVerifiedEpin(null);
+    setSelectedProducts({});
   };
 
   const onSubmit = async (data: any) => {
@@ -82,10 +135,9 @@ const TopUpPage = () => {
         productId: selectedProductId,
         epinNo: data.epin,
         crnNo: data.customerCRN,
-        // Add other necessary fields if required by your API
       };
 
-      // Call the top-up API with CRN as URL parameter and productId in payload
+      // Call the top-up API
       await topUpMutation(payload);
 
       toast.success('Top-up successful');
@@ -94,6 +146,7 @@ const TopUpPage = () => {
       setSelectedProducts({});
       setCustomerName('');
       setVerifiedEpin(null);
+      setSelectedPrice('');
     } catch (error) {
       console.error('Top-up failed:', error);
       toast.error('Top-up failed');
@@ -106,56 +159,64 @@ const TopUpPage = () => {
         <h1 className="mb-6 text-2xl font-bold">Top-Up Customer Account</h1>
 
         {/* Customer Verification */}
-        <div className="mb-6">
-          <div className="flex items-end gap-4">
-            <div className="flex-1">
-              <GenericInputField
-                placeholder="Enter Customer CRN"
-                name="customerCRN"
-                label="Customer CRN"
-                required
-              />
-            </div>
-            <GenericButton type="button" onClick={verifyCustomer}>
-              Verify Customer
-            </GenericButton>
-          </div>
+        <div className="mb-6 flex flex-col">
+          <GenericInputField
+            placeholder="Enter Customer CRN"
+            name="customerCRN"
+            label="Customer CRN"
+          />
           {customerName && (
             <div className="bg-gray-100 mt-2 rounded p-2">
               Customer Name: <strong>{customerName}</strong>
+              {isCheckingCustomer && (
+                <span className="text-gray-500 ml-2">Checking...</span>
+              )}
             </div>
           )}
         </div>
 
-        {/* ePIN Verification */}
-        <div className="mb-6">
-          <div className="flex items-end gap-4">
-            <div className="flex-1">
-              <GenericInputField
-                placeholder="Enter Epin"
-                name="epin"
-                label="Epin"
-                required
-              />
-            </div>
-            <GenericButton
-              type="button"
-              onClick={verifyEpin}
-              disabled={isCheckingEpin}
-            >
-              {isCheckingEpin ? 'Verifying...' : 'Verify Epin'}
-            </GenericButton>
-          </div>
-          {verifiedEpin && (
-            <div className="mt-2 rounded bg-green-100 p-2">
-              ePIN Verified: <strong>₹{verifiedEpin}</strong> value
-            </div>
-          )}
+        {/* Price Selection */}
+        <div className="mb-6 flex flex-col">
+          <GenericDropdown
+            label="Price"
+            name="price"
+            options={[
+              {label: '₹1250', value: '1250'},
+              {label: '₹2000', value: '2000'},
+              {label: '₹2700', value: '2700'},
+              {label: '₹3500', value: '3500'},
+            ]}
+            onChange={handlePriceChange}
+            value={selectedPrice}
+          />
         </div>
+
+        {/* ePIN Selection (filtered by price) */}
+        {selectedPrice && (
+          <div className="mb-6 flex flex-col">
+            <GenericDropdown
+              placeholder="Select ePIN"
+              name="epin"
+              label="ePIN"
+              options={filteredEpins.map((epin) => ({
+                label: `${epin.epinNo} (₹${epin.price})`,
+                value: epin.epinNo,
+              }))}
+            />
+            {verifiedEpin && (
+              <div className="mt-2 rounded bg-green-100 p-2">
+                ePIN Verified: <strong>₹{verifiedEpin}</strong> value
+                {isCheckingEpin && (
+                  <span className="text-gray-500 ml-2">Verifying...</span>
+                )}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Product Selection (only shown after ePIN verification) */}
         {verifiedEpin && filteredProducts && filteredProducts.length > 0 && (
-          <div className="mb-6">
+          <div className="mb-6 flex flex-col">
             <h2 className="mb-4 text-xl font-semibold">
               Select Product (Value: ₹{verifiedEpin})
               <span className="ml-2 text-sm font-normal">(Tap to select)</span>

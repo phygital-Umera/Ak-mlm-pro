@@ -55,10 +55,10 @@ const RecallEpin = () => {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="mx-auto max-w-md p-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="">
         <h1 className="mb-6 text-2xl font-bold">Recall ePIN</h1>
 
-        <div className="mb-6">
+        <div className="mb-6 flex w-[50%] flex-col gap-2">
           <GenericInputField
             name="crnNo"
             label="CRN No"
@@ -74,25 +74,27 @@ const RecallEpin = () => {
           )}
         </div>
 
-        <GenericInputField
-          name="count"
-          label="Count"
-          placeholder="Enter Count"
-          type="number"
-          min="1"
-        />
-
-        <GenericDropdown
-          name="price"
-          label="Price"
-          options={[
-            {label: '1250', value: '1250'},
-            {label: '2000', value: '2000'},
-            {label: '2700', value: '2700'},
-            {label: '3500', value: '3500'},
-          ]}
-        />
-
+        <div className="mb-6 flex w-[50%] flex-col gap-2">
+          <GenericInputField
+            name="count"
+            label="Count"
+            placeholder="Enter Count"
+            type="number"
+            min="1"
+          />
+        </div>
+        <div className="mb-6 flex w-[50%] flex-col gap-2">
+          <GenericDropdown
+            name="price"
+            label="Price"
+            options={[
+              {label: '1250', value: '1250'},
+              {label: '2000', value: '2000'},
+              {label: '2700', value: '2700'},
+              {label: '3500', value: '3500'},
+            ]}
+          />
+        </div>
         <GenericButton type="submit" className="mt-4" disabled={isPending}>
           {isPending ? 'Submitting...' : 'Submit'}
         </GenericButton>
