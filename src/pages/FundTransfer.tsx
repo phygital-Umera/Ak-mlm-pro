@@ -6,6 +6,7 @@ import GenericInputField from '@/components/Forms/Input/GenericInputField';
 import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import toast from 'react-hot-toast';
 import {useGetWalletHistory} from '@/lib/react-query/Admin/WalletHistory/wallethistory';
+import {useAuthContext} from '@/context/AuthContext';
 
 const FundTransfer = () => {
   const [step, setStep] = useState<number>(1);
@@ -15,14 +16,13 @@ const FundTransfer = () => {
   const [isSendingOtp, setIsSendingOtp] = useState<boolean>(false);
   const [isTransferring, setIsTransferring] = useState<boolean>(false);
   const [userEmail, setUserEmail] = useState<string>('');
-
+  const {user} = useAuthContext();
+  const userEmailForOtp = user?.email;
   const methods = useForm();
   const {handleSubmit, watch, setValue, reset} = methods;
   const crnNo = watch('crnNo');
 
   const {data: walletHistory} = useGetWalletHistory();
-
-  console.log('Wallet History:', walletHistory);
 
   // Set customer name in form when it changes
   useEffect(() => {
@@ -47,7 +47,6 @@ const FundTransfer = () => {
           const response = await unAuthenticatedApi.get(
             `/customerName/${crnNo}`,
           );
-          console.log('Customer Response:', response.data);
 
           if (response.data?.data?.name) {
             setCustomerName(response.data.data.name);
@@ -65,7 +64,6 @@ const FundTransfer = () => {
             setUserEmail('');
           }
         } catch (error) {
-          console.error('Error fetching customer:', error);
           setCustomerName('Invalid ID');
           setCustomerData(null);
           setUserEmail('');
@@ -98,23 +96,18 @@ const FundTransfer = () => {
         crnNo: crnNo,
       };
 
-      console.log('OTP Payload:', otpPayload);
-
       const response = await api.post('send-otp', otpPayload);
 
-      console.log('OTP Response:', response.data);
-
       if (response.data) {
-        // Check if the request was successful (status code 200-299)
-        setStep(2); // Move to step 2
-        toast.success(response.data.message || `OTP sent to ${userEmail}`);
+        setStep(2);
+        toast.success(
+          response.data.message || `OTP sent to ${userEmailForOtp}`,
+        );
       }
     } catch (error: any) {
-      console.error('Error sending OTP:', error);
       let errorMessage = 'Failed to send OTP';
 
       if (error.response?.data) {
-        console.log('Error response:', error.response.data);
         if (error.response.data.errors) {
           const validationErrors = error.response.data.errors;
           if (Array.isArray(validationErrors) && validationErrors.length > 0) {
@@ -155,11 +148,7 @@ const FundTransfer = () => {
         email: userEmail,
       };
 
-      console.log('Transfer Payload:', transferPayload);
-
       const response = await api.post('/admin/transfer', transferPayload);
-
-      console.log('Transfer Response:', response.data);
 
       // Check if the response has status true (your API returns this)
       // Also check if we got a successful response (status code 200-299)
@@ -176,11 +165,9 @@ const FundTransfer = () => {
         toast.error(response.data?.message || 'Transfer failed');
       }
     } catch (error: any) {
-      console.error('Error transferring fund:', error);
       let errorMessage = 'Failed to transfer fund';
 
       if (error.response?.data) {
-        console.log('Error response:', error.response.data);
         if (error.response.data.errors) {
           const validationErrors = error.response.data.errors;
           if (Array.isArray(validationErrors) && validationErrors.length > 0) {
