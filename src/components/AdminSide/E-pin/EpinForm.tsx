@@ -20,6 +20,7 @@ type FormValues = z.infer<typeof epinCustomerSchema>;
 
 const EpinForm: React.FC = () => {
   const [customerName, setCustomerName] = useState<string>('');
+  const [customerData, setCustomerData] = useState<any>(null);
   const [isChecking, setIsChecking] = useState<boolean>(false);
 
   const methods = useForm<FormValues>({
@@ -30,10 +31,22 @@ const EpinForm: React.FC = () => {
     },
   });
 
-  const {handleSubmit, watch} = methods;
+  const {handleSubmit, watch, setValue} = methods;
   const crnNo = watch('crnNo'); // Watch the CRN field for changes
 
   const {mutate: createEPin, isPending} = useCreateCustomerEPin();
+
+  // Effect to set customer name in form when it changes
+  useEffect(() => {
+    if (
+      customerName &&
+      customerName !== 'Invalid ID' &&
+      customerName !== 'Invalid format'
+    ) {
+      // Method 1: Set the value in React Hook Form
+      setValue('customerName', customerName);
+    }
+  }, [customerName, setValue]);
 
   // Effect to check CRN and get customer name
   useEffect(() => {
@@ -44,14 +57,24 @@ const EpinForm: React.FC = () => {
           const response = await unAuthenticatedApi.get(
             `/customerName/${crnNo}`,
           );
-          setCustomerName(response.data.data);
+          console.log('Customer Response:', response.data);
+
+          // Extract the name from the nested data structure
+          if (response.data && response.data.data && response.data.data.name) {
+            setCustomerName(response.data.data.name);
+            setCustomerData(response.data.data);
+          } else {
+            setCustomerName('Invalid format');
+          }
         } catch (error) {
+          console.error('Error fetching customer:', error);
           setCustomerName('Invalid ID');
         } finally {
           setIsChecking(false);
         }
       } else {
         setCustomerName('');
+        setCustomerData(null);
       }
     };
 
@@ -68,6 +91,8 @@ const EpinForm: React.FC = () => {
       crnNo: data.crnNo,
     });
     methods.reset();
+    setCustomerName('');
+    setCustomerData(null);
   };
 
   return (
@@ -87,12 +112,38 @@ const EpinForm: React.FC = () => {
               label="CRN No"
               placeholder="Enter CRN No"
             />
-            {customerName && (
-              <div className="bg-gray-100 mt-2 rounded p-2">
-                Customer Name: <strong>{customerName}</strong>
-                {isChecking && (
-                  <span className="text-gray-500 ml-2">Checking...</span>
-                )}
+
+            {/* Show checking indicator */}
+            {isChecking && (
+              <div className="text-gray-500 mt-2 text-sm">
+                Checking customer...
+              </div>
+            )}
+
+            {/* OPTION 1: Using GenericInputField with React Hook Form */}
+            {customerName &&
+              customerName !== 'Invalid ID' &&
+              customerName !== 'Invalid format' && (
+                <div className="mt-4">
+                  <GenericInputField
+                    placeholder="Customer Name"
+                    name="customerName"
+                    label="Customer Name"
+                    disabled={true}
+                  />
+                </div>
+              )}
+
+            {/* Show error message if invalid */}
+            {customerName === 'Invalid ID' && (
+              <div className="mt-2 rounded bg-red-100 p-2 text-red-600">
+                Invalid Customer CRN
+              </div>
+            )}
+
+            {customerName === 'Invalid format' && (
+              <div className="mt-2 rounded bg-yellow-100 p-2 text-yellow-600">
+                Unexpected response format
               </div>
             )}
           </div>
@@ -132,6 +183,12 @@ const EpinForm: React.FC = () => {
             <GenericButton
               type="submit"
               className="rounded-md bg-blue-600 px-4 py-2 text-white transition-colors"
+              disabled={
+                isPending ||
+                !customerName ||
+                customerName === 'Invalid ID' ||
+                customerName === 'Invalid format'
+              }
             >
               {isPending ? 'Submitting...' : 'Submit'}
             </GenericButton>

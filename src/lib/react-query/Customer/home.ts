@@ -6,6 +6,7 @@ import {
   getCustomerGoldenIncome,
   getCustomerHelpingData,
   getBDfund,
+  getcustomerdownline,
 } from '@/lib/api/Customer/home';
 import {Customer, Commission} from '@/types';
 import {useQuery} from '@tanstack/react-query';
@@ -58,5 +59,12 @@ export const useGetCustomerHelpingData = (id: string) => {
   return useQuery({
     queryKey: ['FetchCustomerHelpingData'],
     queryFn: () => getCustomerHelpingData(id),
+  });
+};
+
+export const useGetCustmerDownline = () => {
+  return useQuery({
+    queryKey: ['get-customer downline'],
+    queryFn: getcustomerdownline,
   });
 };

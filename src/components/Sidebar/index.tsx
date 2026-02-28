@@ -9,12 +9,20 @@ import {
   PiShareLight,
   PiSquaresFourLight,
 } from 'react-icons/pi';
-import {FaArrowLeftLong, FaUnderline} from 'react-icons/fa6';
+import {
+  FaArrowLeftLong,
+  FaMoneyBillTransfer,
+  FaUnderline,
+} from 'react-icons/fa6';
 import {IoIosArrowDown} from 'react-icons/io';
 import {NetworkIcon, ProfileIcon, RegistrationIcon, ReportIcon} from '@/icons';
 import {useAuthContext} from '@/context/AuthContext';
 import {BiAward, BiListUl, BiRupee} from 'react-icons/bi';
-import {MdApproval} from 'react-icons/md';
+import {
+  MdApproval,
+  MdNoTransfer,
+  MdTransferWithinAStation,
+} from 'react-icons/md';
 import {FaHistory, FaNetworkWired} from 'react-icons/fa';
 import {GiTargetPoster} from 'react-icons/gi';
 import {LuAlignVerticalDistributeEnd} from 'react-icons/lu';
@@ -39,15 +47,25 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
           //   icon: <NetworkIcon size={22} />,
           // },
           {
+            label: 'My Invoice',
+            path: '/admin/invoice',
+            icon: <PiFileTextLight size={22} />,
+          },
+          {
+            label: 'Welcome Letter',
+            path: '/admin/wlcmletter',
+            icon: <PiEnvelopeSimpleLight size={22} />,
+          },
+          {
             label: 'Binary Tree',
             path: '/admin/binarytree',
             icon: <NetworkIcon size={22} />,
           },
-          {
-            label: 'Generation Tree',
-            path: '/admin/network',
-            icon: <FaNetworkWired size={22} />,
-          },
+          // {
+          //   label: 'Generation Tree',
+          //   path: '/admin/network',
+          //   icon: <FaNetworkWired size={22} />,
+          // },
           // {
           //   label: 'Registeration',
           //   path: '/admin/customerregister',
@@ -60,50 +78,42 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             icon: <BiListUl size={22} />,
           },
           {
-            label: 'Epin Request',
+            label: 'Epin Approval ',
             path: '/admin/epinrequest',
             icon: <MdApproval size={22} />,
+          },
+          {
+            label: 'Fund Transfer',
+            path: '/fundtransfer',
+            icon: <FaMoneyBillTransfer size={22} />,
           },
           {
             label: 'Activate ID',
             path: '/admin/topup',
             icon: <MdApproval size={22} />,
           },
-          {
-            label: 'Recall E-pin',
-            path: '/admin/recallepin',
-            icon: <MdApproval size={22} />,
-          },
+
           {
             label: 'Share Link',
             path: '/admin/sharelink',
             icon: <PiShareLight size={22} />,
           },
           {
-            label: 'Product Report',
+            label: 'Delivered Products',
             path: '/admin/productreport',
             icon: <PiShareLight size={22} />,
           },
-          {
-            label: 'Delivered Products',
-            path: '/admin/deliverdproducts',
-            icon: <PiShareLight size={22} />,
-          },
+          // {
+          //   label: 'Delivered Products',
+          //   path: '/admin/deliverdproducts',
+          //   icon: <PiShareLight size={22} />,
+          // },
           {
             label: 'Level Income',
             path: '/admin/roi',
             icon: <PiShareLight size={22} />,
           },
-          {
-            label: 'My Invoice',
-            path: '/admin/invoice',
-            icon: <PiFileTextLight size={22} />,
-          },
-          {
-            label: 'Welcome Letter',
-            path: '/admin/wlcmletter',
-            icon: <PiEnvelopeSimpleLight size={22} />,
-          },
+
           // {
           //   label: 'Wallet Report',
           //   path: '/admin/wallethistory',
@@ -169,13 +179,17 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             label: 'E-Pin',
             icon: <PiSquaresFourLight size={22} />,
             subRoutes: [
-              {
-                label: 'Admin E-Pin',
-                path: '/admin/Epin',
-              },
+              // {
+              //   label: 'Admin E-Pin',
+              //   path: '/admin/Epin',
+              // },
               {
                 label: 'Customer E-Pin',
                 path: '/admin/customerepin',
+              },
+              {
+                label: 'Recall E-pin',
+                path: '/admin/recallepin',
               },
             ],
           },
@@ -212,6 +226,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               label: 'Binary Tree',
               path: '/admin/binarytree',
               icon: <NetworkIcon size={22} />,
+            },
+            {
+              label: 'Downline List',
+              path: '/customer/downlinelist',
+              icon: <BiListUl size={22} />,
             },
             // {
             //   label: 'Direct Customer',
