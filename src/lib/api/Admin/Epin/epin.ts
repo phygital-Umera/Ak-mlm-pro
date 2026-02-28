@@ -69,9 +69,9 @@ export const getAllEPins = async () => {
   }
 };
 
-export const getAdminEpins = async () => {
+export const getAdminEpins = async (CustomerID: string) => {
   try {
-    const response = await api.get('/admin/epin/adminPins');
+    const response = await api.get(`/customer/epin/${CustomerID}`);
     return response.data;
   } catch (error) {
     console.error(

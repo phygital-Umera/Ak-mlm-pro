@@ -20,9 +20,9 @@ const CustomerRegistration: React.FC = () => {
     component: React.FC<StepComponentProps>;
   }[] = [
     {id: 1, title: 'Sponsor Info', component: SponserInfo},
-    ...(data.skipProduct
-      ? []
-      : [{id: 2, title: 'Select Product', component: SelectProduct}]),
+    // ...(data.skipProduct
+    //   ? []
+    //   : [{id: 2, title: 'Select Product', component: SelectProduct}]),
     {id: 3, title: 'Contact Info', component: ContactInfo},
     {id: 4, title: 'Login Info', component: LoginInfo},
     // {id: 4, title: 'Personal Info', component: Personalnfo},

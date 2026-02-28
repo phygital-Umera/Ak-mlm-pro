@@ -7,7 +7,7 @@ export const updateCustomerSchema = z
     //   .min(5, {message: 'CRN No must be at least 5 characters'}),
     sponsorId: z.string().optional(),
     phoneNumber: z.string().optional(),
-    
+
     firstName: z.string().optional(),
     gender: z.string().optional(),
     dob: z.string().optional(),

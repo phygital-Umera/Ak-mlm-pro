@@ -100,3 +100,17 @@ export const getCustomerHelpingData = async (id: string) => {
     throw err.response?.data || err;
   }
 };
+
+export const getcustomerdownline = async () => {
+  try {
+    const response = await api.get('/customers/downline');
+    return response;
+  } catch (error: unknown) {
+    const err = error as ApiError;
+    console.error(
+      'Error fetching customer list:',
+      err.response?.data.message || err.message,
+    );
+    throw err.response?.data || err;
+  }
+};
