@@ -14,8 +14,10 @@ type CustomerEpinData = {
   requestId: string;
   usedBy: string | null;
   customer: {
-    firstName: string;
-    lastName: string;
+    user: {
+      fullname: string;
+      lastName: string;
+    };
     crnNo: string;
   };
 };
@@ -27,7 +29,7 @@ const CustomerEpinColumn: Column<CustomerEpinData>[] = [
   {
     header: 'Customer Name',
     accessor: (row) =>
-      `${row.customer?.firstName || ''} ${row.customer?.lastName || ''}`,
+      `${row.customer?.user?.fullname || ''} ${row.customer?.user?.lastName || ''}`,
   },
   {header: 'Customer ID', accessor: (row) => row.customer?.crnNo || ''},
 ];

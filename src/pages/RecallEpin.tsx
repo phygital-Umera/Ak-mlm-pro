@@ -1,4 +1,4 @@
-/*eslint-disable */
+/* eslint-disable */
 import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import GenericInputField from '@/components/Forms/Input/GenericInputField';
 import GenericDropdown from '@/components/Forms/DropDown/GenericDropDown';
@@ -9,7 +9,14 @@ import {useAddRecallEpin} from '@/lib/react-query/Admin/TopUp/topup';
 import toast from 'react-hot-toast';
 
 const RecallEpin = () => {
-  const methods = useForm();
+  const methods = useForm({
+    defaultValues: {
+      crnNo: '',
+      customerName: '',
+      price: '',
+      count: '',
+    },
+  });
   const [customerName, setCustomerName] = useState<string>('');
   const [customerData, setCustomerData] = useState<any>(null);
   const [isChecking, setIsChecking] = useState<boolean>(false);
@@ -81,16 +88,21 @@ const RecallEpin = () => {
       return;
     }
 
+    if (!data.price) {
+      toast.error('Please select a price');
+      return;
+    }
+
+    if (!data.count || Number(data.count) < 1) {
+      toast.error('Please enter a valid count');
+      return;
+    }
+
     recallEpin({
       crnNo: data.crnNo,
       count: Number(data.count),
       price: Number(data.price),
     });
-
-    // Optionally reset form after submission
-    // methods.reset();
-    // setCustomerName('');
-    // setCustomerData(null);
   };
 
   return (
@@ -98,81 +110,101 @@ const RecallEpin = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="p-6">
         <h1 className="mb-6 text-2xl font-bold">Recall ePIN</h1>
 
-        <div className="mb-6 flex w-[50%] flex-col gap-2">
-          <GenericInputField
-            name="crnNo"
-            label="CRN No"
-            placeholder="Enter CRN No"
-          />
+        {/* Main container with horizontal layout */}
+        <div className="mb-8 rounded-lg bg-white p-6 shadow-md">
+          {/* Horizontal fields container */}
+          <div className="flex flex-wrap items-start gap-4">
+            {/* CRN Input Field */}
+            <div className="min-w-[200px] flex-1">
+              <GenericInputField
+                name="crnNo"
+                label="CRN No"
+                placeholder="Enter CRN No"
+              />
+            </div>
 
-          {/* Show checking indicator */}
-          {isChecking && (
-            <div className="text-gray-500 text-sm">Checking customer...</div>
-          )}
+            {/* Price Dropdown Field */}
+            <div className="min-w-[150px] flex-1">
+              <GenericDropdown
+                name="price"
+                label="Price"
+                placeholder="Select Price"
+                options={[
+                  {label: '0', value: '0'},
+                  {label: '1000', value: '1000'},
+                  // {label: '₹1250', value: '1250'},
+                  // {label: '₹2000', value: '2000'},
+                  // {label: '₹2700', value: '2700'},
+                  // {label: '₹3500', value: '3500'},
+                ]}
+              />
+            </div>
 
-          {/* OPTION 1: Show customer name in a disabled input field */}
-          {customerName &&
-            customerName !== 'Invalid ID' &&
-            customerName !== 'Invalid format' && (
-              <div className="mt-2">
-                <GenericInputField
-                  name="customerName"
-                  label="Customer Name"
-                  value={customerName}
-                  disabled={true}
-                  className="bg-gray-100 cursor-not-allowed"
-                />
+            {/* Count Input Field */}
+            <div className="min-w-[150px] flex-1">
+              <GenericInputField
+                name="count"
+                label="Count"
+                placeholder="Enter Count"
+                type="number"
+                min="1"
+              />
+            </div>
+          </div>
+
+          {/* Status messages section - appears below the horizontal fields */}
+          <div className="mt-4">
+            {/* Checking indicator */}
+            {isChecking && (
+              <div className="text-sm text-blue-600">Checking customer...</div>
+            )}
+
+            {/* Customer name display */}
+            {customerName &&
+              customerName !== 'Invalid ID' &&
+              customerName !== 'Invalid format' && (
+                <div className="mt-2">
+                  <GenericInputField
+                    name="customerName"
+                    label="Customer Name"
+                    value={customerName}
+                    disabled={true}
+                    className="bg-gray-100 max-w-md cursor-not-allowed"
+                  />
+                </div>
+              )}
+
+            {/* Error messages */}
+            {customerName === 'Invalid ID' && (
+              <div className="mt-2 inline-block rounded bg-red-100 p-2 text-red-600">
+                Invalid Customer CRN
               </div>
             )}
 
-          {/* Show error message if invalid */}
-          {customerName === 'Invalid ID' && (
-            <div className="mt-2 rounded bg-red-100 p-2 text-red-600">
-              Invalid Customer CRN
-            </div>
-          )}
+            {customerName === 'Invalid format' && (
+              <div className="mt-2 inline-block rounded bg-yellow-100 p-2 text-yellow-600">
+                Unexpected response format
+              </div>
+            )}
+          </div>
 
-          {customerName === 'Invalid format' && (
-            <div className="mt-2 rounded bg-yellow-100 p-2 text-yellow-600">
-              Unexpected response format
-            </div>
-          )}
+          {/* Submit Button - Right Aligned */}
+          <div className="mt-6 flex justify-end">
+            <GenericButton
+              type="submit"
+              className="w-32" /* Fixed width for the button */
+              disabled={
+                isPending ||
+                !customerName ||
+                customerName === 'Invalid ID' ||
+                customerName === 'Invalid format' ||
+                isChecking
+              }
+            >
+              {isPending ? 'Submitting...' : 'Recall'}
+            </GenericButton>
+          </div>
         </div>
-
-        <div className="mb-6 flex w-[50%] flex-col gap-2">
-          <GenericDropdown
-            name="price"
-            label="Price"
-            options={[
-              {label: '1250', value: '1250'},
-              {label: '2000', value: '2000'},
-              {label: '2700', value: '2700'},
-              {label: '3500', value: '3500'},
-            ]}
-          />
-        </div>
-        <div className="mb-6 flex w-[50%] flex-col gap-2">
-          <GenericInputField
-            name="count"
-            label="Count"
-            placeholder="Enter Count"
-            type="number"
-            min="1"
-          />
-        </div>
-
-        <GenericButton
-          type="submit"
-          className="mt-4"
-          disabled={
-            isPending ||
-            !customerName ||
-            customerName === 'Invalid ID' ||
-            customerName === 'Invalid format'
-          }
-        >
-          {isPending ? 'Submitting...' : 'Submit'}
-        </GenericButton>
       </form>
     </FormProvider>
   );

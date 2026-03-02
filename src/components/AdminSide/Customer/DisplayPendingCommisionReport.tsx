@@ -1,9 +1,10 @@
 /*eslint-disable*/
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import {
   useFetchAdminCommsion,
   usePayCommission,
   usePayCommissionAll,
+  usePayBulkCommission,
 } from '@/lib/react-query/Admin/Home/commission';
 import Modal from 'react-modal';
 import * as XLSX from 'xlsx';
@@ -32,131 +33,25 @@ type PendingCommission = {
 
 const DisplayPendingCommisionReport: React.FC = () => {
   const queryClient = useQueryClient();
+
   const {data, isSuccess, isError, isPending} = useFetchAdminCommsion();
+  const {mutate: payCommission} = usePayCommission();
+  const {mutate: payAllCommission} = usePayCommissionAll();
+  const {mutate: payBulkCommission} = usePayBulkCommission();
 
   const [selectedFilter, setSelectedFilter] = useState<string | null>(null);
   const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
-
-  const {mutate: payCommission} = usePayCommission();
-  const {mutate: payAllCommission} = usePayCommissionAll();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDateForPayAll, setSelectedDateForPayAll] = useState<
     string | null
   >(null);
+  const [isProcessingBulk, setIsProcessingBulk] = useState(false);
+  const [bulkPaymentIds, setBulkPaymentIds] = useState<string[]>([]);
 
-  const handlePayClick = (row: PendingCommission) => {
-    payCommission({id: row.id, data: {status: 'PAID'}});
-  };
-
-  const handlePayAllForDate = (date: string) => {
-    setSelectedDateForPayAll(date);
-    setIsModalOpen(true);
-  };
-
-  const confirmPayAll = () => {
-    if (selectedDateForPayAll) {
-      // Get all IDs for the selected date
-      const dateItems = groupedData[selectedDateForPayAll] || [];
-      const ids = dateItems.map((item) => item.id);
-
-      // You might need to modify your API to accept multiple IDs
-      // For now, we'll pay one by one or create a new API endpoint
-      ids.forEach((id) => {
-        payCommission({id, data: {status: 'PAID'}});
-      });
-
-      toast.success(`Paid all commissions for ${selectedDateForPayAll}`);
-    } else {
-      // Original pay all functionality
-      payAllCommission();
-    }
-    setIsModalOpen(false);
-    setSelectedDateForPayAll(null);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setSelectedDateForPayAll(null);
-  };
-
-  const handleExportToExcel = () => {
-    const exportData = Object.entries(groupedData).flatMap(([date, items]) =>
-      items.map((item) => ({
-        Date: date,
-        Time: item.formattedTime,
-        'CRN No': item.crnNo,
-        'Full Name': item.fullname,
-        Phone: item.phoneNumber,
-        Email: item.email,
-        Amount: item.amount,
-        Payable: item.payableAmount,
-        TDS: item.tdsAmount,
-        Details: item.details,
-        Type: item.type,
-        Status: item.status,
-      })),
-    );
-
-    if (exportData.length > 0) {
-      const ws = XLSX.utils.json_to_sheet(exportData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(
-        wb,
-        ws,
-        `${selectedFilter || 'All'} Pending Commissions`,
-      );
-      XLSX.writeFile(wb, `${selectedFilter || 'all'}_pending_commissions.xlsx`);
-    }
-  };
-
-  const toggleDate = (date: string) => {
-    setExpandedDates((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(date)) {
-        newSet.delete(date);
-      } else {
-        newSet.add(date);
-      }
-      return newSet;
-    });
-  };
-
-  const expandAll = () => {
-    setExpandedDates(new Set(Object.keys(groupedData)));
-  };
-
-  const collapseAll = () => {
-    setExpandedDates(new Set());
-  };
-
-  if (isPending) {
-    return <Loader />;
-  }
-
-  if (isError) {
-    return (
-      <div className="rounded-sm border border-stroke bg-white p-8 text-center shadow-default dark:border-strokedark dark:bg-boxdark">
-        <h3 className="text-lg font-medium">Error loading commission data</h3>
-        <p className="text-gray-500 mt-2">
-          Please try again later or contact support
-        </p>
-      </div>
-    );
-  }
-
-  if (!isSuccess || !data) {
-    return (
-      <div className="rounded-sm border border-stroke bg-white p-8 text-center shadow-default dark:border-strokedark dark:bg-boxdark">
-        <h3 className="text-lg font-medium">No commission data available</h3>
-        <p className="text-gray-500 mt-2">
-          Unable to fetch commission data at this time
-        </p>
-      </div>
-    );
-  }
-
-  // Filter and process data
+  // Process data with useMemo - this is safe as it's a hook, not a conditional return
   const filterData = (data: any[], filter: string | null) => {
+    if (!data) return [];
+
     const filteredData = data.filter(
       (item) =>
         item.details?.toLowerCase() !== 'fleshout' &&
@@ -190,6 +85,8 @@ const DisplayPendingCommisionReport: React.FC = () => {
 
   // Transform and group data
   const processedData = useMemo(() => {
+    if (!data) return [];
+
     const filtered = filterData(data, selectedFilter);
 
     return filtered
@@ -271,17 +168,204 @@ const DisplayPendingCommisionReport: React.FC = () => {
     return summaries;
   }, [groupedData]);
 
+  // useEffect must be called at the top level, not after conditional returns
+  useEffect(() => {
+    if (Object.keys(groupedData).length > 0) {
+      setExpandedDates(new Set(Object.keys(groupedData)));
+    }
+  }, [groupedData]);
+
+  const handlePayClick = (row: PendingCommission) => {
+    payCommission(
+      {id: row.id, data: {status: 'PAID'}},
+      {
+        onSuccess: () => {
+          toast.success('Commission paid successfully');
+          queryClient.invalidateQueries({queryKey: ['adminCommission']});
+        },
+        onError: (error) => {
+          toast.error('Failed to pay commission');
+          console.error('Pay error:', error);
+        },
+      },
+    );
+  };
+
+  const handlePayAllForDate = (date: string) => {
+    const dateItems = groupedData[date] || [];
+    const ids = dateItems.map((item) => item.id);
+
+    setBulkPaymentIds(ids);
+    setSelectedDateForPayAll(date);
+    setIsModalOpen(true);
+  };
+
+  const handlePayAllClick = () => {
+    setBulkPaymentIds([]);
+    setSelectedDateForPayAll(null);
+    setIsModalOpen(true);
+  };
+
+  const confirmPayAll = () => {
+    setIsProcessingBulk(true);
+
+    if (selectedDateForPayAll) {
+      const ids = bulkPaymentIds;
+
+      if (ids.length === 0) {
+        toast.error('No commissions found for this date');
+        setIsProcessingBulk(false);
+        setIsModalOpen(false);
+        return;
+      }
+
+      const loadingToast = toast.loading(
+        `Paying ${ids.length} commissions for ${selectedDateForPayAll}...`,
+      );
+
+      // Send just the IDs array, not an object
+      payBulkCommission(ids, {
+        // First parameter is ids array
+        onSuccess: (data) => {
+          toast.dismiss(loadingToast);
+          toast.success(
+            `Successfully paid ${ids.length} commissions for ${selectedDateForPayAll}`,
+          );
+          queryClient.invalidateQueries({queryKey: ['adminCommission']});
+          setIsProcessingBulk(false);
+          setIsModalOpen(false);
+          setSelectedDateForPayAll(null);
+          setBulkPaymentIds([]);
+        },
+        onError: (error) => {
+          toast.dismiss(loadingToast);
+          toast.error('Failed to pay commissions');
+          console.error('Bulk payment error:', error);
+          setIsProcessingBulk(false);
+          setIsModalOpen(false);
+          setSelectedDateForPayAll(null);
+          setBulkPaymentIds([]);
+        },
+      });
+    } else {
+      // Pay all commissions across all dates
+      const loadingToast = toast.loading('Paying all commissions...');
+
+      payAllCommission(undefined, {
+        onSuccess: () => {
+          toast.dismiss(loadingToast);
+          toast.success('All commissions paid successfully');
+          queryClient.invalidateQueries({queryKey: ['adminCommission']});
+          setIsProcessingBulk(false);
+          setIsModalOpen(false);
+        },
+        onError: (error) => {
+          toast.dismiss(loadingToast);
+          toast.error('Failed to pay all commissions');
+          console.error('Pay all error:', error);
+          setIsProcessingBulk(false);
+          setIsModalOpen(false);
+        },
+      });
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedDateForPayAll(null);
+    setBulkPaymentIds([]);
+  };
+
+  const handleExportToExcel = () => {
+    const exportData = Object.entries(groupedData).flatMap(([date, items]) =>
+      items.map((item) => ({
+        Date: date,
+        Time: item.formattedTime,
+        'CRN No': item.crnNo,
+        'Full Name': item.fullname,
+        Phone: item.phoneNumber,
+        Email: item.email,
+        Amount: item.amount,
+        Payable: item.payableAmount,
+        TDS: item.tdsAmount,
+        Details: item.details,
+        Type: item.type,
+        Status: item.status,
+      })),
+    );
+
+    if (exportData.length > 0) {
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(
+        wb,
+        ws,
+        `${selectedFilter || 'All'} Pending Commissions`,
+      );
+      XLSX.writeFile(wb, `${selectedFilter || 'all'}_pending_commissions.xlsx`);
+      toast.success(`Exported ${exportData.length} records to Excel`);
+    } else {
+      toast.error('No data to export');
+    }
+  };
+
+  const toggleDate = (date: string) => {
+    setExpandedDates((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(date)) {
+        newSet.delete(date);
+      } else {
+        newSet.add(date);
+      }
+      return newSet;
+    });
+  };
+
+  const expandAll = () => {
+    setExpandedDates(new Set(Object.keys(groupedData)));
+  };
+
+  const collapseAll = () => {
+    setExpandedDates(new Set());
+  };
+
   const filterOptions = ['All', 'Golden Pair', 'Silver Pair', 'Helping', 'BDF'];
   const totalRecords = processedData.length;
   const totalDays = Object.keys(groupedData).length;
 
-  // Initially expand all dates
-  React.useEffect(() => {
-    setExpandedDates(new Set(Object.keys(groupedData)));
-  }, [groupedData]);
+  // NOW we can have conditional returns AFTER all hooks are called
+  if (isPending) {
+    return <Loader />;
+  }
+
+  if (isError) {
+    return (
+      <div className="rounded-sm border border-stroke bg-white p-8 text-center shadow-default dark:border-strokedark dark:bg-boxdark">
+        <h3 className="text-lg font-medium text-black dark:text-white">
+          Error loading commission data
+        </h3>
+        <p className="text-gray-500 mt-2">
+          Please try again later or contact support
+        </p>
+      </div>
+    );
+  }
+
+  if (!isSuccess || !data) {
+    return (
+      <div className="rounded-sm border border-stroke bg-white p-8 text-center shadow-default dark:border-strokedark dark:bg-boxdark">
+        <h3 className="text-lg font-medium text-black dark:text-white">
+          No commission data available
+        </h3>
+        <p className="text-gray-500 mt-2">
+          Unable to fetch commission data at this time
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex auto-rows-max flex-col p-4">
       {/* Header with Filters and Export */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
         <div>
@@ -290,26 +374,23 @@ const DisplayPendingCommisionReport: React.FC = () => {
               ? `${selectedFilter} Pending Commissions`
               : 'All Pending Commissions'}
           </h1>
+          <p className="text-gray-500 text-sm">
+            {totalRecords} pending records across {totalDays} days
+          </p>
         </div>
 
         <div className="flex items-center gap-4">
-          {/* Filter Dropdown */}
-          <select
-            value={selectedFilter || 'All'}
-            onChange={(e) =>
-              setSelectedFilter(
-                e.target.value === 'All' ? null : e.target.value,
-              )
-            }
-            className="rounded border border-stroke bg-white px-4 py-2 text-sm focus:border-primary focus:outline-none dark:border-strokedark dark:bg-boxdark"
-          >
-            {filterOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+          {/* Pay All Button */}
+          {totalRecords > 0 && (
+            <button
+              onClick={handlePayAllClick}
+              className="rounded bg-green-600 px-4 py-2 text-sm text-white transition-colors hover:bg-green-700"
+            >
+              Pay All ({totalRecords})
+            </button>
+          )}
 
+          {/* Export Button */}
           {totalRecords > 0 && (
             <button
               onClick={handleExportToExcel}
@@ -323,7 +404,9 @@ const DisplayPendingCommisionReport: React.FC = () => {
 
       {totalRecords === 0 ? (
         <div className="rounded-sm border border-stroke bg-white p-8 text-center shadow-default dark:border-strokedark dark:bg-boxdark">
-          <h3 className="text-lg font-medium">No commissions found</h3>
+          <h3 className="text-lg font-medium text-black dark:text-white">
+            No commissions found
+          </h3>
           <p className="text-gray-500 mt-2">
             {selectedFilter
               ? `No ${selectedFilter} commissions available`
@@ -340,7 +423,7 @@ const DisplayPendingCommisionReport: React.FC = () => {
               {/* Date Header */}
               <div
                 onClick={() => toggleDate(date)}
-                className="bg-gray-50 hover:bg-gray-100 flex cursor-pointer items-center justify-between px-4 py-3"
+                className="bg-gray-50 hover:bg-gray-100 flex cursor-pointer auto-rows-max items-center justify-between px-4 py-3"
               >
                 <div className="flex items-center gap-2">
                   {expandedDates.has(date) ? (
@@ -355,6 +438,22 @@ const DisplayPendingCommisionReport: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-6">
+                  {/* Date Summary */}
+                  <div className="flex items-center gap-4 text-sm">
+                    <span className="text-gray-600 font-medium">
+                      Amount:{' '}
+                      <span className="text-gray-900">
+                        ₹{dateSummaries[date]?.totalAmount}
+                      </span>
+                    </span>
+                    <span className="font-medium text-green-600">
+                      Payable:{' '}
+                      <span className="text-green-700">
+                        ₹{dateSummaries[date]?.totalPayable}
+                      </span>
+                    </span>
+                  </div>
+
                   {/* Pay All button for this date */}
                   <button
                     onClick={(e) => {
@@ -363,7 +462,7 @@ const DisplayPendingCommisionReport: React.FC = () => {
                     }}
                     className="rounded bg-green-500 px-3 py-1 text-xs text-white transition-colors hover:bg-green-600"
                   >
-                    Pay All
+                    Pay All ({items.length})
                   </button>
                 </div>
               </div>
@@ -452,6 +551,7 @@ const DisplayPendingCommisionReport: React.FC = () => {
                               <button
                                 onClick={() => handlePayClick(row)}
                                 className="rounded bg-green-500 px-3 py-1 text-xs text-white transition-colors hover:bg-green-600"
+                                disabled={isProcessingBulk}
                               >
                                 Pay
                               </button>
@@ -472,35 +572,57 @@ const DisplayPendingCommisionReport: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        className="mx-auto mt-10 max-w-sm rounded bg-white p-6 shadow-lg"
+        className="fixed inset-0 flex items-center justify-center p-4"
         overlayClassName="fixed inset-0 bg-black bg-opacity-50 z-999"
       >
-        <h2 className="text-lg font-semibold">Confirm Payment</h2>
-        <p className="mt-2 text-sm">
-          Are you sure you want to pay all commissions for{' '}
-          {selectedDateForPayAll || 'all dates'}?
-          {selectedDateForPayAll && (
-            <span className="mt-1 block font-medium">
-              Total records:{' '}
-              {selectedDateForPayAll
-                ? groupedData[selectedDateForPayAll]?.length
-                : totalRecords}
-            </span>
-          )}
-        </p>
-        <div className="mt-4 flex justify-end gap-2">
-          <button
-            onClick={confirmPayAll}
-            className="rounded bg-green-500 px-4 py-2 text-sm text-white hover:bg-green-600"
-          >
-            Confirm
-          </button>
-          <button
-            onClick={closeModal}
-            className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded px-4 py-2 text-sm"
-          >
-            Cancel
-          </button>
+        <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+          <h2 className="text-gray-900 text-lg font-semibold">
+            Confirm Payment
+          </h2>
+          <p className="text-gray-600 mt-2 text-sm">
+            {selectedDateForPayAll ? (
+              <>
+                Are you sure you want to pay all commissions for{' '}
+                <span className="font-medium">{selectedDateForPayAll}</span>?
+                <br />
+                <span className="bg-gray-50 mt-2 block rounded p-2">
+                  Total records:{' '}
+                  <span className="font-bold">{bulkPaymentIds.length}</span>
+                  <br />
+                  Total amount:{' '}
+                  <span className="font-bold">
+                    ₹
+                    {groupedData[selectedDateForPayAll]?.reduce(
+                      (sum, item) => sum + item.amount,
+                      0,
+                    )}
+                  </span>
+                </span>
+              </>
+            ) : (
+              <>
+                Are you sure you want to pay all commissions (
+                <span className="font-bold">{totalRecords}</span> records)
+                across all dates?
+              </>
+            )}
+          </p>
+          <div className="mt-4 flex justify-end gap-2">
+            <button
+              onClick={confirmPayAll}
+              disabled={isProcessingBulk}
+              className="rounded bg-green-500 px-4 py-2 text-sm text-white transition-colors hover:bg-green-600 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isProcessingBulk ? 'Processing...' : 'Confirm'}
+            </button>
+            <button
+              onClick={closeModal}
+              disabled={isProcessingBulk}
+              className="bg-gray-300 text-gray-700 hover:bg-gray-400 rounded px-4 py-2 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </Modal>
     </div>

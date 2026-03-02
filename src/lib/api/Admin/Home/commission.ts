@@ -47,6 +47,21 @@ export const payCommission = async (id: string, data: any) => {
   }
 };
 
+export const payCommissionBulkAll = async (ids: string[]) => {
+  try {
+    // Send just the array of IDs as the request body
+    const response = await api.put(`/admin/commission`, ids);
+    return response.data;
+  } catch (error: unknown) {
+    const err = error as ApiError;
+    console.error(
+      'Error in payCommissionBulkAll:',
+      err.response?.data.message || err.message,
+    );
+    throw err.response?.data || err;
+  }
+};
+
 export const payCommissionAll = async () => {
   try {
     const response = await api.post(`/admin/payAllCommission`);

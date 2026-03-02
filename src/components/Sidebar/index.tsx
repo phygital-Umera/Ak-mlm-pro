@@ -108,11 +108,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
           //   path: '/admin/deliverdproducts',
           //   icon: <PiShareLight size={22} />,
           // },
-          {
-            label: 'Level Income',
-            path: '/admin/roi',
-            icon: <PiShareLight size={22} />,
-          },
+          // {
+          //   label: 'Level Income',
+          //   path: '/admin/roi',
+          //   icon: <PiShareLight size={22} />,
+          // },
 
           // {
           //   label: 'Wallet Report',
@@ -179,10 +179,10 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             label: 'E-Pin',
             icon: <PiSquaresFourLight size={22} />,
             subRoutes: [
-              // {
-              //   label: 'Admin E-Pin',
-              //   path: '/admin/Epin',
-              // },
+              {
+                label: 'Admin E-Pin',
+                path: '/admin/Epin',
+              },
               {
                 label: 'Customer E-Pin',
                 path: '/admin/customerepin',
@@ -237,11 +237,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
             //   path: '/customer/directcustomer',
             //   icon: <NetworkIcon size={22} />,
             // },
-            {
-              label: 'Generation Tree',
-              path: '/customer/gentree',
-              icon: <FaNetworkWired size={22} />,
-            },
+            // {
+            //   label: 'Generation Tree',
+            //   path: '/customer/gentree',
+            //   icon: <FaNetworkWired size={22} />,
+            // },
             {
               label: 'Activate ID',
               path: '/customer/topup',
@@ -272,11 +272,11 @@ const Sidebar = ({sidebarOpen, setSidebarOpen}: SidebarProps) => {
               path: '/customer/customersidesharelink',
               icon: <PiSquaresFourLight size={22} />,
             },
-            {
-              label: 'Wallet',
-              path: '/customer/walletc',
-              icon: <PiSquaresFourLight size={22} />,
-            },
+            // {
+            //   label: 'Wallet',
+            //   path: '/customer/walletc',
+            //   icon: <PiSquaresFourLight size={22} />,
+            // },
             {
               label: ' Payout History',
               path: '/customer/historypayout',

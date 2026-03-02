@@ -95,6 +95,10 @@ export const ExternalRegistration: React.FC = () => {
   } = useCheckEpin();
 
   const verifyEpin = () => {
+    if (!methods.getValues('epinNo')) {
+      toast.error('Please enter an E-Pin');
+      return;
+    }
     checkEpin(methods.getValues('epinNo'));
     setUseWithoutEpin(false);
   };
@@ -111,6 +115,11 @@ export const ExternalRegistration: React.FC = () => {
     const count = selectedProducts[productId] || 0;
     if (count < 1 && getTotalSelectedCount() < 1) {
       setSelectedProducts((prev) => ({...prev, [productId]: count + 1}));
+    } else if (count > 0) {
+      // Remove product if clicked again
+      const newSelected = {...selectedProducts};
+      delete newSelected[productId];
+      setSelectedProducts(newSelected);
     }
   };
   const sponcerValidate = async (CRN: string) => {
@@ -130,7 +139,7 @@ export const ExternalRegistration: React.FC = () => {
     console.log('formValues', formValues);
     let selected = [];
 
-    if (!useWithoutEpin) {
+    if (!useWithoutEpin && Object.keys(selectedProducts).length > 0) {
       selected = Object.entries(selectedProducts).map(([id, quantity]) => ({
         productId: id,
         quantity,
@@ -138,6 +147,12 @@ export const ExternalRegistration: React.FC = () => {
       setSelectProduct({products: selected});
     } else {
       setSelectProduct({products: []});
+    }
+
+    // Check if product is required when using epin
+    if (!useWithoutEpin && selected.length === 0) {
+      toast.error('Please select a product');
+      return;
     }
 
     const payload: any = {
@@ -149,11 +164,9 @@ export const ExternalRegistration: React.FC = () => {
       password: formValues.password,
       confirmPassword: formValues.confirmPassword,
       side: formValues.side,
-      epinNo: useWithoutEpin ? undefined : formValues.epinNo,
-      productId: useWithoutEpin ? '' : selected[0]?.productId,
     };
 
-    if (!useWithoutEpin) {
+    if (!useWithoutEpin && selected.length > 0) {
       payload.epinNo = formValues.epinNo;
       payload.productId = selected[0]?.productId;
     }
@@ -161,6 +174,16 @@ export const ExternalRegistration: React.FC = () => {
     registerAdmin(payload);
     console.log('payload', payload);
   };
+
+  const handleFormSubmit = methods.handleSubmit((formValues) => {
+    // Additional validation
+    if (!useWithoutEpin && Object.keys(selectedProducts).length === 0) {
+      toast.error('Please select a product');
+      return;
+    }
+    onSubmit(formValues);
+  });
+
   const sponsorId = methods.watch('sponsorId');
 
   useEffect(() => {
@@ -181,7 +204,7 @@ export const ExternalRegistration: React.FC = () => {
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={methods.handleSubmit(onSubmit)}
+        onSubmit={handleFormSubmit}
         className="bg-gray-100 flex min-h-screen items-center justify-center bg-cover bg-no-repeat"
         style={{
           backgroundImage:
@@ -203,18 +226,18 @@ export const ExternalRegistration: React.FC = () => {
             <div className="col-span-12 md:col-span-6">
               <GenericInputField name="side" label="Side" disabled />
             </div>
-            {/* {!useWithoutEpin && (
+            {!useWithoutEpin && (
               <div className="col-span-12 md:col-span-6">
                 <GenericInputField name="epinNo" label="E-Pin" />
               </div>
-            )} */}
+            )}
           </div>
 
           {/* Verify and Without Epin Buttons */}
-          {/* {!useWithoutEpin && (
+          {!useWithoutEpin && (
             <div className="mt-2 flex items-center gap-4">
               <GenericButton type="button" onClick={verifyEpin}>
-                Verify Epin
+                {isCheckingEpin ? 'Verifying...' : 'Verify Epin'}
               </GenericButton>
 
               <GenericButton
@@ -228,18 +251,19 @@ export const ExternalRegistration: React.FC = () => {
                 Without Epin
               </GenericButton>
             </div>
-          )} */}
+          )}
 
           {/* Product Selection */}
-          {/* {!useWithoutEpin && (
+          {!useWithoutEpin && checkEpinData && (
             <>
               <h1 className="text-gray-800 mb-6 mt-2 text-xl font-bold dark:text-white">
-                Select up to 3 Products{' '}
-                <span className="text-sm font-normal">(Tap to add/remove)</span>
+                Select a Product{' '}
+                <span className="text-sm font-normal">(Click to select)</span>
               </h1>
 
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {Array.isArray(filteredProducts) &&
+                filteredProducts?.length > 0 ? (
                   filteredProducts?.map((product: Product) => {
                     const count = selectedProducts[product.id] || 0;
 
@@ -249,13 +273,13 @@ export const ExternalRegistration: React.FC = () => {
                         onClick={() => handleCardClick(product.id)}
                         className={`relative cursor-pointer overflow-hidden rounded-2xl border bg-gradient-to-br from-blue-500 to-blue-700 p-6 text-white shadow-lg transition-all duration-300 hover:shadow-xl ${
                           count > 0
-                            ? 'border-blue-500 ring-1 ring-blue-300 dark:ring-blue-500'
+                            ? 'border-blue-500 ring-2 ring-blue-300 dark:ring-blue-500'
                             : 'border-gray-200 hover:border-blue-300'
                         } dark:bg-gray-800`}
                       >
                         {count > 0 && (
-                          <div className="absolute right-3 top-3 rounded-full bg-blue-500 px-2 py-1 text-xs font-bold text-white">
-                            {count} selected
+                          <div className="absolute right-3 top-3 rounded-full bg-green-500 px-2 py-1 text-xs font-bold text-white">
+                            Selected
                           </div>
                         )}
                         <div className="space-y-4">
@@ -280,13 +304,32 @@ export const ExternalRegistration: React.FC = () => {
                         </div>
                       </div>
                     );
-                  })}
+                  })
+                ) : (
+                  <div className="text-gray-500 col-span-3 py-8 text-center">
+                    No products available for this E-Pin
+                  </div>
+                )}
               </div>
             </>
-          )} */}
+          )}
+
+          {/* Show message when no epin is verified */}
+          {!useWithoutEpin && !checkEpinData && (
+            <div className="mt-4 rounded-lg bg-yellow-50 p-4 text-yellow-700">
+              Please verify your E-Pin to see available products
+            </div>
+          )}
+
+          {/* Show message for without epin registration */}
+          {useWithoutEpin && (
+            <div className="mt-4 rounded-lg bg-blue-50 p-4 text-blue-700">
+              You are registering without an E-Pin. No product will be assigned.
+            </div>
+          )}
 
           {/* Contact Info */}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
+          <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-12 md:gap-6">
             <h1 className="col-span-12 mb-4 text-lg font-semibold">
               Contact Info
             </h1>
@@ -329,6 +372,7 @@ export const ExternalRegistration: React.FC = () => {
               <GenericInputField
                 name="password"
                 label="Password"
+                type="password"
                 placeholder="Enter Password"
               />
             </div>
@@ -336,13 +380,14 @@ export const ExternalRegistration: React.FC = () => {
               <GenericInputField
                 name="confirmPassword"
                 label="Confirm Password"
+                type="password"
                 placeholder="Enter Confirm Password"
               />
             </div>
           </div>
 
           {/* Submit */}
-          <div className="mt-2 flex justify-end space-x-4">
+          <div className="mt-6 flex justify-end space-x-4">
             <GenericButton type="submit" disabled={isPending}>
               {isPending ? 'Submitting...' : 'Submit'}
             </GenericButton>
@@ -446,10 +491,13 @@ export const ExternalRegistration: React.FC = () => {
             {/* Action section */}
             <div className="px-6 pb-5">
               <button
-                onClick={() => setShowPopup(false)}
+                onClick={() => {
+                  setShowPopup(false);
+                  navigate({to: '/login'});
+                }}
                 className="flex w-full items-center justify-center rounded-lg bg-blue-600 py-3 font-medium text-white transition-all duration-200 hover:bg-blue-700 hover:shadow-lg"
               >
-                Continue
+                Continue to Login
                 <ArrowRightIcon className="ml-2 h-4 w-4" />
               </button>
             </div>

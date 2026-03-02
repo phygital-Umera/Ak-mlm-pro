@@ -12,22 +12,84 @@ import {updateProfileSchema} from '@/lib/validation/customerListSchema';
 import {zodResolver} from '@hookform/resolvers/zod';
 import {
   useGetCustomerProfile,
-  useGetProfile,
   useUpdateCustomerProfile,
-  useUpdateProfile,
 } from '@/lib/react-query/Admin/profile/profile';
-import {useUpdateCustomer} from '@/lib/react-query/updateCustomer';
 import toast from 'react-hot-toast';
-import {InfoIcon, LockIcon} from 'lucide-react';
+import {Eye, EyeOff, InfoIcon, LockIcon} from 'lucide-react';
 
-type formValues = z.infer<typeof updateProfileSchema>;
+// Extend the schema for password fields
+const extendedProfileSchema = updateProfileSchema
+  .extend({
+    currentPassword: z.string().optional(),
+    newPassword: z.string().optional(),
+    confirmPassword: z.string().optional(),
+  })
+  .refine(
+    (data) => {
+      // If new password is provided, current password must also be provided
+      if (data.newPassword && !data.currentPassword) {
+        return false;
+      }
+      // If new password is provided, confirm password must match
+      if (data.newPassword && data.confirmPassword !== data.newPassword) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message:
+        'Current password is required when setting new password, and passwords must match',
+      path: ['confirmPassword'],
+    },
+  );
+
+type formValues = z.infer<typeof extendedProfileSchema>;
+
+// Custom Password Input Component with Eye Icon
+const PasswordField = ({
+  name,
+  label,
+  placeholder,
+  showPassword,
+  setShowPassword,
+}: any) => {
+  return (
+    <div className="relative">
+      <GenericInputField
+        type={showPassword ? 'text' : 'password'}
+        name={name}
+        label={label}
+        placeholder={placeholder}
+      />
+      <button
+        type="button"
+        onClick={() => setShowPassword(!showPassword)}
+        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 absolute right-3 top-9"
+        tabIndex={-1}
+      >
+        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+      </button>
+    </div>
+  );
+};
+
 const CustomerUpdateProfile: React.FC = () => {
   const methods = useForm<formValues>({
-    resolver: zodResolver(updateProfileSchema),
+    resolver: zodResolver(extendedProfileSchema),
+    defaultValues: {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
+    },
   });
+
   const navigate = useNavigate();
-  const {user, customer} = useAuthContext();
+  const {user} = useAuthContext();
   const [isBankAccNoDisabled, setIsBankAccNoDisabled] = useState(true);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const {data: profileData} = useGetCustomerProfile();
 
   // Check if bank account number exists and disable field if it does
@@ -46,9 +108,8 @@ const CustomerUpdateProfile: React.FC = () => {
         crn: user?.crnNo ?? '',
       });
     }
-  }, [user]);
+  }, [user, methods]);
 
-  const crn = user?.crnNo;
   const {mutateAsync: updateProfile, isSuccess} = useUpdateCustomerProfile();
 
   useEffect(() => {
@@ -71,16 +132,19 @@ const CustomerUpdateProfile: React.FC = () => {
         bankAccNo: profileData?.bankAccNo ?? '',
         bankIFSC: profileData?.bankIFSC ?? '',
         bankBranch: profileData?.bankBranch ?? '',
-        password: profileData?.password ?? '',
+        // Don't set password fields from profile data for security
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
       });
     }
-  }, [profileData]);
+  }, [profileData, methods]);
 
   const onSubmit = (data: formValues) => {
     // Filter out empty values
     const filteredData = Object.fromEntries(
       Object.entries(data).filter(
-        ([_, value]) => value !== '' && value !== undefined,
+        ([_, value]) => value !== '' && value !== undefined && value !== null,
       ),
     );
 
@@ -90,10 +154,17 @@ const CustomerUpdateProfile: React.FC = () => {
     if (filteredData.phoneNumber)
       userData.phoneNumber = filteredData.phoneNumber;
     if (filteredData.email) userData.email = filteredData.email;
-    if (filteredData.password) userData.password = filteredData.password;
 
-    // Prepare customer data
+    // Handle password update if all password fields are provided
+    if (filteredData.currentPassword && filteredData.newPassword) {
+      userData.currentPassword = filteredData.currentPassword;
+      userData.newPassword = filteredData.newPassword;
+    }
+
+    // Prepare customer data - ALWAYS include customer object, even if empty
     const customerData: Record<string, any> = {};
+
+    // Only add fields that have values
     if (filteredData.aadharNo) customerData.aadharNo = filteredData.aadharNo;
     if (filteredData.bankAccNo) customerData.bankAccNo = filteredData.bankAccNo;
     if (filteredData.bankBranch)
@@ -112,15 +183,18 @@ const CustomerUpdateProfile: React.FC = () => {
     if (filteredData.pinCode) customerData.pinCode = filteredData.pinCode;
     if (filteredData.state) customerData.state = filteredData.state;
 
-    // Only send request if there's data to update
+    // Prepare the final payload - ALWAYS include both user and customer objects
+    const payload: any = {
+      user: Object.keys(userData).length > 0 ? userData : {}, // Send empty object if no user data
+      customer: Object.keys(customerData).length > 0 ? customerData : {}, // Send empty object if no customer data
+    };
+
+    // Only send request if there's data in either object
     if (
       Object.keys(userData).length > 0 ||
       Object.keys(customerData).length > 0
     ) {
-      updateProfile({
-        ...(Object.keys(userData).length > 0 && {user: userData}),
-        ...(Object.keys(customerData).length > 0 && {customer: customerData}),
-      });
+      updateProfile(payload);
     } else {
       toast.error('Please fill at least one field to update');
     }
@@ -128,18 +202,22 @@ const CustomerUpdateProfile: React.FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success('Profile updated successfully');
+      // toast.success('Profile updated successfully');
       navigate({to: '/customer/dashboard'});
     }
   }, [isSuccess, navigate]);
 
-  const error = (error: any) => {
-    console.log('form error', error);
+  const error = (errors: any) => {
+    console.log('form errors', errors);
+    // Show validation errors in toast
+    if (errors.confirmPassword) {
+      toast.error(errors.confirmPassword.message);
+    }
   };
 
   return (
     <div className="space-y-4 bg-white p-6 dark:bg-black">
-      <h1 className="mb-4 text-lg font-semibold">Update Profile </h1>
+      <h1 className="mb-4 text-lg font-semibold">Update Profile</h1>
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit, error)}>
           <div className="grid grid-cols-12 gap-4">
@@ -321,17 +399,45 @@ const CustomerUpdateProfile: React.FC = () => {
               Login Info
             </h2>
             <div className="col-span-6">
-              <GenericInputField
-                type="password"
-                name="password"
-                label="Password"
-                placeholder="Enter new password (optional)"
+              <PasswordField
+                name="currentPassword"
+                label="Current Password"
+                placeholder="Enter your current password"
+                showPassword={showCurrentPassword}
+                setShowPassword={setShowCurrentPassword}
               />
+            </div>
+            <div className="col-span-6">
+              <PasswordField
+                name="newPassword"
+                label="New Password"
+                placeholder="Enter new password"
+                showPassword={showNewPassword}
+                setShowPassword={setShowNewPassword}
+              />
+            </div>
+            <div className="col-span-6">
+              <PasswordField
+                name="confirmPassword"
+                label="Confirm Password"
+                placeholder="Confirm new password"
+                showPassword={showConfirmPassword}
+                setShowPassword={setShowConfirmPassword}
+              />
+            </div>
+            <div className="col-span-6">
+              <div className="text-gray-500 dark:text-gray-400 mt-2 flex items-start text-xs">
+                <InfoIcon size={14} className="mr-1 mt-0.5 flex-shrink-0" />
+                <span>
+                  Leave password fields empty if you don't want to change your
+                  password
+                </span>
+              </div>
             </div>
           </div>
 
           <div className="flex justify-end py-6">
-            <GenericButton type="submit">Save</GenericButton>
+            <GenericButton type="submit">Save Changes</GenericButton>
           </div>
         </form>
       </FormProvider>

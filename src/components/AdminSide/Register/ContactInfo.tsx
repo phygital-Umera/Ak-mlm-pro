@@ -114,13 +114,13 @@ export const ContactInfo: React.FC<SponserInfoProps> = ({onNext}) => {
 
             {/* Form Footer */}
             <div className="bg-gray-50 dark:bg-gray-700/30 border-gray-100 dark:border-gray-700 flex justify-end border-t px-6 py-4 sm:px-8">
-              <GenericButton
+              {/* <GenericButton
                 type="submit"
                 className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 font-medium text-white shadow-md transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg"
               >
                 <FiArrowLeft className="mr-2 h-4 w-4" />
                 Back
-              </GenericButton>
+              </GenericButton> */}
               <GenericButton
                 type="submit"
                 className="inline-flex items-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-6 py-3 font-medium text-white shadow-md transition-all duration-300 hover:from-blue-600 hover:to-blue-700 hover:shadow-lg"

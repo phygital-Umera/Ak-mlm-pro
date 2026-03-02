@@ -399,8 +399,6 @@ const DownlineList: React.FC = () => {
                     columns={columns}
                     itemsPerPage={items.length}
                     searchAble={false}
-                    onEdit={handleEdit}
-                    onLogin={handleLogin}
                   />
                 </div>
               )}

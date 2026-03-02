@@ -7,9 +7,9 @@ const AdminEpinManagement: React.FC = () => {
   return (
     <div className="mx-auto max-w-270">
       <div className="grid grid-cols-8 gap-8">
-        <div className="col-span-8">
+        {/* <div className="col-span-8">
           <Epin />
-        </div>
+        </div> */}
         <div className="col-span-8">
           <DisplayEpin />
         </div>

@@ -14,26 +14,23 @@ const CustomerRegistration: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const {data} = useRegistration();
 
+  // Define all 4 steps
   const steps: {
     id: number;
     title: string;
     component: React.FC<StepComponentProps>;
   }[] = [
     {id: 1, title: 'Sponsor Info', component: SponserInfo},
-    // ...(data.skipProduct
-    //   ? []
-    //   : [{id: 2, title: 'Select Product', component: SelectProduct}]),
+    {id: 2, title: 'Select Product', component: SelectProduct},
     {id: 3, title: 'Contact Info', component: ContactInfo},
     {id: 4, title: 'Login Info', component: LoginInfo},
-    // {id: 4, title: 'Personal Info', component: Personalnfo},
   ];
+
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
-    } else {
-      alert('Form Submitted!');
-      // Redirect to another page or handle final submission logic here
     }
+    // Don't show alert here - LoginInfo will handle submission
   };
 
   const CurrentComponent = steps[currentStep].component;
@@ -53,7 +50,6 @@ const CustomerRegistration: React.FC = () => {
               }`}
             >
               {step.id}
-
               <div>{step.title}</div>
             </div>
           ))}
@@ -63,7 +59,6 @@ const CustomerRegistration: React.FC = () => {
       {/* Step Content */}
       <div className="grid grid-cols-8 gap-8">
         <div className="col-span-8">
-          {/* Pass the `onNext` prop to the current component */}
           <CurrentComponent onNext={handleNext} />
         </div>
       </div>

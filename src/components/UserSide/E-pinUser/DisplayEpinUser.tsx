@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 const DisplayEpinUser: React.FC = () => {
   const {user} = useAuthContext();
   const {data: epinsData, isLoading, error} = useGetEpins();
-
+  console.log('getepinnss', epinsData);
   const [availableEpins, setAvailableEpins] = useState<any[]>([]);
   const [usedEpins, setUsedEpins] = useState<any[]>([]);
 

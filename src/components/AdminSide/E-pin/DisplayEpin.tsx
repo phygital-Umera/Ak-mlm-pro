@@ -1,10 +1,12 @@
 import Loader from '@/components/common/Loader';
 import GenericTable, {Column} from '@/components/Forms/Table/GenericTable';
-import {useGetAdminPins} from '@/lib/react-query/Admin/Epin/epin';
+import {useGetAllEPins} from '@/lib/react-query/Admin/Epin/epin';
+import {ChevronDownIcon, ChevronUpIcon} from 'lucide-react';
 import React, {useMemo, useState} from 'react';
 import toast from 'react-hot-toast';
 
 type EpinData = {
+  CustomerID: string;
   id: string;
   epinNo: string;
   createdAt: string;
@@ -42,11 +44,9 @@ const EpinColumn: Column<EpinData>[] = [
     render: (item: EpinData) => (
       <span
         className={`rounded-full px-3 py-1 text-sm font-semibold ${
-          item.price === 3150
-            ? 'bg-amber-100 text-amber-900 dark:bg-amber-900/50 dark:text-amber-200'
-            : item.price === 3600
-              ? 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/50 dark:text-emerald-200'
-              : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+          item.price === 0
+            ? 'bg-purple-100 text-purple-900 dark:bg-purple-900/50 dark:text-purple-200'
+            : 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/50 dark:text-emerald-200'
         } `}
       >
         ₹{item.price.toLocaleString('en-IN')}
@@ -56,9 +56,36 @@ const EpinColumn: Column<EpinData>[] = [
 ];
 
 const DisplayEpin: React.FC = () => {
-  const {data: epinData, isSuccess, isLoading} = useGetAdminPins();
-  const [selectedStatus, setSelectedStatus] = useState('all');
+  const {data: epinData, isSuccess, isLoading} = useGetAllEPins();
+  console.log('epinData', epinData);
   const [searchTerm, setSearchTerm] = useState('');
+
+  // State for expanded/collapsed sections
+  const [expandedSections, setExpandedSections] = useState({
+    zero: true, // true means expanded, false means collapsed
+    regular: true,
+  });
+
+  const toggleSection = (section: 'zero' | 'regular') => {
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  const expandAll = () => {
+    setExpandedSections({
+      zero: true,
+      regular: true,
+    });
+  };
+
+  const collapseAll = () => {
+    setExpandedSections({
+      zero: false,
+      regular: false,
+    });
+  };
 
   const formattedData = useMemo(() => {
     if (!isSuccess || !Array.isArray(epinData)) return [];
@@ -85,29 +112,57 @@ const DisplayEpin: React.FC = () => {
     }));
   }, [epinData, isSuccess]);
 
-  const filteredData = useMemo(() => {
-    let data = formattedData;
+  // Separate data for Zero and Regular pins
+  const zeroPins = useMemo(() => {
+    return formattedData.filter((item) => item.type === 'ZERO');
+  }, [formattedData]);
 
-    // Status filter
-    if (selectedStatus !== 'all') {
-      data = data.filter(
-        (item) => item.type?.toLowerCase() === selectedStatus.toLowerCase(),
-      );
-    }
+  const regularPins = useMemo(() => {
+    return formattedData.filter((item) => item.type === 'REGULAR');
+  }, [formattedData]);
 
-    // Search filter
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      data = data.filter(
-        (item) =>
-          item.epinNo.toLowerCase().includes(term) ||
-          (item.usedBy && item.usedBy.toLowerCase().includes(term)) ||
-          item.type.toLowerCase().includes(term),
-      );
-    }
+  // Filtered data based on search
+  const filteredZeroPins = useMemo(() => {
+    if (!searchTerm) return zeroPins;
 
-    return data;
-  }, [formattedData, selectedStatus, searchTerm]);
+    const term = searchTerm.toLowerCase();
+    return zeroPins.filter(
+      (item) =>
+        item.epinNo.toLowerCase().includes(term) ||
+        (item.usedBy && item.usedBy.toLowerCase().includes(term)),
+    );
+  }, [zeroPins, searchTerm]);
+
+  const filteredRegularPins = useMemo(() => {
+    if (!searchTerm) return regularPins;
+
+    const term = searchTerm.toLowerCase();
+    return regularPins.filter(
+      (item) =>
+        item.epinNo.toLowerCase().includes(term) ||
+        (item.usedBy && item.usedBy.toLowerCase().includes(term)),
+    );
+  }, [regularPins, searchTerm]);
+
+  // Statistics
+  const stats = useMemo(() => {
+    const totalZero = zeroPins.length;
+    const usedZero = zeroPins.filter((item) => item.isUsed).length;
+    const availableZero = totalZero - usedZero;
+
+    const totalRegular = regularPins.length;
+    const usedRegular = regularPins.filter((item) => item.isUsed).length;
+    const availableRegular = totalRegular - usedRegular;
+
+    return {
+      zero: {total: totalZero, used: usedZero, available: availableZero},
+      regular: {
+        total: totalRegular,
+        used: usedRegular,
+        available: availableRegular,
+      },
+    };
+  }, [zeroPins, regularPins]);
 
   if (isLoading) {
     return (
@@ -118,29 +173,14 @@ const DisplayEpin: React.FC = () => {
   }
 
   return (
-    <div className="dark:bg-gray-800 rounded-lg p-6 shadow-sm dark:bg-meta-4 dark:text-white">
-      <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+    <div className="space-y-6">
+      {/* Header with Title, Search and Expand/Collapse Controls */}
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <h2 className="text-gray-800 text-2xl font-semibold dark:text-white">
           E-Pin Management
         </h2>
-        {/* <div className="flex items-center gap-4">
-          <div className="relative">
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="border-gray-300 text-gray-700 dark:border-gray-600 dark:bg-gray-700 dark:placeholder-gray-400 block w-full rounded-lg border bg-transparent px-4 py-2 pr-8 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:text-white"
-            >
-              <option value="all" className="text-gray-700 dark:text-white dark:bg-meta-4">
-                All Types
-              </option>
-              <option value="zero" className="text-gray-700 dark:text-white dark:bg-meta-4">
-                Zero
-              </option>
-              <option value="regular" className="text-gray-700 dark:text-white dark:bg-meta-4">
-                Regular
-              </option>
-            </select>
-          </div>
+        <div className="flex items-center gap-4">
+          {/* Search Input */}
           <div className="relative">
             <input
               type="text"
@@ -166,20 +206,129 @@ const DisplayEpin: React.FC = () => {
               </svg>
             </div>
           </div>
-        </div> */}
+        </div>
       </div>
 
-      <GenericTable
-        data={filteredData}
-        columns={EpinColumn}
-        itemsPerPage={15}
-        title=""
-        key={'epin'}
-        onCopy={(item: EpinData) => {
-          navigator.clipboard.writeText(item.epinNo);
-          toast.success('E-Pin copied to clipboard!');
-        }}
-      />
+      {/* Zero Pins Section - Expandable/Collapsible */}
+      <div className="dark:bg-gray-800 overflow-hidden rounded-lg bg-white shadow-sm">
+        {/* Section Header */}
+        <div
+          className="hover:bg-gray-50 dark:hover:bg-gray-700/50 flex cursor-pointer items-center justify-between p-6 transition-colors"
+          onClick={() => toggleSection('zero')}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`rounded-lg p-2 ${expandedSections.zero ? 'bg-purple-100 dark:bg-purple-900/30' : 'bg-gray-100 dark:bg-gray-700'}`}
+            >
+              {expandedSections.zero ? (
+                <ChevronUpIcon className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+              ) : (
+                <ChevronDownIcon className="text-gray-600 dark:text-gray-400 h-5 w-5" />
+              )}
+            </div>
+            <div>
+              <h3 className="text-gray-800 flex items-center gap-2 text-xl font-semibold dark:text-white">
+                Zero Pins
+                <span className="text-gray-500 ml-2 text-sm font-normal">
+                  (₹0)
+                </span>
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+                {stats.zero.total} total • {stats.zero.available} available •{' '}
+                {stats.zero.used} used
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="rounded-full bg-purple-100 px-3 py-1 text-sm font-medium text-purple-800 dark:bg-purple-900/50 dark:text-purple-200">
+              {filteredZeroPins.length}{' '}
+              {filteredZeroPins.length === 1 ? 'Pin' : 'Pins'}
+            </span>
+          </div>
+        </div>
+
+        {/* Collapsible Content */}
+        {expandedSections.zero && (
+          <div className="px-6 pb-6">
+            <GenericTable
+              data={filteredZeroPins}
+              columns={EpinColumn}
+              itemsPerPage={10}
+              title=""
+              key="zero-pins-table"
+              onCopy={(item: EpinData) => {
+                navigator.clipboard.writeText(item.epinNo);
+                toast.success('E-Pin copied to clipboard!');
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Regular Pins Section - Expandable/Collapsible */}
+      <div className="dark:bg-gray-800 overflow-hidden rounded-lg bg-white shadow-sm">
+        {/* Section Header */}
+        <div
+          className="hover:bg-gray-50 dark:hover:bg-gray-700/50 flex cursor-pointer items-center justify-between p-6 transition-colors"
+          onClick={() => toggleSection('regular')}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={`rounded-lg p-2 ${expandedSections.regular ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-gray-100 dark:bg-gray-700'}`}
+            >
+              {expandedSections.regular ? (
+                <ChevronUpIcon className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <ChevronDownIcon className="text-gray-600 dark:text-gray-400 h-5 w-5" />
+              )}
+            </div>
+            <div>
+              <h3 className="text-gray-800 flex items-center gap-2 text-xl font-semibold dark:text-white">
+                Regular Pins
+                <span className="text-gray-500 ml-2 text-sm font-normal">
+                  (₹1000)
+                </span>
+              </h3>
+              <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+                {stats.regular.total} total • {stats.regular.available}{' '}
+                available • {stats.regular.used} used
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="rounded-full bg-emerald-100 px-3 py-1 text-sm font-medium text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200">
+              {filteredRegularPins.length}{' '}
+              {filteredRegularPins.length === 1 ? 'Pin' : 'Pins'}
+            </span>
+          </div>
+        </div>
+
+        {/* Collapsible Content */}
+        {expandedSections.regular && (
+          <div className="px-6 pb-6">
+            <GenericTable
+              data={filteredRegularPins}
+              columns={EpinColumn}
+              itemsPerPage={10}
+              title=""
+              key="regular-pins-table"
+              onCopy={(item: EpinData) => {
+                navigator.clipboard.writeText(item.epinNo);
+                toast.success('E-Pin copied to clipboard!');
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Show message if no data */}
+      {formattedData.length === 0 && (
+        <div className="dark:bg-gray-800 rounded-lg bg-white p-12 text-center shadow-sm">
+          <p className="text-gray-500 dark:text-gray-400 text-lg">
+            No E-Pins found
+          </p>
+        </div>
+      )}
     </div>
   );
 };

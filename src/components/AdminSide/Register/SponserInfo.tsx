@@ -96,19 +96,18 @@ export const SponserInfo: React.FC<SponserInfoProps> = ({onNext}) => {
       return;
     }
 
-    // Set the sponsor info and mark as skipping product selection
+    // Set the sponsor info but DON'T skip product selection
     setSponsorInfo({
       sponsorId: formValues.sponsorId,
       side: formValues.side,
       epin: '',
       epinData: undefined,
     });
-    setSkipProduct(true);
+    // Remove this line: setSkipProduct(true);
 
     // Proceed to the next step
     onNext();
   };
-
   return (
     <FormProvider {...methods}>
       <form

@@ -5,6 +5,7 @@ import {
   getProductSales,
   payCommission,
   payCommissionAll,
+  payCommissionBulkAll,
 } from '@/lib/api/Admin/Home/commission';
 import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
 import {ADMIN_DASHBOARD_QUERY_KEYS} from '../../QueryKeys';
@@ -28,6 +29,21 @@ export const usePayCommission = () => {
   return useMutation({
     mutationFn: ({id, data}: {id: string; data: any}) =>
       payCommission(id, data),
+    onSuccess: () => {},
+    onError: (error) => {
+      console.error('Failed to pay commission:', error);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: [ADMIN_DASHBOARD_QUERY_KEYS.ADMIN_COMMISSION],
+      });
+    },
+  });
+};
+export const usePayBulkCommission = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (ids: string[]) => payCommissionBulkAll(ids),
     onSuccess: () => {},
     onError: (error) => {
       console.error('Failed to pay commission:', error);

@@ -42,6 +42,8 @@ export const ShareRegistrationLink: React.FC<SponsorInfoProps> = ({onNext}) => {
 
   const leftRegistrationLink = `https://sjcgroup.biz/register/${fullname}/${crnNo}/LEFT`;
   const rightRegistrationLink = `https://sjcgroup.biz/register/${fullname}/${crnNo}/RIGHT`;
+  // const leftRegistrationLink = `http://localhost:5173/register/${fullname}/${crnNo}/LEFT`;
+  // const rightRegistrationLink = `http://localhost:5173/register/${fullname}/${crnNo}/RIGHT`;
 
   useEffect(() => {
     setValue('leftLink', leftRegistrationLink);

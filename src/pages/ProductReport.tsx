@@ -20,6 +20,9 @@ type ProductData = {
   deliveryCharges: number;
   createdAt: string;
   orderStatus: string | null;
+  images?: string;
+  productType?: string;
+  gstCharges?: number;
 };
 
 const ProductReport = () => {
@@ -33,9 +36,9 @@ const ProductReport = () => {
 
   console.log('productData', productData);
 
-  // Filter data to only show items with orderStatus as null
+  // Filter data to only show items with orderStatus as "CART" (pending deliveries)
   const filteredData =
-    productData?.filter((item: any) => item.orderStatus === null) || [];
+    productData?.filter((item: any) => item.orderStatus === 'CART') || [];
 
   const handleDelivery = (id: string) => {
     approveDeliveredRequest(id);
@@ -72,7 +75,20 @@ const ProductReport = () => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString('en-IN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
   };
 
   return (
@@ -107,11 +123,12 @@ const ProductReport = () => {
                       {label: 'Customer Name', key: 'fullname'},
                       {label: 'Phone Number', key: 'phoneNumber'},
                       {label: 'Product Name', key: 'name'},
-                      // {label: 'Description', key: 'description'},
-                      // {label: 'Actual Price', key: 'actualPrice'},
+                      {label: 'Description', key: 'description'},
+                      {label: 'Actual Price', key: 'actualPrice'},
                       {label: 'Discounted Price', key: 'discountedPrice'},
-                      // {label: 'Total Amount', key: 'totalAmount'},
-                      // {label: 'Delivery Charges', key: 'deliveryCharges'},
+                      {label: 'Total Amount', key: 'totalAmount'},
+                      {label: 'Delivery Charges', key: 'deliveryCharges'},
+                      {label: 'GST', key: 'gstCharges'},
                       {label: 'Action', key: 'action'},
                     ].map((column) => (
                       <th
@@ -135,42 +152,49 @@ const ProductReport = () => {
                 </thead>
                 <tbody>
                   {paginatedData.map((item: any) => {
+                    // Extract data from the nested structure
+                    const productInfo = item.product || {};
+                    const customerInfo = item.customer || {};
+                    const userInfo = customerInfo.user || {};
+
                     const rowData = {
                       id: item.id,
-                      crnNo: item.crnNo || item.customer?.crnNo,
-                      fullname: item.fullname || item.customer?.user?.fullname,
+                      crnNo: item.crnNo || customerInfo.crnNo || 'N/A',
+                      fullname: item.fullname || userInfo.fullname || 'N/A',
                       phoneNumber:
-                        item.phoneNumber || item.customer?.user?.phoneNumber,
-                      name: item.name || item.product?.name,
-                      // description: item.description || item.product?.description,
-                      // actualPrice: item.actualPrice || item.product?.actualPrice,
+                        item.phoneNumber || userInfo.phoneNumber || 'N/A',
+                      name: item.name || productInfo.name || 'Unnamed Product',
+                      description:
+                        item.description ||
+                        productInfo.description ||
+                        'No description',
+                      actualPrice:
+                        item.actualPrice || productInfo.actualPrice || 0,
                       discountedPrice:
-                        item.discountedPrice || item.product?.discountedPrice,
-                      // totalAmount: item.totalAmount,
-                      // deliveryCharges: item.deliveryCharges,
-                      createdAt: new Date(item.createdAt).toLocaleString(
-                        'en-IN',
-                        {
-                          day: '2-digit',
-                          month: '2-digit',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                          second: '2-digit',
-                          hour12: true,
-                        },
-                      ),
+                        item.discountedPrice ||
+                        productInfo.discountedPrice ||
+                        0,
+                      totalAmount: item.totalAmount || 0,
+                      deliveryCharges:
+                        item.deliveryCharges ||
+                        productInfo.deliveryCharges ||
+                        0,
+                      gstCharges: item.gstCharges || productInfo.gstAmount || 0,
+                      createdAt: formatDate(item.createdAt),
+                      productType:
+                        item.productType || productInfo.productType || 'N/A',
+                      images: item.images || productInfo.images,
                     };
 
                     return (
                       <tr
                         key={item.id}
-                        className="hover:bg-gray-50 dark:hover:bg-boxhoverdark"
+                        className="hover:bg-gray-50 dark:hover:bg-boxhoverdark border-gray-200 dark:border-gray-700 border-b"
                       >
-                        <td className="px-4 py-4 dark:text-white">
+                        <td className="whitespace-nowrap px-4 py-4 dark:text-white">
                           {rowData.createdAt}
                         </td>
-                        <td className="px-4 py-4 dark:text-white">
+                        <td className="font-mono px-4 py-4 dark:text-white">
                           {rowData.crnNo}
                         </td>
                         <td className="px-4 py-4 dark:text-white">
@@ -180,23 +204,35 @@ const ProductReport = () => {
                           {rowData.phoneNumber}
                         </td>
                         <td className="px-4 py-4 dark:text-white">
-                          {rowData.name}
+                          <div className="flex items-center gap-2">
+                            {rowData.images && (
+                              <img
+                                src={rowData.images}
+                                alt={rowData.name}
+                                className="h-8 w-8 rounded object-cover"
+                              />
+                            )}
+                            <span className="font-medium">{rowData.name}</span>
+                          </div>
                         </td>
-                        {/* <td className="max-w-xs truncate px-4 py-4 dark:text-white">
-                        {rowData.description}
-                      </td> */}
-                        {/* <td className="px-4 py-4 dark:text-white">
-                        {formatCurrency(rowData.actualPrice)}
-                      </td> */}
+                        <td className="max-w-xs truncate px-4 py-4 dark:text-white">
+                          {rowData.description}
+                        </td>
                         <td className="px-4 py-4 dark:text-white">
+                          {formatCurrency(rowData.actualPrice)}
+                        </td>
+                        <td className="px-4 py-4 font-semibold text-green-600 dark:text-white">
                           {formatCurrency(rowData.discountedPrice)}
                         </td>
-                        {/* <td className="px-4 py-4 font-medium dark:text-white">
-                        {formatCurrency(rowData.totalAmount)}
-                      </td> */}
-                        {/* <td className="px-4 py-4 dark:text-white">
-                        {formatCurrency(rowData.deliveryCharges)}
-                      </td> */}
+                        <td className="px-4 py-4 font-medium dark:text-white">
+                          {formatCurrency(rowData.totalAmount)}
+                        </td>
+                        <td className="px-4 py-4 dark:text-white">
+                          {formatCurrency(rowData.deliveryCharges)}
+                        </td>
+                        <td className="px-4 py-4 dark:text-white">
+                          {formatCurrency(rowData.gstCharges)}
+                        </td>
                         <td className="px-4 py-4 dark:text-white">
                           <button
                             onClick={() => handleDelivery(item.id)}
@@ -211,34 +247,6 @@ const ProductReport = () => {
                   })}
                 </tbody>
               </table>
-            </div>
-
-            {/* Pagination Controls */}
-            <div className="mt-4 flex items-center justify-between">
-              <div className="text-gray-600 dark:text-gray-400 text-sm">
-                Showing {(currentPage - 1) * recordsPerPage + 1} to{' '}
-                {Math.min(currentPage * recordsPerPage, filteredData.length)} of{' '}
-                {filteredData.length} entries
-              </div>
-              <div className="flex space-x-2">
-                <button
-                  className="border-gray-300 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 rounded border bg-white px-3 py-1 dark:bg-boxdark"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  Previous
-                </button>
-                <span className="border-gray-300 bg-gray-100 text-gray-700 dark:text-gray-300 dark:border-gray-600 rounded border px-3 py-1 dark:bg-boxdark">
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  className="border-gray-300 text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 rounded border bg-white px-3 py-1 dark:bg-boxdark"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  Next
-                </button>
-              </div>
             </div>
           </>
         )}

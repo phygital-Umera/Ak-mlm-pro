@@ -83,10 +83,10 @@ export const useGetAllEPins = () => {
   });
 };
 
-export const useGetAdminPins = (CustomerID: string) => {
+export const useGetAdminPins = () => {
   return useQuery({
     queryKey: [ADMIN_EPIN_QUERY_KEYS.GET_ALL_EPINS],
-    queryFn: () => getAdminEpins(CustomerID),
+    queryFn: () => getAdminEpins(),
   });
 };
 

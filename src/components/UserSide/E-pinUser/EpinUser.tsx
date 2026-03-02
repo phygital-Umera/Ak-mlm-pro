@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useForm, FormProvider, useFieldArray} from 'react-hook-form';
 import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import GenericInputField from '@/components/Forms/Input/GenericInputField';
@@ -28,6 +28,8 @@ const createEpinRequestSchema = z.object({
 type FormValues = z.infer<typeof createEpinRequestSchema>;
 
 const EpinUser: React.FC = () => {
+  const [showForm, setShowForm] = useState(false);
+
   const methods = useForm<FormValues>({
     resolver: zodResolver(createEpinRequestSchema),
     defaultValues: {
@@ -97,6 +99,7 @@ const EpinUser: React.FC = () => {
     if (isSuccess) {
       toast.success('E-Pin created successfully');
       methods.reset();
+      setShowForm(false); // Hide form after successful submission
     }
     if (error) {
       toast.error('Error creating E-Pin');
@@ -105,164 +108,210 @@ const EpinUser: React.FC = () => {
 
   return (
     <FormProvider {...methods}>
-      <form
-        onSubmit={methods.handleSubmit(onSubmit)}
-        className="space-y-8 bg-white p-8 dark:bg-black"
-        encType="multipart/form-data"
-      >
-        <h1 className="mb-4 text-lg font-semibold">Epin Request</h1>
-
-        {/* Paid Amount */}
-        <GenericInputField
-          name="paidAmount"
-          label="Paid Amount"
-          placeholder="Enter paid amount"
-          type="number"
-        />
-        {methods.formState.errors.paidAmount && (
-          <p className="mt-1 text-sm text-red-600">
-            {methods.formState.errors.paidAmount.message}
-          </p>
-        )}
-
-        {/* Product Selection */}
-        <div className="space-y-4">
-          <h2 className="text-md font-medium">Available Products</h2>
-          {methods.formState.errors.epins && (
-            <p className="text-sm text-red-600">
-              {methods.formState.errors.epins.message}
-            </p>
-          )}
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {products?.map((product) => {
-              const isSelected = fields.some(
-                (item) => Number(item.price) === product.discountedPrice,
-              );
-              const selectedCount = isSelected
-                ? fields.find(
-                    (item) => Number(item.price) === product.discountedPrice,
-                  )?.count
-                : 0;
-
-              return (
-                <div
-                  key={product.id}
-                  onClick={() => handleProductSelect(product)}
-                  className={`cursor-pointer rounded-lg border p-4 transition-all ${
-                    isSelected
-                      ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-                      : 'border-gray-200 hover:border-gray-300'
-                  }`}
-                >
-                  <div className="flex items-start space-x-4">
-                    <img
-                      src={product.images}
-                      alt={product.name}
-                      className="h-16 w-16 rounded-md object-cover"
-                    />
-                    <div className="flex-1">
-                      <h3 className="font-medium">{product.name}</h3>
-                      <p className="text-gray-600 text-sm">
-                        {product.description}
-                      </p>
-                      <div className="mt-2 flex items-center justify-between">
-                        <div>
-                          <span className="text-lg font-bold">
-                            ₹{product.discountedPrice}
-                          </span>
-                          {product.actualPrice > product.discountedPrice && (
-                            <span className="text-gray-500 ml-2 text-sm line-through">
-                              ₹{product.actualPrice}
-                            </span>
-                          )}
-                        </div>
-                        {isSelected && (
-                          <span className="rounded-full bg-blue-500 px-2 py-1 text-xs font-bold text-white">
-                            {selectedCount}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Selected Products Summary */}
-        {fields.length > 0 && (
-          <div className="space-y-2">
-            <h3 className="font-medium">Selected Products</h3>
-            <div className="divide-gray-200 divide-y rounded-lg border">
-              {fields.map((field, index) => {
-                const product = products?.find(
-                  (p) => p.discountedPrice === Number(field.price),
-                );
-                return (
-                  <div
-                    key={field.id}
-                    className="flex items-center justify-between p-3"
-                  >
-                    <div className="flex items-center space-x-3">
-                      <img
-                        src={product?.images}
-                        alt={product?.name}
-                        className="h-10 w-10 rounded-md object-cover"
-                      />
-                      <div>
-                        <p className="font-medium">{product?.name}</p>
-                        <p className="text-gray-600 text-sm">
-                          ₹{field.price} × {field.count}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => remove(index)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* File Upload */}
-        <div className="mt-6">
-          <label htmlFor="imageFile" className="mb-2 block text-sm font-medium">
-            Upload Payment Proof
-          </label>
-          <input
-            type="file"
-            {...methods.register('imageFile')}
-            className="text-gray-500 block w-full text-sm file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100"
-            accept="image/*"
-          />
-          {methods.formState.errors.imageFile && (
-            <p className="mt-1 text-sm text-red-600">
-              {methods.formState.errors.imageFile.message}
-            </p>
-          )}
-        </div>
-
-        {/* Submit Button */}
-        <div className="mt-6 flex justify-end space-x-4">
+      <div className="bg-gray-50 dark:bg-gray-900 min-h-screen p-4">
+        {/* Header with right-side button */}
+        <div className="mb-6 flex items-center justify-between">
+          <h1 className="text-gray-900 text-2xl font-bold dark:text-white">
+            E-Pin Management
+          </h1>
           <GenericButton
-            type="submit"
-            disabled={isPending || fields.length === 0}
+            onClick={() => setShowForm(!showForm)}
+            className="rounded-lg bg-blue-500 px-6 py-2 text-white shadow-md transition-all duration-200 hover:bg-blue-600"
           >
-            {isPending ? 'Processing...' : 'Request E-Pin'}
+            {showForm ? 'View Table' : 'New E-Pin Request'}
           </GenericButton>
         </div>
-      </form>
 
-      {/* Additional Display */}
-      <div className="mt-8">
-        <DisplayEpinUser />
+        {/* Conditional rendering: Form or Table */}
+        {showForm ? (
+          <div className="dark:bg-gray-800 rounded-lg bg-white shadow-lg">
+            <form
+              onSubmit={methods.handleSubmit(onSubmit)}
+              className="space-y-8 p-8"
+              encType="multipart/form-data"
+            >
+              <h2 className="text-gray-900 mb-4 text-lg font-semibold dark:text-white">
+                E-Pin Request Form
+              </h2>
+
+              {/* Paid Amount */}
+              <div>
+                <GenericInputField
+                  name="paidAmount"
+                  label="Paid Amount"
+                  placeholder="Enter paid amount"
+                  type="number"
+                />
+                {methods.formState.errors.paidAmount && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {methods.formState.errors.paidAmount.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Product Selection */}
+              <div className="space-y-4">
+                <h3 className="text-md text-gray-900 font-medium dark:text-white">
+                  Available Products
+                </h3>
+                {methods.formState.errors.epins && (
+                  <p className="text-sm text-red-600">
+                    {methods.formState.errors.epins.message}
+                  </p>
+                )}
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {products?.map((product) => {
+                    const isSelected = fields.some(
+                      (item) => Number(item.price) === product.discountedPrice,
+                    );
+                    const selectedCount = isSelected
+                      ? fields.find(
+                          (item) =>
+                            Number(item.price) === product.discountedPrice,
+                        )?.count
+                      : 0;
+
+                    return (
+                      <div
+                        key={product.id}
+                        onClick={() => handleProductSelect(product)}
+                        className={`cursor-pointer rounded-lg border p-4 transition-all ${
+                          isSelected
+                            ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200 dark:bg-blue-900/20'
+                            : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
+                        }`}
+                      >
+                        <div className="flex items-start space-x-4">
+                          <img
+                            src={product.images}
+                            alt={product.name}
+                            className="h-16 w-16 rounded-md object-cover"
+                          />
+                          <div className="flex-1">
+                            <h4 className="text-gray-900 font-medium dark:text-white">
+                              {product.name}
+                            </h4>
+                            <p className="text-gray-600 dark:text-gray-400 text-sm">
+                              {product.description}
+                            </p>
+                            <div className="mt-2 flex items-center justify-between">
+                              <div>
+                                <span className="text-gray-900 text-lg font-bold dark:text-white">
+                                  ₹{product.discountedPrice}
+                                </span>
+                                {product.actualPrice >
+                                  product.discountedPrice && (
+                                  <span className="text-gray-500 dark:text-gray-500 ml-2 text-sm line-through">
+                                    ₹{product.actualPrice}
+                                  </span>
+                                )}
+                              </div>
+                              {isSelected && (
+                                <span className="rounded-full bg-blue-500 px-2 py-1 text-xs font-bold text-white">
+                                  {selectedCount}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Selected Products Summary */}
+              {fields.length > 0 && (
+                <div className="space-y-2">
+                  <h3 className="text-gray-900 font-medium dark:text-white">
+                    Selected Products
+                  </h3>
+                  <div className="divide-gray-200 dark:divide-gray-700 dark:border-gray-700 divide-y rounded-lg border">
+                    {fields.map((field, index) => {
+                      const product = products?.find(
+                        (p) => p.discountedPrice === Number(field.price),
+                      );
+                      return (
+                        <div
+                          key={field.id}
+                          className="flex items-center justify-between p-3"
+                        >
+                          <div className="flex items-center space-x-3">
+                            <img
+                              src={product?.images}
+                              alt={product?.name}
+                              className="h-10 w-10 rounded-md object-cover"
+                            />
+                            <div>
+                              <p className="text-gray-900 font-medium dark:text-white">
+                                {product?.name}
+                              </p>
+                              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                                ₹{field.price} × {field.count}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => remove(index)}
+                            className="text-red-500 hover:text-red-700 dark:text-red-400"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* File Upload */}
+              <div>
+                <label
+                  htmlFor="imageFile"
+                  className="text-gray-900 mb-2 block text-sm font-medium dark:text-white"
+                >
+                  Upload Payment Proof
+                </label>
+                <input
+                  type="file"
+                  {...methods.register('imageFile')}
+                  className="text-gray-500 block w-full text-sm file:mr-4 file:rounded-full file:border-0 file:bg-blue-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900/20 dark:file:text-blue-300"
+                  accept="image/*"
+                />
+                {methods.formState.errors.imageFile && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {methods.formState.errors.imageFile.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Form Buttons */}
+              <div className="flex justify-end space-x-4">
+                <GenericButton
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="bg-gray-500 hover:bg-gray-600 rounded-lg px-6 py-2 text-white transition-colors"
+                >
+                  Cancel
+                </GenericButton>
+                <GenericButton
+                  type="submit"
+                  disabled={isPending || fields.length === 0}
+                  className={`px-6 py-2 ${
+                    isPending || fields.length === 0
+                      ? 'bg-gray-400 cursor-not-allowed'
+                      : 'bg-green-500 hover:bg-green-600'
+                  } rounded-lg text-white transition-colors`}
+                >
+                  {isPending ? 'Processing...' : 'Request E-Pin'}
+                </GenericButton>
+              </div>
+            </form>
+          </div>
+        ) : (
+          <DisplayEpinUser />
+        )}
       </div>
     </FormProvider>
   );

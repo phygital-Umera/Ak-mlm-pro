@@ -1,4 +1,4 @@
-/*eslint-disable */
+/* eslint-disable */
 import GenericButton from '@/components/Forms/Buttons/GenericButton';
 import GenericInputField from '@/components/Forms/Input/GenericInputField';
 import {useCheckEpin} from '@/lib/react-query/Admin/Epin/epin';
@@ -15,12 +15,16 @@ const TopUpPage = () => {
     Record<string, number>
   >({});
   const [customerName, setCustomerName] = useState<string>('');
-  const [customerData, setCustomerData] = useState<any>(null); // Store full customer data
+  const [customerData, setCustomerData] = useState<any>(null);
   const [verifiedEpin, setVerifiedEpin] = useState<any>(null);
   const [epinValue, setEpinValue] = useState<number | null>(null);
 
   const methods = useForm();
-  const {mutateAsync: checkEpin, isPending: isCheckingEpin} = useCheckEpin();
+  const {
+    mutateAsync: checkEpin,
+    data: checkEpinData,
+    isPending: isCheckingEpin,
+  } = useCheckEpin();
   const {mutateAsync: topUpMutation, isPending: isSubmitting} = useAddTopUp();
 
   // Set customer name value in form when it changes
@@ -33,34 +37,26 @@ const TopUpPage = () => {
   // Get customer name based on CRN
   const verifyCustomer = async () => {
     const CRN = methods.getValues('customerCRN');
-    console.log('CRN', CRN);
 
     if (CRN && CRN.length > 8) {
       try {
         const response = await unAuthenticatedApi.get(`/customerName/${CRN}`);
-        console.log('Full API Response:', response);
-        console.log('Customer Data:', response.data);
 
-        // Extract name from the nested data structure
-        // Response structure: { statusCode, status, message, data: { name, mlmDataEntries, totalEpin } }
         if (response.data && response.data.data && response.data.data.name) {
           const name = response.data.data.name;
-          console.log('Extracted Name:', name);
-          setCustomerName(name);
-          setCustomerData(response.data.data); // Store full customer data
 
-          // Manually set the form value
+          setCustomerName(name);
+          setCustomerData(response.data.data);
+
           methods.setValue('customerName', name);
 
           toast.success('Customer verified successfully');
         } else {
-          console.error('Unexpected response structure:', response.data);
           setCustomerName('Invalid ID');
           setCustomerData(null);
           toast.error('Invalid customer data format');
         }
       } catch (error) {
-        console.error('Customer verification error:', error);
         setCustomerName('Invalid ID');
         setCustomerData(null);
         toast.error('Invalid Customer CRN');
@@ -74,22 +70,20 @@ const TopUpPage = () => {
     if (epinValue) {
       try {
         const response = await checkEpin(epinValue);
-        console.log('Epin Response:', response);
-        setVerifiedEpin(response);
-        setEpinValue(response.totalEpin);
+
+        setEpinValue(response);
         toast.success('ePIN verified successfully');
       } catch (error) {
-        console.error('ePIN verification failed:', error);
         toast.error('ePIN verification failed');
       }
     }
   };
 
-  // Filter products based on verified ePIN value
   const filteredProducts = epinValue
     ? products?.filter((product) => product.discountedPrice === epinValue)
     : [];
 
+  // console.log('filteredProducts', filteredProducts);
   const getTotalSelectedCount = () =>
     Object.values(selectedProducts).reduce((a, b) => a + b, 0);
 
@@ -125,7 +119,6 @@ const TopUpPage = () => {
       setVerifiedEpin(null);
       setEpinValue(null);
     } catch (error) {
-      console.error('Top-up failed:', error);
       toast.error('Top-up failed');
     }
   };
