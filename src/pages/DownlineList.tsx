@@ -24,7 +24,7 @@ interface DecodedToken extends JwtPayload {
 
 interface DownlineNode {
   name: string;
-  data: {
+  data?: {
     username: string;
     crnNo: string;
     id: string;
@@ -65,7 +65,7 @@ const columns: Column<CustomerData>[] = [
     cell: (value: string, row: CustomerData) => (
       <div className="flex items-center">
         <User className="text-gray-400 mr-2 h-4 w-4" />
-        <span className="font-medium">{value}</span>
+        <span className="font-medium">{value || 'N/A'}</span>
       </div>
     ),
   },
@@ -79,10 +79,12 @@ const columns: Column<CustomerData>[] = [
         className={`rounded-full px-2 py-1 text-xs font-medium ${
           value === 'LEFT'
             ? 'bg-blue-100 text-blue-800'
-            : 'bg-purple-100 text-purple-800'
+            : value === 'RIGHT'
+              ? 'bg-purple-100 text-purple-800'
+              : 'bg-gray-100 text-gray-800'
         }`}
       >
-        {value}
+        {value || 'N/A'}
       </span>
     ),
   },
@@ -104,7 +106,7 @@ const columns: Column<CustomerData>[] = [
     accessor: 'package',
     cell: (value: number) => (
       <span className="bg-gray-100 rounded-full px-2 py-1 text-xs font-medium">
-        {value}
+        {value || 0}
       </span>
     ),
   },
@@ -121,31 +123,41 @@ const columns: Column<CustomerData>[] = [
               : 'bg-gray-100 text-gray-800'
         }`}
       >
-        {value}
+        {value || 'N/A'}
       </span>
     ),
   },
   {
     header: 'Joining Date',
     accessor: 'joiningDate',
-    cell: (value: string) =>
-      new Date(value).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
+    cell: (value: string) => {
+      if (!value) return 'N/A';
+      try {
+        return new Date(value).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+      } catch {
+        return 'Invalid Date';
+      }
+    },
   },
   {
     header: 'Left Count',
     accessor: 'leftCount',
-    cell: (value: number) => <span className="block text-center">{value}</span>,
+    cell: (value: number) => (
+      <span className="block text-center">{value || 0}</span>
+    ),
   },
   {
     header: 'Right Count',
     accessor: 'rightCount',
-    cell: (value: number) => <span className="block text-center">{value}</span>,
+    cell: (value: number) => (
+      <span className="block text-center">{value || 0}</span>
+    ),
   },
 ];
 
@@ -158,10 +170,10 @@ const DownlineList: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const {setUser, setIsAuthenticated, setToken} = useAuthContext();
 
-  // Flatten the nested tree structure
+  // Flatten the nested tree structure with null checks
   const flattenDownlineData = useCallback(
     (
-      nodes: DownlineNode | DownlineNode[],
+      nodes: DownlineNode | DownlineNode[] | undefined,
       level: number = 0,
     ): CustomerData[] => {
       if (!nodes) return [];
@@ -170,33 +182,49 @@ const DownlineList: React.FC = () => {
       let result: CustomerData[] = [];
 
       nodeArray.forEach((node) => {
-        // Format joining date
-        const joiningDate = new Date(node.data.joiningDate);
-        const joiningDateOnly = new Intl.DateTimeFormat('en-US', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-        }).format(joiningDate);
+        // Skip if node or node.data is undefined
+        if (!node || !node.data) {
+          console.warn('Skipping node with missing data:', node);
+          return;
+        }
 
-        // Add current node
+        // Safe access with fallbacks
+        const data = node.data;
+
+        // Format joining date with null check
+        let joiningDateOnly = 'N/A';
+        if (data.joiningDate) {
+          try {
+            const joiningDate = new Date(data.joiningDate);
+            joiningDateOnly = new Intl.DateTimeFormat('en-US', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+            }).format(joiningDate);
+          } catch {
+            joiningDateOnly = 'Invalid Date';
+          }
+        }
+
+        // Add current node with fallback values
         result.push({
-          id: node.data.id,
-          fullname: node.name || node.data.first_name,
-          crnNo: node.data.crnNo,
-          sponsorId: node.data.directSponsorId,
-          side: node.data.side,
-          isActive: node.data.isActive,
-          package: node.data.package,
-          orderStatus: node.data.orderStatus,
-          joiningDate: node.data.joiningDate,
+          id: data.id || '',
+          fullname: node.name || data.first_name || 'Unknown',
+          crnNo: data.crnNo || '',
+          sponsorId: data.directSponsorId || '',
+          side: data.side || '',
+          isActive: data.isActive || false,
+          package: data.package || 0,
+          orderStatus: data.orderStatus || '',
+          joiningDate: data.joiningDate || '',
           joiningDateOnly: joiningDateOnly,
-          leftCount: node.data.leftCount,
-          rightCount: node.data.rightCount,
+          leftCount: data.leftCount || 0,
+          rightCount: data.rightCount || 0,
           level: level,
-          username: node.data.username,
+          username: data.username || '',
         });
 
-        // Add children recursively
+        // Add children recursively with null check
         if (node.children && node.children.length > 0) {
           result = [
             ...result,
@@ -235,9 +263,16 @@ const DownlineList: React.FC = () => {
     // Sort dates in descending order (newest first)
     return Object.keys(groups)
       .sort((a, b) => {
-        const dateA = new Date(a);
-        const dateB = new Date(b);
-        return dateB.getTime() - dateA.getTime();
+        try {
+          const dateA = new Date(a);
+          const dateB = new Date(b);
+          if (isNaN(dateA.getTime()) || isNaN(dateB.getTime())) {
+            return 0;
+          }
+          return dateB.getTime() - dateA.getTime();
+        } catch {
+          return 0;
+        }
       })
       .reduce(
         (acc, date) => {
@@ -274,13 +309,24 @@ const DownlineList: React.FC = () => {
   useEffect(() => {
     if (apiResponse?.data) {
       console.log('Processing API data:', apiResponse.data);
-      const flattened = flattenDownlineData(apiResponse.data);
-      console.log('Flattened data:', flattened);
-      setTreeData(flattened);
+      try {
+        const flattened = flattenDownlineData(apiResponse.data);
+        console.log('Flattened data:', flattened);
+        setTreeData(flattened);
 
-      // Initially expand all dates
-      const dates = new Set(flattened.map((item) => item.joiningDateOnly));
-      setExpandedDates(dates);
+        // Initially expand all dates that have valid values
+        const dates = new Set(
+          flattened
+            .map((item) => item.joiningDateOnly)
+            .filter(
+              (date) => date && date !== 'N/A' && date !== 'Invalid Date',
+            ),
+        );
+        setExpandedDates(dates);
+      } catch (err) {
+        console.error('Error flattening data:', err);
+        setTreeData([]);
+      }
     }
   }, [apiResponse, flattenDownlineData]);
 
@@ -360,6 +406,20 @@ const DownlineList: React.FC = () => {
             />
             <Search className="text-gray-400 absolute left-3 top-2.5 h-4 w-4" />
           </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={expandAll}
+              className="bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg px-4 py-2 text-sm font-medium"
+            >
+              Expand All
+            </button>
+            <button
+              onClick={collapseAll}
+              className="bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg px-4 py-2 text-sm font-medium"
+            >
+              Collapse All
+            </button>
+          </div>
         </div>
       </div>
 
@@ -388,6 +448,22 @@ const DownlineList: React.FC = () => {
                       {date}
                     </h2>
                   </div>
+                  {dateSummaries[date] && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <span className="text-gray-600">
+                        Total: {dateSummaries[date].totalMembers}
+                      </span>
+                      <span className="text-green-600">
+                        Active: {dateSummaries[date].activeMembers}
+                      </span>
+                      <span className="text-blue-600">
+                        Left: {dateSummaries[date].leftSide}
+                      </span>
+                      <span className="text-purple-600">
+                        Right: {dateSummaries[date].rightSide}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
